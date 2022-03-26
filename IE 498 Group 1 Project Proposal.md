@@ -6,7 +6,7 @@ Author: Ruipeng Han, Yihong Jian, Tommy Kimura, Zihan Zhou
 
 We will implement HFT strategies that trade on real-world market data using proprietary software Strategy Studio (SS in the following) for the final project. This goal has several components: data, strategy, analysis, and automation. The first component is data. Since SS does not have built-in data, we need to harvest our own for backtesting. Therefore, we will be downloading historic market data from IEX, Nasdaq database, and alpaca. The second component is the strategy itself--implement trading strategies provided by the professor and run them in SS. The next component will be interpreting the output of SS. SS will generate complex CSV files containing trade histories and earnings. Since the CSVs are hard to read, we will interpret them and analyze the strategies' performance, generating comparisons and visualizations. The final component is automation. Since running SS backtesting requires users to type many lines of commands, we feel the need to write a script to replace the manual work. Ideally, we should be able to run the backtesting in one click.
 
-## Technologies:
+## Components & Technologies:
 ### Data parsing
 
 - Since SS will not recognize the raw IEX/Nasdaq/Alpaca data, we must implement a parser that converts raw data into a usable format. We decided to use Python to parse the data since it does not require high performance, and Python has more plug-ins for file interactions. For the alpaca data, we will obtain them using the official Python SDK, so we do not have to send web requests manually.
@@ -33,46 +33,106 @@ We will implement HFT strategies that trade on real-world market data using prop
   - Bash script
   - python script
 
-## Timeline/Milestone:
+### Python Wrapper (optional)
+
+- We could extend the `stragety.h` interface using python
+  - SWIG
+- If there’s still time left when we finish
+
+## Evaluation & Goal:
+
+- Clarity & understandability
+  - Document process and week meetings
+  - Codes are readable and follow google code styles standard
+  - Proper use of pull requests
+- Data
+  - Can generate usable data
+  - Runtime is reasonable
+- Strategy
+  - Strategy can run
+  - Strategy outperforms holding the ticker
+  - Strategy outperforms ExampleStrategy
+- Interpretation & Visualization
+  - Produce human readable report from raw csv
+  - Graphs are clear and understandable
+- Automation
+  - “Oneclick” environmental setup
+  - “Oneclick” backtesting
+  - Reasonable tests and CI/CD
+- Reach goal
+  - Python wrapper
+  - Streaming data & testing
+
+## Timeline/Milestone & Work Distribution:
 
 We established a milestone for each week until the end of the semester. Each milestone contains some tasks that should be completed on that date before class.
 
-#### March 31st
+### Milestone 1: Processing data and backtesting result
 
-Parse IEX/Nasdaq data
+**Timeline: March 26th - April 15th**
 
-#### April 7th
+#### Parse IEX/Nasdaq data (Ruipeng)
 
-Parse Alpaca data
+- Understand Prof’s script and make sure it can run
+- Retrieve the Nasdaq data
+- Understand the raw data format
+- Understand the format requirements from Strategy Studio
+- Writing the actual parser that cleans the data and converts the raw data into the targeted data format
 
-#### April 14th
+#### Parse Alpaca Data (Zihan)
 
-Writing Strategy
+- Figure out how having NBBO only would affect SS
+- Retrieve the data
+- Understand the raw data format
+- Understand the format requirements from Strategy Studio
+- Writing the actual parser that cleans the data and converts the raw data into the targeted data format
 
-#### April 21th 
+#### Analyze & Visualize Backtesting result (Tommy)
 
-Put data and strategy together/Debug/Analysis
+- (set up performance standards, ie what’s good/poor)
+- Implement a backtesting analysis programFinalize what types of visualizations we need
+- Implement the visualization code that output meaningful statistical figures 
 
-#### April 28th
+#### DevOps (Yihong)
 
-Analysis
+- Automate VM/environment setup
+- Setup CI/CD procedures
+- Automatically launch
+- Some forms of unit-testing that assures each component works
 
-#### May 5th
+### Milestone 2: Implement strategies and improve them
 
-Automation
+**Timeline: April 15th - April 29th**
 
-#### May 12th
+We have yet assigned task for milestone 2, but we will redistribute work depending on number of strategies we need to implement and the potential problems we would face in Milestone 1.
 
-Extra week for lags
+#### Strategy Implementation
 
-## Job Distribution:
-For job distribution, we split the work in each week’s regular meeting. However, each individual teammate will be mainly responsible for a certain task. Specifically, he/she should make sure the task is done for the week and is the go-to person for any issues on the task.
+- Understand the interface
+- Implement the strategies based on Professor’s feedback
 
-- Ruipeng Han
-  - Strategy Implementation
-- Yihong Jian
-  - Automation/Testing
-- Tommy Kimura
-  - IEX/Nasdaq parsing & Analysis
-- Zihan Zhou
-  - Alpaca parsing & Analysis
+#### DevOps
+
+- Complete the automation process
+- Implement the tests for our strategies
+
+#### Analysis & Conclusion
+
+- Thoroughly test the implementation of our strategies
+- Debug & Improvement
+- Draw analysis on these strategies with visuals and conclusions
+
+### Milestone 3: Wrap up & Extend goal
+
+**Timeline: April 29th - May 6th**
+
+### Python Wrapper (Reach goal)
+
+### Alpaca Streaming (Reach goal)
+
+- Stream live data from Alcapa for lvie market data testing
+
+### Overview
+
+- Documentation
+- Verbal
