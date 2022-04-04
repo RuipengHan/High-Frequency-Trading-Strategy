@@ -1,0 +1,21 @@
+stages:          # List of stages for jobs, and their order of execution
+    - pybuild
+pybuild-job:
+    stage: pybuild
+    script:
+        - python3 -m venv pyvenv
+        - source pyvenv/bin/activate
+        - pip3 install -r requirements.txt
+        - pylint ./parser
+# playground-job:
+#     stage: playground
+#     script:
+#         - ls -lha
+#         - export VAGRANT_CHECKPOINT_DISABLE=1
+#         - export VAGRANT_HOME=$PWD/vagrant_home
+#         - export | grep VAGRANT  
+#         - vagrant up
+#   - build
+#   - test
+#   - deploy
+
