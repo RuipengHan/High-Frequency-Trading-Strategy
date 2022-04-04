@@ -1,2 +1,4 @@
+/.vagrant
 /.vscode
 meeting_log/*pdf
+*/__pycache__
