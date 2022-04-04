@@ -36,3 +36,23 @@ Please create a issue for additional softwares so that we can put it in vagrant 
 5. ``` bash
    vagrant up
 6. Then use ```vagrant ssh``` to connect to VM
+
+## Project structure
+### Components
+- **Market data parser**
+
+    All the data parser (Nasdaq/IEX/alpaca) should be placed under ```parser``` folder. Implementation should follow the interface in ```parser_base.py```.
+
+- **Strategy**
+
+    All the strategies codes (.h, .cpp, makefile) should be included under ```strategy``` folder.
+
+- **Analysis/visualization**
+
+    Code should be included in ```visualization``` folder.
+### Quality assurance
+- **Code Sanity**
+  - Python code will be checked by ```PyLint``` under PEP8 standard.
+  - CPP checkstyle - TBD
+- **Unit Testing**
+  - TBD
