@@ -4,8 +4,8 @@ from alpaca_trade_api import TimeFrame
 import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
-api_key = 'PKKDR1JXESL35LP48EQF'
-api_secret = 'tH7rGWihZcS2NcMo1mC0mX9ZebTPHINYxAv9hkZv'
+api_key = 'key'
+api_secret = 'secret'
 base_url = 'https://paper-api.alpaca.markets'
 
 # instantiate REST API
