@@ -35,7 +35,8 @@ def process_quote(quote):
 quote_iter = api.get_quotes_iter("AAPL", "2021-06-08", "2021-06-08", limit=10)
 for quote in quote_iter:
     process_quote(quote)
-
+ ##printed in dataframe
+print(api.get_quotes("AAPL", "2021-06-08", "2021-06-08", limit=10).df)
 
 def process_trade(trade):
     # process trade
@@ -44,4 +45,5 @@ def process_trade(trade):
 trades_iter = api.get_trades_iter("AAPL", "2021-06-08", "2021-06-08", limit=10)
 for trade in trades_iter:
     process_trade(trade)
-    
+  ## printed in dataframe
+print(api.get_trades("AAPL", "2021-06-08", "2021-06-08", limit=10).df)  
