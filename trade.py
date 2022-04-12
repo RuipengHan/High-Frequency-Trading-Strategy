@@ -16,7 +16,7 @@ api = tradeapi.REST(api_key, api_secret, base_url, api_version='v2')
 account = api.get_account()
 ##print(api.request)
 print(account.status)
-'''
+
 def process_bar(bar):
     # process bar
     print(bar)
@@ -24,9 +24,9 @@ def process_bar(bar):
 bar_iter = api.get_bars_iter("AAPL", TimeFrame.Hour, "2021-06-08", "2021-06-08", adjustment='raw')
 for bar in bar_iter:
     process_bar(bar)
-##这些方法和原文件能对上号吗
-'''
-'''
+##to be matched with docs
+
+
 #The Quotes API provides NBBO quotes for a single given ticker symbol at a specified date.
 def process_quote(quote):
     # process quote
@@ -35,9 +35,8 @@ def process_quote(quote):
 quote_iter = api.get_quotes_iter("AAPL", "2021-06-08", "2021-06-08", limit=10)
 for quote in quote_iter:
     process_quote(quote)
-'''
 
-'''
+
 def process_trade(trade):
     # process trade
     print(trade)
@@ -45,4 +44,4 @@ def process_trade(trade):
 trades_iter = api.get_trades_iter("AAPL", "2021-06-08", "2021-06-08", limit=10)
 for trade in trades_iter:
     process_trade(trade)
-'''
+    
