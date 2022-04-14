@@ -39,6 +39,13 @@ class CompareStrategy():
     
     # Visualize the strategies
     def visualizeStrategies(self):
+        strategies = []
+        for key in list(self.strategy_dict.keys()):
+            strategies.append(self.strategy_dict[key].pnl)
+        strategies = pd.concat(strategies)
+        time_series_fig = px.line(strategies, x=strategies['Time'], y="Cumulative PnL", color="Name")
+        time_series_fig.show()
+
         strategies = self.getStrategiesDF()
         fig = px.area(strategies, facet_col="Company", facet_col_wrap=2)
         fig.show()
