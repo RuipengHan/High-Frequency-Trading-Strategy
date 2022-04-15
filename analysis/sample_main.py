@@ -1,5 +1,5 @@
-from Compare import CompareStrategy
-from visualization import StrategyAnalysis
+from compare_strategy import CompareStrategy
+from strategy_analysis import StrategyAnalysis
 
 fill_path = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_fill.csv"
 order_path = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_order.csv"
