@@ -13,12 +13,12 @@ my_strategy2 = StrategyAnalysis(fill_file=fill_path, order_file=order_path, pnl_
 
 
 
-my_strategy1.visualizePNL()
-my_strategy2.visualizePNL()
+my_strategy1.visualize_pnl()
+my_strategy2.visualize_pnl()
 
 cs = CompareStrategy()
-cs.addStrategy(my_strategy1)
-cs.addStrategy(my_strategy2)
+cs.add_strategy(my_strategy1)
+cs.add_strategy(my_strategy2)
 
-cs.visualizeStrategies()
-cs.measurementTable()
+cs.visualize_strategies()
+cs.measurement_table()
