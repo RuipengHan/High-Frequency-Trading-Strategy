@@ -30,17 +30,11 @@
 (uint64_t)bswap_32((uint32_t)((value) >> 32)))
 #endif
 
-// #define parse_uint16(a) \
-// bswap_16(*((uint16_t *)(a)))
-
 #define parse_uint32(a) \
 bswap_32(*((uint32_t *)(a)))
 
 #define parse_uint64(a) \
 bswap_64(*((uint64_t *)(a)))
-
-// #define parse_uint16(a) \
-// bswap_16(*((uint16_t *)(a)))
 
 #define parse_ts(a) \
 (((uint64_t)bswap_16(*((uint16_t *)(a)))) << 32) | \
@@ -191,11 +185,7 @@ int main(int argc, char *argv[]) {
           //   continue;
           // }
           // Parsing the binary: Please see reference Nasdaq Totalview Itch 5.0.
-          /*  Locate code identifying the security */
-          // uint16_t stock_locate = parse_uint16(m + 1);
-          /* Nasdaq internal tracking number */
-          // uint16_t tracking_number = parse_uint16(m + 3);
-          /* Nanoseconds since midnight. (Two parts: seconds.nanoSeconds) */
+
           /* Stock Symbol, right padded with spaces. */
           parse_stock(24)
           if (strcmp(stock, "SPY")) {
@@ -203,6 +193,7 @@ int main(int argc, char *argv[]) {
           }
           // limit += 1;
           // The UTC date time for Strategy Studio: yyyy-MM-dd HH:mm:ss.ffffff
+          /* Nanoseconds since midnight. (Two parts: seconds.nanoSeconds) */
           uint64_t timestamp = parse_ts(m + 5);
           uint64_t seconds = timestamp/1000000000;
           uint64_t nano_seconds = timestamp%1000000000;
@@ -212,8 +203,7 @@ int main(int argc, char *argv[]) {
           int second = seconds - (hour * 3600 + minute * 60);
           // printf("HH:MM:SS --> %d:%d:%d", hour, minute, second);
           // printf("Stock is: %s\n", stock);
-          /* The unique reference number assigned to the order on the book being executed. */
-          // uint64_t order_reference_number = parse_uint64(m + 11); // Always be 0 after 12/06/2010.
+          
           /* The number of shares being matched in this execution. */
           uint32_t shares = parse_uint32(m + 20);
 
