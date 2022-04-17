@@ -17,6 +17,7 @@
 
 // Some pre-defined binary-text helpers:
 // http://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf
+// http://tradingphysics.com/Resources/Specifications/HistoricalItch.aspx
 #define bswap_16(value) \
 ((((value) & 0xff) << 8) | ((value) >> 8))
 
@@ -54,15 +55,17 @@ for (i = 0; i < 8; i++) { \
     stock[i] = m[i+(n)]; \
   } \
 }
+const char tick_type = 'T';
+const char *market_center = "NASDAQ";
+unsigned char msg_type[22] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W', 'K', 'J', 
+    'h', 'A', 'F', 'E', 'C', 'X', 'D', 'U', 'P', 'Q', 'B', 'I', 'N'};
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    fprintf(stderr, "Usage: %s input_file_path output_folder_path \n\n", argv[0]);
+    fprintf(stderr, "Usage: %s input_file_path output_folder_path \n", argv[0]);
+    fprintf(stderr, "NOTE: Your Nasdap source file must be named in the default convention: MMDDYYYY.NASDAQ_ITCH50 \n\n");
     exit(1);
   }
-
-  unsigned char msg_type[22] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W', 'K', 'J', 
-    'h', 'A', 'F', 'E', 'C', 'X', 'D', 'U', 'P', 'Q', 'B', 'I', 'N'};
 
   bool parse_flag[128];
   int i, j;
@@ -88,19 +91,24 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
+  /* Extract the date of stock data and setup the output file name using date. */
   char *argv1, *input_file_name, *output_base;
+  char year[5]; year[4] = 0; char month[3]; month[2] = 0; char day[3]; day[2] = 0;
   argv1 = strdup(argv[1]);
   input_file_name = basename(argv1);
   output_base = strdup(input_file_name);
-
+  strncpy(year, output_base+4, 4);
+  strncpy(month, output_base, 2);
+  strncpy(day, output_base+2, 2);
   for (unsigned long i=0; i < strlen(input_file_name); i++) {
-    if (output_base[i] == '.') {
+    if (output_base[i] == '.') { /* Parse the dot in MMDDYYYY.NASDAQ_ITCH50 */
       output_base[i] = 0;
       break;
     }
   }
+  printf("The date of stock data to be parsed is: %s-%s-%s\n", year, month, day);
 
-  // argv[2]: output folder path
+  // Make the output directory at the argument output path.
   int rv = mkdir(argv[2], 0755);
   if (rv == -1) {
     if (errno == EEXIST) {
@@ -130,7 +138,7 @@ int main(int argc, char *argv[]) {
   char csv_filename[32];
   char csv_full_path[256];
 
-  // open scv files only for specified message types
+  // open csv files only for specified message types
   for (i = 0; i < 22; i++) {
     unsigned char t = msg_type[i];
     file_output[i] = NULL;
@@ -152,6 +160,10 @@ int main(int argc, char *argv[]) {
   uint16_t msg_length;
   // message buffer
   char m[64];
+  // int limit = 0;
+
+  // The UTC date time for Strategy Studio: yyyy-MM-dd HH:mm:ss.ffffff
+  char* date_time = "2019-10-30 ";
   while (true) {
     // first two bytes before each message starts encodes the length of the message
     if (fread((void*)&msg_header, sizeof(char), 2, f_input) < 2) {
@@ -165,30 +177,58 @@ int main(int argc, char *argv[]) {
         goto panic;
     }
 
-    // security symbol for the issue in the Nasdaq execution system
-    char stock[9];
-    stock[8] = 0;
+    // The scurity symbol (tick) for the issue in the Nasdaq execution system, maximal length of 5.
+    char stock[6];
+    stock[5] = 0;
     char t = m[0];
+    // if (limit > 100) { /* Generate 100 rows ONLY. */
+    //   break;
+    // }
     switch (t) {
       // Parse Traded Message Only
       case 'P':
+        
         if (parse_flag['P']) {
+          /* For debugging, limit the number of rows in output. */
+          // if (limit < 1520000) {
+          //   continue;
+          // }
           // Parsing the binary: Please see reference Nasdaq Totalview Itch 5.0.
-          uint16_t stock_locate = parse_uint16(m + 1);
-          uint16_t tracking_number = parse_uint16(m + 3);
-          uint64_t timestamp = parse_ts(m + 5);
-          uint64_t order_reference_number = parse_uint64(m + 11);
-          uint32_t shares = parse_uint32(m + 20);
+          /*  Locate code identifying the security */
+          // uint16_t stock_locate = parse_uint16(m + 1);
+          /* Nasdaq internal tracking number */
+          // uint16_t tracking_number = parse_uint16(m + 3);
+          /* Nanoseconds since midnight. (Two parts: seconds.nanoSeconds) */
+          /* Stock Symbol, right padded with spaces. */
           parse_stock(24)
+          if (strcmp(stock, "SPY")) {
+            continue;
+          }
+          // limit += 1;
+          uint64_t timestamp = parse_ts(m + 5);
+          uint64_t seconds = timestamp/1000000000;
+          uint64_t nano_seconds = timestamp%1000000000;
+          int hour = seconds / 3600;
+          int minute = (seconds % 3600) / 60;
+          int second = seconds - (hour * 3600 + minute * 60);
+          // printf("HH:MM:SS --> %d:%d:%d", hour, minute, second);
+          // printf("Stock is: %s\n", stock);
+          /* The unique reference number assigned to the order on the book being executed. */
+          // uint64_t order_reference_number = parse_uint64(m + 11); // Always be 0 after 12/06/2010.
+          /* The number of shares being matched in this execution. */
+          uint32_t shares = parse_uint32(m + 20);
+
+          /* The match price of the order. */
           uint32_t price = parse_uint32(m + 32);
+          /* The Nasdaq generated session unique Match Number for this trade. */
           uint64_t match_number = parse_uint64(m + 36);
+          // printf("The date of stock data to be parsed is: %s-%s-%s\n", year, month, day);
+
           // Write to CSV:
           fprintf(file_output[17],
-            "%c,%u,%u,%llu.%09llu,%llu,%c,%u,%s,%u.%04u,%llu\n",
-            t, stock_locate, tracking_number,
-            timestamp/1000000000, timestamp%1000000000,
-            order_reference_number, m[19], shares, stock,
-            price/10000, price%10000, match_number);
+            "%s-%s-%s %02d:%02d:%02d.%09llu,%s-%s-%s %02d:%02d:%02d.%09llu,%llu,%c,%s,%u.%04u,%u\n",
+            year, month, day, hour, minute, second, nano_seconds, year, month, day, hour, minute, second, nano_seconds,
+            match_number, tick_type, market_center, price/10000, price%10000, shares);
           total_type[17]++;
           total++;
         }
