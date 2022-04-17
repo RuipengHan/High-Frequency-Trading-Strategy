@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
   }
   char *target_symbol = strdup(argv[3]);
   bool parse_flag[128];
-  int i, j;
+  int i;
   for (i = 0; i < 128; i++) {
     parse_flag[i] = false;
   }
@@ -73,9 +73,6 @@ int main(int argc, char *argv[]) {
       parse_flag[msg_type[i]] = true;
     }
   }
-
-  bool found;
-  unsigned char c;
 
   // argv[1]: input file path
   FILE *f_input = fopen(argv[1], "r");
