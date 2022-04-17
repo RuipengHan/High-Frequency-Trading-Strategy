@@ -55,23 +55,22 @@ unsigned char msg_type[22] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W', 'K', 'J',
     'h', 'A', 'F', 'E', 'C', 'X', 'D', 'U', 'P', 'Q', 'B', 'I', 'N'};
 
 int main(int argc, char *argv[]) {
-  if (argc != 3) {
-    fprintf(stderr, "Usage: %s input_file_path output_folder_path \n", argv[0]);
-    fprintf(stderr, "NOTE: Your Nasdap source file must be named in the default convention: MMDDYYYY.NASDAQ_ITCH50 \n\n");
+  if (argc != 4) {
+    fprintf(stderr, "Usage: %s INPUT_FILE OUTPUT_PATH SYMBOL\n", argv[0]);
+    fprintf(stderr, "You must provide the path for the source Nasdaq file, the output directory the program writes to, and the company symbol you want to parse.");
+    fprintf(stderr, "NOTE: Your Nasdaq source file must be named in the default convention: MMDDYYYY.NASDAQ_ITCH50 \n\n");
     exit(1);
   }
-
+  char *target_symbol = strdup(argv[3]);
   bool parse_flag[128];
   int i, j;
   for (i = 0; i < 128; i++) {
     parse_flag[i] = false;
   }
 
-  if (argc == 3) {
-    for (i = 0; i < 22; i++) {
-      if (msg_type[i] == 'P') { // Only parsing the 'P' type message.
-        parse_flag[msg_type[i]] = true;
-      }
+  for (i = 0; i < 22; i++) {
+    if (msg_type[i] == 'P') { // Only parsing the 'P' type message, so this program outputs only one csv.
+      parse_flag[msg_type[i]] = true;
     }
   }
 
@@ -188,7 +187,7 @@ int main(int argc, char *argv[]) {
 
           /* Stock Symbol, right padded with spaces. */
           parse_stock(24)
-          if (strcmp(stock, "SPY")) {
+          if (strcmp(stock, target_symbol)) {
             continue;
           }
           // limit += 1;
@@ -203,7 +202,6 @@ int main(int argc, char *argv[]) {
           int second = seconds - (hour * 3600 + minute * 60);
           // printf("HH:MM:SS --> %d:%d:%d", hour, minute, second);
           // printf("Stock is: %s\n", stock);
-          
           /* The number of shares being matched in this execution. */
           uint32_t shares = parse_uint32(m + 20);
 
@@ -242,6 +240,7 @@ int main(int argc, char *argv[]) {
     unsigned char t = msg_type[i];
     if (parse_flag[t]) fclose(file_output[i]);
   }
+  free(target_symbol);
   return 0;
 
 // In case something went wrong, we close the file descriptor.
@@ -251,5 +250,6 @@ panic:
     unsigned char t = msg_type[i];
     if (parse_flag[t]) fclose(file_output[i]);
   }
+  free(target_symbol);
   exit(1);
 }
