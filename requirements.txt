@@ -1,4 +1,7 @@
+# code linting tools
 pylint
+cpplint
+# analysis tools
 plotly
 numpy
 pandas
