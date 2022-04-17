@@ -30,8 +30,8 @@
 (uint64_t)bswap_32((uint32_t)((value) >> 32)))
 #endif
 
-#define parse_uint16(a) \
-bswap_16(*((uint16_t *)(a)))
+// #define parse_uint16(a) \
+// bswap_16(*((uint16_t *)(a)))
 
 #define parse_uint32(a) \
 bswap_32(*((uint32_t *)(a)))
@@ -39,8 +39,8 @@ bswap_32(*((uint32_t *)(a)))
 #define parse_uint64(a) \
 bswap_64(*((uint64_t *)(a)))
 
-#define parse_uint16(a) \
-bswap_16(*((uint16_t *)(a)))
+// #define parse_uint16(a) \
+// bswap_16(*((uint16_t *)(a)))
 
 #define parse_ts(a) \
 (((uint64_t)bswap_16(*((uint16_t *)(a)))) << 32) | \
@@ -161,9 +161,6 @@ int main(int argc, char *argv[]) {
   // message buffer
   char m[64];
   // int limit = 0;
-
-  // The UTC date time for Strategy Studio: yyyy-MM-dd HH:mm:ss.ffffff
-  char* date_time = "2019-10-30 ";
   while (true) {
     // first two bytes before each message starts encodes the length of the message
     if (fread((void*)&msg_header, sizeof(char), 2, f_input) < 2) {
@@ -205,10 +202,12 @@ int main(int argc, char *argv[]) {
             continue;
           }
           // limit += 1;
+          // The UTC date time for Strategy Studio: yyyy-MM-dd HH:mm:ss.ffffff
           uint64_t timestamp = parse_ts(m + 5);
           uint64_t seconds = timestamp/1000000000;
           uint64_t nano_seconds = timestamp%1000000000;
           int hour = seconds / 3600;
+          int utc_hour = (hour + 4 ) % 24; /* The defualt time zone of nasdaq data is EST, which is 4 hours eariler than UTC. */
           int minute = (seconds % 3600) / 60;
           int second = seconds - (hour * 3600 + minute * 60);
           // printf("HH:MM:SS --> %d:%d:%d", hour, minute, second);
@@ -227,7 +226,7 @@ int main(int argc, char *argv[]) {
           // Write to CSV:
           fprintf(file_output[17],
             "%s-%s-%s %02d:%02d:%02d.%09llu,%s-%s-%s %02d:%02d:%02d.%09llu,%llu,%c,%s,%u.%04u,%u\n",
-            year, month, day, hour, minute, second, nano_seconds, year, month, day, hour, minute, second, nano_seconds,
+            year, month, day, utc_hour, minute, second, nano_seconds, year, month, day, utc_hour, minute, second, nano_seconds,
             match_number, tick_type, market_center, price/10000, price%10000, shares);
           total_type[17]++;
           total++;
