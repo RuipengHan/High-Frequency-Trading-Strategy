@@ -51,14 +51,18 @@ for (i = 0; i < 8; i++) { \
 }
 const char tick_type = 'T';
 const char *market_center = "NASDAQ";
-unsigned char msg_type[22] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W', 'K', 'J', 
-    'h', 'A', 'F', 'E', 'C', 'X', 'D', 'U', 'P', 'Q', 'B', 'I', 'N'};
+const int num_msg_types = 22;
+unsigned char msg_type[num_msg_types] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W', 
+'K', 'J', 'h', 'A', 'F', 'E', 'C', 'X', 'D', 'U', 'P', 'Q', 'B', 'I', 'N'};
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     fprintf(stderr, "Usage: %s INPUT_FILE OUTPUT_PATH SYMBOL\n", argv[0]);
-    fprintf(stderr, "You must provide the path for the source Nasdaq file, the output directory the program writes to, and the company symbol you want to parse.");
-    fprintf(stderr, "NOTE: Your Nasdaq source file must be named in the default convention: MMDDYYYY.NASDAQ_ITCH50 \n\n");
+    fprintf(stderr, "You must provide the path for the source Nasdaq file,\
+     the output directory the program writes to, \
+     and the company symbol you want to parse.");
+    fprintf(stderr, "NOTE: Your Nasdaq source file must be named \
+    in the default convention: MMDDYYYY.NASDAQ_ITCH50 \n\n");
     exit(1);
   }
   char *target_symbol = strdup(argv[3]);
@@ -68,8 +72,9 @@ int main(int argc, char *argv[]) {
     parse_flag[i] = false;
   }
 
-  for (i = 0; i < 22; i++) {
-    if (msg_type[i] == 'P') { // Only parsing the 'P' type message, so this program outputs only one csv.
+  for (i = 0; i < num_msg_types; i++) {
+    // Only parsing the 'P' type message, so this program outputs only one csv.
+    if (msg_type[i] == 'P') { 
       parse_flag[msg_type[i]] = true;
     }
   }
@@ -81,9 +86,11 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  /* Extract the date of stock data and setup the output file name using date. */
+  /* Extract the date of data and setup the output file name using date. */
   char *argv1, *input_file_name, *output_base;
-  char year[5]; year[4] = 0; char month[3]; month[2] = 0; char day[3]; day[2] = 0;
+  char year[5]; year[4] = 0; 
+  char month[3]; month[2] = 0; 
+  char day[3]; day[2] = 0;
   argv1 = strdup(argv[1]);
   input_file_name = basename(argv1);
   output_base = strdup(input_file_name);
@@ -96,16 +103,18 @@ int main(int argc, char *argv[]) {
       break;
     }
   }
-  printf("The date of stock data to be parsed is: %s-%s-%s\n", year, month, day);
+  printf("The date of stock data being parsed: %s-%s-%s\n", year, month, day);
 
   // Make the output directory at the argument output path.
   int rv = mkdir(argv[2], 0755);
   if (rv == -1) {
     if (errno == EEXIST) {
-      fprintf(stderr, "Warning: output directory %s already exists!\n", argv[2]);
+      fprintf(stderr, "Warning: output directory %s already exists!\n", 
+      argv[2]);
     }
     else {
-      fprintf(stderr, "Error making directory %s: %s\n", argv[2], strerror(errno));
+      fprintf(stderr, "Error making directory %s: %s\n", argv[2], 
+      strerror(errno));
       exit(1);
     }
   }
@@ -113,8 +122,8 @@ int main(int argc, char *argv[]) {
   // total number of all messages
   unsigned long total = 0;
   // total number of messages for each message type
-  unsigned long total_type[22];
-  for (i = 0; i < 22; i++) {
+  unsigned long total_type[num_msg_types];
+  for (i = 0; i < num_msg_types; i++) {
     total_type[i] = 0;
   }
 
@@ -124,21 +133,23 @@ int main(int argc, char *argv[]) {
   printf("Nasdaq Source File: %s\n", input_file_name);
   printf("Result Outputs to Folder: %s\n", argv[2]);
 
-  FILE *file_output[22];
+  FILE *file_output[num_msg_types];
   char csv_filename[32];
   char csv_full_path[256];
 
   // open csv files only for specified message types
-  for (i = 0; i < 22; i++) {
+  for (i = 0; i < num_msg_types; i++) {
     unsigned char t = msg_type[i];
     file_output[i] = NULL;
     if (parse_flag[t]) {
-      sprintf(csv_filename, "%s-%c.csv", output_base, t);
+      sprintf(csv_filename, "tick_%s_%s%s%s.txt", target_symbol, year, 
+      month, day);
       printf("Output file: %s\n", csv_filename);
       sprintf(csv_full_path, "%s/%s", argv[2], csv_filename);
       file_output[i] =  fopen(csv_full_path, "w");
       if (file_output[i] == NULL) {
-        fprintf(stderr, "Error opening file %s: %s\n", csv_full_path, strerror(errno));
+        fprintf(stderr, "Error opening file %s: %s\n", csv_full_path, 
+        strerror(errno));
         exit(1);
       }
     }
@@ -152,7 +163,7 @@ int main(int argc, char *argv[]) {
   char m[64];
   // int limit = 0;
   while (true) {
-    // first two bytes before each message starts encodes the length of the message
+    // first two bytes of each message starts encodes the length of the message.
     if (fread((void*)&msg_header, sizeof(char), 2, f_input) < 2) {
       // This is the EOF
       printf("=========== Parsing ITCH v5.0 ends   ===========\n");
@@ -164,7 +175,8 @@ int main(int argc, char *argv[]) {
         goto panic;
     }
 
-    // The scurity symbol (tick) for the issue in the Nasdaq execution system, maximal length of 5.
+    // The scurity symbol (tick) for the issue in the Nasdaq execution system, 
+    // maximal length of 5.
     char stock[6];
     stock[5] = 0;
     char t = m[0];
@@ -194,7 +206,8 @@ int main(int argc, char *argv[]) {
           uint64_t seconds = timestamp/1000000000;
           uint64_t nano_seconds = timestamp%1000000000;
           int hour = seconds / 3600;
-          int utc_hour = (hour + 4 ) % 24; /* The defualt time zone of nasdaq data is EST, which is 4 hours eariler than UTC. */
+          /* Nasdaq data is EST, which is 4 hours eariler than UTC. */
+          int utc_hour = (hour + 4 ) % 24; 
           int minute = (seconds % 3600) / 60;
           int second = seconds - (hour * 3600 + minute * 60);
           // printf("HH:MM:SS --> %d:%d:%d", hour, minute, second);
@@ -206,26 +219,28 @@ int main(int argc, char *argv[]) {
           uint32_t price = parse_uint32(m + 32);
           /* The Nasdaq generated session unique Match Number for this trade. */
           uint64_t match_number = parse_uint64(m + 36);
-          // printf("The date of stock data to be parsed is: %s-%s-%s\n", year, month, day);
 
           // Write to CSV:
           fprintf(file_output[17],
-            "%s-%s-%s %02d:%02d:%02d.%09llu,%s-%s-%s %02d:%02d:%02d.%09llu,%llu,%c,%s,%u.%04u,%u\n",
-            year, month, day, utc_hour, minute, second, nano_seconds, year, month, day, utc_hour, minute, second, nano_seconds,
-            match_number, tick_type, market_center, price/10000, price%10000, shares);
+            "%s-%s-%s %02d:%02d:%02d.%09llu,%s-%s-%s"
+            " %02d:%02d:%02d.%09llu,%llu,%c,%s,%u.%04u,%u\n",
+            year, month, day, utc_hour, minute, second, nano_seconds, year, 
+            month, day, utc_hour, minute, second, nano_seconds,
+            match_number, tick_type, market_center, price/10000, 
+            price%10000, shares);
           total_type[17]++;
           total++;
         }
         break;
-
     }
   }
 
   // Display Parsing Information.
   printf("Total number of all messages parsed: %lu\n", total);
-  for (i = 0; i < 22; i++) {
+  for (i = 0; i < num_msg_types; i++) {
     if (msg_type[i] == 'P') {
-      printf("Total number of %c messages parsed: %lu\n", msg_type[i], total_type[i]);
+      printf("Total number of %c messages parsed: %lu\n", msg_type[i], 
+      total_type[i]);
     }
   }
 
@@ -233,7 +248,7 @@ int main(int argc, char *argv[]) {
   printf("Time spent: %ld seconds\n", (end - start));
 
   fclose(f_input);
-  for (i = 0; i < 22; i++) {
+  for (i = 0; i < num_msg_types; i++) {
     unsigned char t = msg_type[i];
     if (parse_flag[t]) fclose(file_output[i]);
   }
@@ -243,7 +258,7 @@ int main(int argc, char *argv[]) {
 // In case something went wrong, we close the file descriptor.
 panic:
   fclose(f_input);
-  for (i = 0; i < 22; i++) {
+  for (i = 0; i < num_msg_types; i++) {
     unsigned char t = msg_type[i];
     if (parse_flag[t]) fclose(file_output[i]);
   }
