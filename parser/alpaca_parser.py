@@ -124,8 +124,6 @@ class AlcapaParser:
         '''
         if not os.path.isdir(dest_dir):
             raise ValueError(f"{dest_dir} does not exist")
-        
-        
         # calc time
         start = date(int(start_date[0:4]), int(start_date[4:6]), int(start_date[6:]))
         end = date(int(end_date[0:4]), int(end_date[4:6]), int(end_date[6:]))
