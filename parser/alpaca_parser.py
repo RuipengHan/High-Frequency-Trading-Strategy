@@ -53,8 +53,8 @@ class AlcapaParser:
         secret: api key secret for alpaca, will look for $APCA_API_SECRET_KEY if not given
     '''
     def __init__(self, key_id = None, secret = None):
-        self._api = tradeapi.REST(key_id ='PKCJJTV8TEYALGILGC39',
-                                secret_key = 'ANGV94LRhHDeqdYkdodNazsaorZxwbGrlb0NRsAN',
+        self._api = tradeapi.REST(key_id = key_id,
+                                secret_key = secret,
                                 base_url = 'https://data.alpaca.markets/v2')
 
 
