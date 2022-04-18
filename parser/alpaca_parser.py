@@ -21,27 +21,27 @@ parser.add_argument('--mode', dest='mode', default="T",
 
 MKT_CENTER_CONVERT = {
     "A": "AMEX", 	        #   NYSE American (AMEX)
-    "B": "OMX_BX_OPTIONS", 	#   NASDAQ OMX BX
-    "C": None,              #   National Stock Exchange
+    "B": "BSE", 	        #   NASDAQ OMX BX; Used to be boston stock exchange.
+    "C": "NSX",             #   National Stock Exchange; now NSYE national
     "D": "FINRA", 	        # 	FINRA ADF
     "E": None,              #   Market Independent
     "H": "MIAMI_OPTIONS", 	# 	MIAX
     "I": "ISE", 	        # 	International Securities Exchange
     "J": "EDGA", 	        # 	Cboe EDGA
     "K": "EDGX", 	        # 	Cboe EDGX
-    "L": None,              #   Long Term Stock Exchange
-    "M": "CHICAGO", 	    # 	Chicago Stock Exchange
+    "L": None,              #   Long Term Stock Exchange; Does not exists in 2010.
+    "M": "CHICAGO", 	    # 	Chicago Stock Exchange; Now NYSE chicago
     "N": "NYSE", 	        # 	New York Stock Exchange
     "P": "Arca", 	        # 	NYSE Arca
-    "Q": None,              #   NASDAQ OMX
-    "S": None,              #   NASDAQ Small Cap
-    "T": "NASDAQ",          #   NASDAQ Int ?
-    "U": None,              #   Members Exchange
+    "Q": "NASDAQ_FUTURES",  #   NASDAQ OMX
+    "S": "NASDAQ",          #   NASDAQ Small Cap; Should be XNCM but SS don't have it.
+    "T": "NASDAQ",          #   NASDAQ Int; Should be XNIM but SS don't have it.
+    "U": None,              #   Members Exchange; Does not exists in 2010.
     "V": "IEX", 	        # 	IEX
     "W": "CBOESTOCK", 	    # 	CBOE
     "X": "PHLX", 	        # 	NASDAQ OMX PSX
     "Y": "BYX", 	        # 	Cboe BYX
-    "Z": None,              #   Cboe BZX
+    "Z": "BATS",            #   Cboe BZX
 }
 
 
