@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
   // total number of all messages
   uint64_t total = 0;
   // total number of messages for each message type
-  uint64_t total_type[num_msg_types];
+  uint64_t total_type[22];
   for (i = 0; i < num_msg_types; i++) {
     total_type[i] = 0;
   }
@@ -142,10 +142,11 @@ int main(int argc, char *argv[]) {
     unsigned char t = msg_type[i];
     file_output[i] = NULL;
     if (parse_flag[t]) {
-      snprintf(csv_filename, 32, "tick_%s_%s%s%s.txt", target_symbol, year,
-      month, day);
+      snprintf(csv_filename, sizeof(csv_filename), "tick_%s_%s%s%s.txt",
+      target_symbol, year, month, day);
       printf("Output file: %s\n", csv_filename);
-      snprintf(csv_full_path, 256, "%s/%s", argv[2], csv_filename);
+      snprintf(csv_full_path, sizeof(csv_full_path), "%s/%s",
+      argv[2], csv_filename);
       file_output[i] =  fopen(csv_full_path, "w");
       if (file_output[i] == NULL) {
         fprintf(stderr, "Error opening file %s: %s\n", csv_full_path,
