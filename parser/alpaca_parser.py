@@ -53,12 +53,12 @@ class AlcapaParser:
         secret: api key secret for alpaca, will look for $APCA_API_SECRET_KEY if not given
     '''
     def __init__(self, key_id = None, secret = None):
-        self._api = tradeapi.REST(key_id = key_id,
-                                secret_key = secret,
+        self._api = tradeapi.REST(key_id ='PKCJJTV8TEYALGILGC39',
+                                secret_key = 'ANGV94LRhHDeqdYkdodNazsaorZxwbGrlb0NRsAN',
                                 base_url = 'https://data.alpaca.markets/v2')
 
 
-    def get_trade(self, tick:str, start_date:str, end_date:str, dest_dir = "./") -> None:
+    def get_trade(self, tick:str, start_date:str, end_date:str, dest_dir = "./trades") -> None:
         '''
         A function that obtains trade data from alcapa API.
         Will download ALL trading data from start date to end date.
@@ -104,13 +104,67 @@ class AlcapaParser:
             new_df.insert(3, "tick_type", "T")
             new_df.replace({'exchange':MKT_CENTER_CONVERT}, inplace=True)
             new_df.dropna(inplace=True)
-            new_df.to_csv(f"{output}", index=False)
+            print(f"tick_{tick}_{cur_day.year}{month}{day} trades csv outputted")
+            new_df.to_csv(f"trades/{output}", index=False)
+            new_df.to_csv(f"trades/tick_{tick}_{cur_day.year}{month}{day}.csv", index=False)
 
-    def get_quote(self, tick, start_date, end_date, dest_dir = "./"):
+    def get_quote(self, tick, start_date, end_date, dest_dir = "./quotes"):
         '''
-        @TODO
+        A function that obtains quotes data from alcapa API.
+        Will download ALL quotes data from start date to end date.
+        The data will be parsed into SS format and save to dest_dir.
+        One CSV will be created each date.
+        WARNING:
+            does not check if start time is before end time
+        Args:
+            tick: tick to download
+            start_date: start date to obtain data in form YYYYMMDD
+            end_date: end date to obtain data in form YYYYMMDD
+            dest_dir: destination folder to store data
         '''
-        raise NotImplementedError("Not yet supported!")
+        if not os.path.isdir(dest_dir):
+            raise ValueError(f"{dest_dir} does not exist")
+        
+        
+        # calc time
+        start = date(int(start_date[0:4]), int(start_date[4:6]), int(start_date[6:]))
+        end = date(int(end_date[0:4]), int(end_date[4:6]), int(end_date[6:]))
+        delta = end - start   # returns timedelta
+
+        # for everyday in range
+        for i in range(delta.days + 1):
+            cur_day = start + timedelta(days=i)
+            print(f"download day {cur_day}")
+
+            month = cur_day.month if cur_day.month >= 10 else f"0{cur_day.month}"
+            day = cur_day.day if cur_day.day >= 10 else f"0{cur_day.day}"
+            output = os.path.join(dest_dir,
+                    f"tick_{tick}_{cur_day.year}{month}{day}.txt")
+    
+            # Obtain raw data.
+            raw_data_df = self._api.get_quotes(tick,
+                    f"{cur_day.isoformat()}",
+                    f"{cur_day.isoformat()}").df
+            raw_data_df.reset_index(inplace = True)
+
+            # select necessary columns
+            new_df = raw_data_df[['timestamp', 'timestamp',
+            'ask_exchange', 'ask_price', 'ask_size',
+            'bid_exchange', 'bid_price', 'bid_size', 'conditions']]
+            new_df['conditions'] = new_df['conditions'].astype("string")
+            print(f"got message of {raw_data_df.shape}, outputing to {output}")
+
+            # insert T and convert exchange center
+            new_df.insert(2, "tick_type", "Q")
+            new_df.replace({'ask_exchange':MKT_CENTER_CONVERT}, inplace=True)
+            new_df.replace({'bid_exchange':MKT_CENTER_CONVERT}, inplace=True)
+            new_df.dropna(inplace=True)
+            print(f"tick_{tick}_{cur_day.year}{month}{day} quotes csv outputted")
+            new_df.to_csv(f"quotes/{output}", index=False)
+            new_df.to_csv(f"quotes/tick_{tick}_{cur_day.year}{month}{day}.csv", index=False)
+
+
+        #raise NotImplementedError("Not yet supported!")
 
 if __name__ == "__main__":
     args = parser.parse_args()
