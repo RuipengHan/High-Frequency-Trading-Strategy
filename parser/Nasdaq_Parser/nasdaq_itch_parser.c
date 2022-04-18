@@ -228,8 +228,8 @@ int main(int argc, char *argv[]) {
 
           // Write to CSV:
           fprintf(file_output[17],
-            "%s-%s-%s %02d:%02d:%02d.%09llu,%s-%s-%s"
-            " %02d:%02d:%02d.%09llu,%llu,%c,%s,%u.%04u,%u\n",
+            "%s-%s-%s %02d:%02d:%02d.%09lu,%s-%s-%s"
+            " %02d:%02d:%02d.%09lu,%lu,%c,%s,%u.%04u,%u\n",
             year, month, day, utc_hour, minute, second, nano_seconds, year,
             month, day, utc_hour, minute, second, nano_seconds,
             match_number, tick_type, market_center, price/10000,
@@ -242,10 +242,10 @@ int main(int argc, char *argv[]) {
   }
 
   // Display Parsing Information.
-  printf("Total number of all messages parsed: %llu\n", total);
+  printf("Total number of all messages parsed: %lu\n", total);
   for (i = 0; i < num_msg_types; i++) {
     if (msg_type[i] == 'P') {
-      printf("Total number of %c messages parsed: %llu\n", msg_type[i],
+      printf("Total number of %c messages parsed: %lu\n", msg_type[i],
       total_type[i]);
     }
   }
