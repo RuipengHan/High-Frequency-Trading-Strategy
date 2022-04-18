@@ -1,13 +1,14 @@
 stages:          # List of stages for jobs, and their order of execution
-    - pybuild
-pybuild-job:
-    stage: pybuild
+    - lint
+lint-job:
+    stage: lint
     script:
         - python3 -m venv pyvenv
         - source pyvenv/bin/activate
         - pip3 install -r requirements.txt
         - pylint ./parser
         - pylint ./analysis
+        - cpplint --recursive --filter=-readability/casting parser/Nasdaq_Parser
 # playground-job:
 #     stage: playground
 #     script:
