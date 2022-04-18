@@ -53,7 +53,7 @@ for (i = 0; i < 8; i++) { \
 const char tick_type = 'T';
 const char *market_center = "NASDAQ";
 const int num_msg_types = 22;
-unsigned char msg_type[num_msg_types] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W',
+unsigned char msg_type[] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W',
 'K', 'J', 'h', 'A', 'F', 'E', 'C', 'X', 'D', 'U', 'P', 'Q', 'B', 'I', 'N'};
 
 int main(int argc, char *argv[]) {
