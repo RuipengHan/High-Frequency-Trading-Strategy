@@ -1,3 +1,4 @@
+// Copyright [2022] <Ruipeng Han>
 // NASDAQ ITCH 5.0 parser
 // Reference: Nasdaq TotalView-ITCH 5.0 Specification
 // http://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf
@@ -58,11 +59,11 @@ unsigned char msg_type[num_msg_types] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W',
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     fprintf(stderr, "Usage: %s INPUT_FILE OUTPUT_PATH SYMBOL\n", argv[0]);
-    fprintf(stderr, "You must provide the path for the source Nasdaq file,\
-     the output directory the program writes to, \
-     and the company symbol you want to parse.");
-    fprintf(stderr, "NOTE: Your Nasdaq source file must be named \
-    in the default convention: MMDDYYYY.NASDAQ_ITCH50 \n\n");
+    fprintf(stderr, "You must provide the path for the source Nasdaq file, "
+     "the output directory the program writes to, "
+     "and the company symbol you want to parse.");
+    fprintf(stderr, "NOTE: Your Nasdaq source file must be named "
+    "in the default convention: MMDDYYYY.NASDAQ_ITCH50 \n\n");
     exit(1);
   }
   char *target_symbol = strdup(argv[3]);
@@ -97,7 +98,7 @@ int main(int argc, char *argv[]) {
   strncpy(year, output_base+4, 4);
   strncpy(month, output_base, 2);
   strncpy(day, output_base+2, 2);
-  for (unsigned long i=0; i < strlen(input_file_name); i++) {
+  for (uint64_t i=0; i < strlen(input_file_name); i++) {
     if (output_base[i] == '.') { /* Parse the dot in MMDDYYYY.NASDAQ_ITCH50 */
       output_base[i] = 0;
       break;
@@ -109,10 +110,9 @@ int main(int argc, char *argv[]) {
   int rv = mkdir(argv[2], 0755);
   if (rv == -1) {
     if (errno == EEXIST) {
-      fprintf(stderr, "Warning: output directory %s already exists!\n", 
+      fprintf(stderr, "Warning: output directory %s already exists!\n",
       argv[2]);
-    }
-    else {
+    } else {
       fprintf(stderr, "Error making directory %s: %s\n", argv[2],
       strerror(errno));
       exit(1);
@@ -120,9 +120,9 @@ int main(int argc, char *argv[]) {
   }
 
   // total number of all messages
-  unsigned long total = 0;
+  uint64_t total = 0;
   // total number of messages for each message type
-  unsigned long total_type[num_msg_types];
+  uint64_t total_type[num_msg_types];
   for (i = 0; i < num_msg_types; i++) {
     total_type[i] = 0;
   }
@@ -142,10 +142,10 @@ int main(int argc, char *argv[]) {
     unsigned char t = msg_type[i];
     file_output[i] = NULL;
     if (parse_flag[t]) {
-      sprintf(csv_filename, "tick_%s_%s%s%s.txt", target_symbol, year,
+      snprintf(csv_filename, 32, "tick_%s_%s%s%s.txt", target_symbol, year,
       month, day);
       printf("Output file: %s\n", csv_filename);
-      sprintf(csv_full_path, "%s/%s", argv[2], csv_filename);
+      snprintf(csv_full_path, 256, "%s/%s", argv[2], csv_filename);
       file_output[i] =  fopen(csv_full_path, "w");
       if (file_output[i] == NULL) {
         fprintf(stderr, "Error opening file %s: %s\n", csv_full_path,
@@ -172,10 +172,16 @@ int main(int argc, char *argv[]) {
     msg_length = bswap_16(msg_header);
     if (fread((void*)m, sizeof(char), msg_length, f_input) < msg_length) {
         fprintf(stderr, "Error reading input file: %s\n", strerror(errno));
-        goto panic;
+        fclose(f_input);
+        for (i = 0; i < num_msg_types; i++) {
+          unsigned char t = msg_type[i];
+          if (parse_flag[t]) fclose(file_output[i]);
+        }
+        free(target_symbol);
+        exit(1);
     }
 
-    // The scurity symbol (tick) for the issue in the Nasdaq execution system, 
+    // The scurity symbol (tick) for the issue in the Nasdaq execution system,
     // maximal length of 5.
     char stock[6];
     stock[5] = 0;
@@ -235,10 +241,10 @@ int main(int argc, char *argv[]) {
   }
 
   // Display Parsing Information.
-  printf("Total number of all messages parsed: %lu\n", total);
+  printf("Total number of all messages parsed: %llu\n", total);
   for (i = 0; i < num_msg_types; i++) {
     if (msg_type[i] == 'P') {
-      printf("Total number of %c messages parsed: %lu\n", msg_type[i],
+      printf("Total number of %c messages parsed: %llu\n", msg_type[i],
       total_type[i]);
     }
   }
@@ -253,14 +259,4 @@ int main(int argc, char *argv[]) {
   }
   free(target_symbol);
   return 0;
-
-// In case something went wrong, we close the file descriptor.
-panic:
-  fclose(f_input);
-  for (i = 0; i < num_msg_types; i++) {
-    unsigned char t = msg_type[i];
-    if (parse_flag[t]) fclose(file_output[i]);
-  }
-  free(target_symbol);
-  exit(1);
 }
