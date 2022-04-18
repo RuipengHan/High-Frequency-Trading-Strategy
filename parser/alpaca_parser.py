@@ -138,7 +138,6 @@ class AlcapaParser:
             day = cur_day.day if cur_day.day >= 10 else f"0{cur_day.day}"
             output = os.path.join(dest_dir,
                     f"tick_{tick}_{cur_day.year}{month}{day}.txt")
-    
             # Obtain raw data.
             raw_data_df = self._api.get_quotes(tick,
                     f"{cur_day.isoformat()}",
