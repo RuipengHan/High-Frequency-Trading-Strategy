@@ -52,7 +52,7 @@ for (i = 0; i < 8; i++) { \
 const char tick_type = 'T';
 const char *market_center = "NASDAQ";
 const int num_msg_types = 22;
-unsigned char msg_type[num_msg_types] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W', 
+unsigned char msg_type[num_msg_types] = {'S', 'R', 'H', 'Y', 'L', 'V', 'W',
 'K', 'J', 'h', 'A', 'F', 'E', 'C', 'X', 'D', 'U', 'P', 'Q', 'B', 'I', 'N'};
 
 int main(int argc, char *argv[]) {
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
   for (i = 0; i < num_msg_types; i++) {
     // Only parsing the 'P' type message, so this program outputs only one csv.
-    if (msg_type[i] == 'P') { 
+    if (msg_type[i] == 'P') {
       parse_flag[msg_type[i]] = true;
     }
   }
@@ -88,8 +88,8 @@ int main(int argc, char *argv[]) {
 
   /* Extract the date of data and setup the output file name using date. */
   char *argv1, *input_file_name, *output_base;
-  char year[5]; year[4] = 0; 
-  char month[3]; month[2] = 0; 
+  char year[5]; year[4] = 0;
+  char month[3]; month[2] = 0;
   char day[3]; day[2] = 0;
   argv1 = strdup(argv[1]);
   input_file_name = basename(argv1);
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
       argv[2]);
     }
     else {
-      fprintf(stderr, "Error making directory %s: %s\n", argv[2], 
+      fprintf(stderr, "Error making directory %s: %s\n", argv[2],
       strerror(errno));
       exit(1);
     }
@@ -142,13 +142,13 @@ int main(int argc, char *argv[]) {
     unsigned char t = msg_type[i];
     file_output[i] = NULL;
     if (parse_flag[t]) {
-      sprintf(csv_filename, "tick_%s_%s%s%s.txt", target_symbol, year, 
+      sprintf(csv_filename, "tick_%s_%s%s%s.txt", target_symbol, year,
       month, day);
       printf("Output file: %s\n", csv_filename);
       sprintf(csv_full_path, "%s/%s", argv[2], csv_filename);
       file_output[i] =  fopen(csv_full_path, "w");
       if (file_output[i] == NULL) {
-        fprintf(stderr, "Error opening file %s: %s\n", csv_full_path, 
+        fprintf(stderr, "Error opening file %s: %s\n", csv_full_path,
         strerror(errno));
         exit(1);
       }
@@ -186,7 +186,6 @@ int main(int argc, char *argv[]) {
     switch (t) {
       // Parse Traded Message Only
       case 'P':
-        
         if (parse_flag['P']) {
           /* For debugging, limit the number of rows in output. */
           // if (limit < 1520000) {
@@ -207,7 +206,7 @@ int main(int argc, char *argv[]) {
           uint64_t nano_seconds = timestamp%1000000000;
           int hour = seconds / 3600;
           /* Nasdaq data is EST, which is 4 hours eariler than UTC. */
-          int utc_hour = (hour + 4 ) % 24; 
+          int utc_hour = (hour + 4) % 24;
           int minute = (seconds % 3600) / 60;
           int second = seconds - (hour * 3600 + minute * 60);
           // printf("HH:MM:SS --> %d:%d:%d", hour, minute, second);
@@ -224,9 +223,9 @@ int main(int argc, char *argv[]) {
           fprintf(file_output[17],
             "%s-%s-%s %02d:%02d:%02d.%09llu,%s-%s-%s"
             " %02d:%02d:%02d.%09llu,%llu,%c,%s,%u.%04u,%u\n",
-            year, month, day, utc_hour, minute, second, nano_seconds, year, 
+            year, month, day, utc_hour, minute, second, nano_seconds, year,
             month, day, utc_hour, minute, second, nano_seconds,
-            match_number, tick_type, market_center, price/10000, 
+            match_number, tick_type, market_center, price/10000,
             price%10000, shares);
           total_type[17]++;
           total++;
@@ -239,7 +238,7 @@ int main(int argc, char *argv[]) {
   printf("Total number of all messages parsed: %lu\n", total);
   for (i = 0; i < num_msg_types; i++) {
     if (msg_type[i] == 'P') {
-      printf("Total number of %c messages parsed: %lu\n", msg_type[i], 
+      printf("Total number of %c messages parsed: %lu\n", msg_type[i],
       total_type[i]);
     }
   }
