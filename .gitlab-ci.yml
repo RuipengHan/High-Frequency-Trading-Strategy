@@ -1,5 +1,6 @@
 stages:          # List of stages for jobs, and their order of execution
     - lint
+    - build
 lint-job:
     stage: lint
     script:
@@ -9,6 +10,11 @@ lint-job:
         - pylint ./parser
         - pylint ./analysis
         - cpplint --recursive --filter=-readability/casting parser/Nasdaq_Parser
+build-job:
+    stage: build
+    script:
+        - cd ./parser/Nasdaq_Parser
+        - make
 # playground-job:
 #     stage: playground
 #     script:
