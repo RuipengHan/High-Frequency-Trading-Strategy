@@ -1,0 +1,11 @@
+SimpleMomentumStrategy is a sample strategy for implementing a basic directional algorithm on a batch of symbols.
+
+This strategy subscribes to bars for whatever symbols are defined for the instance of the strategy. For each instrument,
+it maintains a Momentum calculation as the difference in the SMA of a shorter and longer term rolling window of prices. 
+If the short term SMA is above the long term SMA it will go long, otherwise it will go short. This example illustrates the 
+use of limit orders withing the Strategy Studio API, along with establishing StrategyCommands to control updating or canceling the 
+limit orders.
+
+WARNING: The Strategy Studio example strategies are for documentation purposes only. They are not intended to produce profits
+and should not be used for production trading. This strategy is not meant to indicate any opinion on whether momentum
+or reversion are viable strategies on any time horizon.
