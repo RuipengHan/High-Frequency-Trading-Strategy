@@ -1,3 +1,6 @@
-[submodule "iex_parser"]
-	path = parser/iex_parser
+[submodule "parser/parser/iexdownloaderparser"]
+	path = parser/parser/iexdownloaderparser
+	url = https://gitlab.engr.illinois.edu/shared_code/iexdownloaderparser.git
+[submodule "parser/iexdownloaderparsers"]
+	path = parser/iexdownloaderparsers
 	url = https://gitlab.engr.illinois.edu/shared_code/iexdownloaderparser.git
