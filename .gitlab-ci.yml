@@ -7,7 +7,7 @@ cache:
         - pyvenv/
 
 before_script:
-    - python -V               
+    - python3 -V               
     - python3 -m venv pyvenv
     - source pyvenv/bin/activate
 
