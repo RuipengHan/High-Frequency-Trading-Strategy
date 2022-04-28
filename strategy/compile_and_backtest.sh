@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# to use this script, you must set the following must be the same:
+# 1. value of _STRATEGY_EXPORTS const char* GetType()
+# 2. folder name that contains your header, cpp, and makefile
+# 3. binary file name
+#
+# You also need to have a cmd_config.txt file with correct username and password
+#
+# You also need to set DISABLE_COMMAND_LINE=true in backtester_config.txt
+
 helpFunction()
 {
    echo ""
@@ -47,20 +56,22 @@ cd ./utilities/
 ./StrategyCommandLine cmd start_backtest $startDate $endDate $instanceName 0
 
 # Get the line number which ends with finished. 
-foundFinishedLogFile=$(grep -nr "finished.$" /home/vagrant/Desktop/strategy_studio/backtesting/logs/main_log.txt | gawk '{print $1}' FS=":"|tail -1)
+foundFinishedLogFile=$(grep -nr "finished." /home/vagrant/Desktop/strategy_studio/backtesting/logs/main_log.txt | gawk '{print $1}' FS=":"|tail -1)
+logFileNumLines=$(cat /home/vagrant/Desktop/strategy_studio/backtesting/logs/main_log.txt | wc -l)
 
 # DEBUGGING OUTPUT
-echo "Last line found:",$foundFinishedLogFile
+echo "Last line found:", $foundFinishedLogFile
+echo "Log file length:", $logFileNumLines
 
 # If the line ending with finished. is less than the previous length of the log file, then strategyBacktesting has not finished, 
 # once its greater than the previous, it means it has finished.
 while ((logFileNumLines > foundFinishedLogFile))
 do
-    foundFinishedLogFile=$(grep -nr "finished.$" /home/vagrant/Desktop/strategy_studio/backtesting/logs/main_log.txt | gawk '{print $1}' FS=":"|tail -1)
+   foundFinishedLogFile=$(grep -nr "finished." /home/vagrant/Desktop/strategy_studio/backtesting/logs/main_log.txt | gawk '{print $1}' FS=":"|tail -1)
 
-    #DEBUGGING OUTPUT
-    echo "Waiting for strategy to finish" 
-    sleep 1
+   #DEBUGGING OUTPUT
+   echo "Waiting for strategy to finish" 
+   sleep 1
 done
 
 echo "Sleeping for 10 seconds..."
@@ -69,5 +80,10 @@ sleep 10
 
 echo "run_backtest.sh: Strategy Studio finished backtesting"
 
+# decode CRA output
+craFile=$(ls /home/vagrant/Desktop/strategy_studio/backtesting/backtesting-results/BACK_$instanceName*.cra -t | head -n1)
+echo "CRA file found:", $craFile
+./StrategyCommandLine cmd export_cra_file $craFile /home/vagrant/Desktop/strategy_studio/backtesting/backtesting-cra-exports
 
-
+# cleanup
+./StrategyCommandLine cmd quit #exit
