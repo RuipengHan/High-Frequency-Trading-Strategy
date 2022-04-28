@@ -20,11 +20,11 @@ lint-job:
         - pip3 install -r requirements.txt
         - pylint ./parser/alpaca_parser
         - pylint ./analysis
-        - cpplint --recursive --filter=-readability/casting parser/Nasdaq_Parser
+        - cpplint --recursive --filter=-readability/casting parser/nasdaq_parser
 build-job:
     stage: build
     script:
-        - cd ./parser/Nasdaq_Parser
+        - cd ./parser/nasdaq_parser
         - make
 # playground-job:
 #     stage: playground
