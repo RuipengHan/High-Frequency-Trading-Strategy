@@ -48,8 +48,11 @@ using namespace boost::gregorian;
 
 
 // cp BLSFStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
-// create_instance TKS333 BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// start_backtest 2019-10-30 2019-11-02 TKS333 1
+// create_instance TKSB BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols Arca
+// start_backtest 2021-11-15 2021-11-19 TKSB 1
+// export_cra_file backtesting-results/BACK_ttt1_2022-05-04_170516_start_11-15-2021_end_11-17-2021.cra backtesting-cra-exports
+// backtesting/backtesting-results/BACK_Sample6_2022-05-01_203556_start_11-15-2021_end_11-17-2021.cra
+// export_cra_file backtesting-results/BACK_att1_2022-05-04_171559_start_11-15-2021_end_11-17-2021.cra backtesting-cra-exports
 
 enum DesiredPositionSide {
     DESIRED_POSITION_SIDE_SHORT=-1,
@@ -111,7 +114,7 @@ public: /* from IEventCallback */
      *
      * If the quote datasource only provides ticks that change the NBBO, top quote will be set to NBBO
      */ 
-    virtual void OnTopQuote(const QuoteEventMsg& msg){}    
+    virtual void OnTopQuote(const QuoteEventMsg& msg);
     
     /**
      * This event triggers whenever a new quote for a market center arrives from a consolidate or direct quote feed,
@@ -121,13 +124,13 @@ public: /* from IEventCallback */
      * the data source only provides quotes that affect the official NBBO, as this is not enough information to accurately
      * mantain the state of each market center's quote.
      */ 
-    virtual void OnQuote(const QuoteEventMsg& msg){}
+    virtual void OnQuote(const QuoteEventMsg& msg);
     
     /**
      * This event triggers whenever a order book message arrives. This will be the first thing that
      * triggers if an order book entry impacts the exchange's DirectQuote or Strategy Studio's TopQuote calculation.
      */ 
-    virtual void OnDepth(const MarketDepthEventMsg& msg){}
+    virtual void OnDepth(const MarketDepthEventMsg& msg);
 
     /**
      * This event triggers whenever a Bar interval completes for an instrument

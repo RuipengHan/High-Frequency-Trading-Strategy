@@ -20,8 +20,16 @@
 
 
 // cp BLSFStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
-// create_instance BLSF_f BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// start_backtest 2019-10-30 2019-10-31 BLSF_f 1
+// create_instance aaaT1 BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
+// create_instance WW2 SimpleTrade UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
+// create_instance STY1 SimpleTrade UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
+
+
+//  cp BLSFStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
+// create_instance AL1123 BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
+// start_backtest 2021-06-01 2021-06-01 AL1123 0
+// start_backtest 2019-10-30 2019-10-30 ALPACA6 1
+// export_cra_file backtesting-results/BACK_AL1123_2022-05-04_220943_start_06-01-2021_end_06-01-2021.cra backtesting-cra-exports
 
 #ifdef _WIN32
     #include "stdafx.h"
@@ -109,7 +117,6 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
 {
 
     date msg_date = msg.adapter_time().date();
-
     // Sell at the beginning of the day
     if (currentState == SELL && msg_date != currentDate) {
         currentDate = msg_date;
@@ -120,7 +127,6 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
     }
     // Buy at the end of the day
     else {
-
         if(currentDate == date(0)) {
             currentDate = msg_date;
         }
@@ -131,34 +137,57 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
             this->SendSimpleOrder(&msg.instrument(), 1);
             currentState = SELL;
         }
-    }
-	
+    }	
 }
+
+void OnTopQuote(const QuoteEventMsg& msg) {
+    cout << "On top quote: !!" << endl;
+}
+
+void BLSFStrategy::OnQuote(const QuoteEventMsg & msg) {
+    cout << "On quote" << endl;
+}
+
+void BLSFStrategy::OnDepth(const MarketDepthEventMsg& msg) {
+    cout << "On depth" << endl;
+}
+
+
 void BLSFStrategy::OnBar(const BarEventMsg& msg)
 {
-    if (m_debug_on) {
-        ostringstream str;
-        str << "FINDME" << msg.instrument().symbol() << ": " << msg.bar();
-        logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-        //std::cout << str.str().c_str() << std::endl;
+    // cout << msg.instrument().top_quote() << endl;
+    // cout << msg << endl;
+    date msg_date = msg.bar_time().date();
+    if (currentState == SELL && msg_date != currentDate) {
+        tm date_tm = to_tm(msg.bar_time());
+        // ensure the market begin time 
+        // TODO check the time zone
+        if(currentState == BUY && date_tm.tm_hour < 13) {
+            return;
+        }
+        if (date_tm.tm_hour == 13 && date_tm.tm_min < 30) {
+            return;
+        } 
+        currentDate = msg_date;
+        std::cout << "Sending BAR order: (" << msg.bar_time() << "): " << msg.instrument().symbol() << std::endl;
+        // TODO Change the order size
+        this->SendOrder(&msg.instrument(), -1); //sell one share every time there is a trade
+        currentState = BUY;
     }
-
-    if(msg.bar().close() < .01) return;
-
-
-    //check if we're already tracking the momentum object for this instrument, if not create a new one
-    MomentumMapIterator iter = m_momentum_map.find(&msg.instrument());
-    if (iter != m_momentum_map.end()) {
-        m_momentum = &iter->second;
-    } else {
-        m_momentum = &m_momentum_map.insert(make_pair(&msg.instrument(),Momentum(m_short_window_size,m_long_window_size))).first->second;
-    }
-
-    DesiredPositionSide side = m_momentum->Update(msg.bar().close());
-
-    if(m_momentum->FullyInitialized()) {
-        AdjustPortfolio(&msg.instrument(), m_position_size * side);
-    }
+    // Buy at the end of the day
+    else {
+        if(currentDate == date(0)) {
+            currentDate = msg_date;
+        }
+        tm date_tm = to_tm(msg.bar_time());
+        if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 59) {
+            std::cout << "Sending BAR order: (" << msg.bar_time() << "): " << msg.instrument().symbol() << std::endl;
+            // Buy
+            // TODO Change the order size
+            this->SendOrder(&msg.instrument(), 1);
+            currentState = SELL;
+        }
+    }	
 }
 
 void BLSFStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg)
@@ -197,14 +226,14 @@ void BLSFStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size)
 
 	//this is simple check to avoid placing orders before the order book is actually fully initialized
 	//side note: if trading certain futures contracts for example, the price of an instrument actually can be zero or even negative. here we assume cash US equities so price > 0
-    /*
-	if(instrument->top_quote().ask()<.01 || instrument->top_quote().bid()<.01 || !instrument->top_quote().ask_side().IsValid() || !instrument->top_quote().ask_side().IsValid()) {
-        std::stringstream ss;
-        ss << "SendSimpleOrder(): Sending buy order for " << instrument->symbol() << " at price " << instrument->top_quote().ask() << " and quantity " << trade_size <<" with missing quote data";
-        logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
-        std::cout << "SendSimpleOrder(): " << ss.str() << std::endl;
-        return;
-     }*/
+    
+	// if(instrument->top_quote().ask()<.01 || instrument->top_quote().bid()<.01 || !instrument->top_quote().ask_side().IsValid() || !instrument->top_quote().ask_side().IsValid()) {
+    //     std::stringstream ss;
+    //     ss << "SendSimpleOrder(): Sending buy order for " << instrument->symbol() << " at price " << instrument->top_quote().ask() << " and quantity " << trade_size <<" with missing quote data";
+    //     logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
+    //     std::cout << "SendSimpleOrder(): " << ss.str() << std::endl;
+    //     return;
+    //  }
 
     m_aggressiveness = 0.02; //send order two pennies more aggressive than BBO
     double last_trade_price = instrument->last_trade().price();
@@ -234,14 +263,15 @@ void BLSFStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size)
 
 void BLSFStrategy::SendOrder(const Instrument* instrument, int trade_size)
 {
-	return;
     if(instrument->top_quote().ask()<.01 || instrument->top_quote().bid()<.01 || !instrument->top_quote().ask_side().IsValid() || !instrument->top_quote().ask_side().IsValid()) {
         std::stringstream ss;
+        // cout << "Top quote: " << instrument->top_quote().ask() << endl;
+        // cout << "Top bid: " << instrument->top_quote().bid() << endl;
         ss << "Sending buy order for " << instrument->symbol() << " at price " << instrument->top_quote().ask() << " and quantity " << trade_size <<" with missing quote data";   
         logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
         std::cout << "SendOrder(): " << ss.str() << std::endl;
         return;
-     }
+    }
 
     double price = trade_size > 0 ? instrument->top_quote().bid() + m_aggressiveness : instrument->top_quote().ask() - m_aggressiveness;
 
