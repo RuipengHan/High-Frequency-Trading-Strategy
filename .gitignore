@@ -2,9 +2,16 @@
 /.vagrant
 # vscode cache
 /.vscode
+# parser generated data for testing
+/parser/*/*tick*csv
+/parser/*/*tick*txt
 # meeting log for canvas upload
 meeting_log/*pdf
 # python cache
 */__pycache__
 # cpp build
 parser/nasdaq_parser/nasdaq_parser
+# SS backtesting dependency files
+/dependencies
+# nasdaq data binary
+*NASDAQ_ITCH50
