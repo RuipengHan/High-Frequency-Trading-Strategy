@@ -18,17 +18,9 @@
 *     The Company makes no representations or warranties, express or implied, with regards to this software.                        
 /*================================================================================*/   
 
-
 // cp BLSFStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
-// create_instance aaaT1 BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// create_instance WW2 SimpleTrade UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// create_instance STY1 SimpleTrade UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-
-
-//  cp BLSFStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
-// create_instance AL1123 BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// start_backtest 2021-06-01 2021-06-01 AL1123 0
-// start_backtest 2019-10-30 2019-10-30 ALPACA6 1
+// create_instance name BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
+// start_backtest 2021-06-01 2021-06-01 name 0
 // export_cra_file backtesting-results/BACK_AL1123_2022-05-04_220943_start_06-01-2021_end_06-01-2021.cra backtesting-cra-exports
 
 #ifdef _WIN32
@@ -139,19 +131,6 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
         }
     }	
 }
-
-void OnTopQuote(const QuoteEventMsg& msg) {
-    cout << "On top quote: !!" << endl;
-}
-
-void BLSFStrategy::OnQuote(const QuoteEventMsg & msg) {
-    cout << "On quote" << endl;
-}
-
-void BLSFStrategy::OnDepth(const MarketDepthEventMsg& msg) {
-    cout << "On depth" << endl;
-}
-
 
 void BLSFStrategy::OnBar(const BarEventMsg& msg)
 {
@@ -265,8 +244,6 @@ void BLSFStrategy::SendOrder(const Instrument* instrument, int trade_size)
 {
     if(instrument->top_quote().ask()<.01 || instrument->top_quote().bid()<.01 || !instrument->top_quote().ask_side().IsValid() || !instrument->top_quote().ask_side().IsValid()) {
         std::stringstream ss;
-        // cout << "Top quote: " << instrument->top_quote().ask() << endl;
-        // cout << "Top bid: " << instrument->top_quote().bid() << endl;
         ss << "Sending buy order for " << instrument->symbol() << " at price " << instrument->top_quote().ask() << " and quantity " << trade_size <<" with missing quote data";   
         logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
         std::cout << "SendOrder(): " << ss.str() << std::endl;
