@@ -107,7 +107,8 @@ private: // Helper functions specific to this strategy
     void SendSimpleOrder(const Instrument* instrument, int trade_size);
     void RepriceAll();
     void Reprice(Order* order);
-    bool orderDecision(Analytics::ScalarRollingWindow <double> priceWindow);
+    void UpdateSwing(const Bar & bar);
+    DesiredPositionSide OrderDecision(const Analytics::ScalarRollingWindow <double> & priceWindow);
 
 private: /* from Strategy */
     

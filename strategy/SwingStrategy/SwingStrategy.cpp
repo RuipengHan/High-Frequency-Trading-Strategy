@@ -66,8 +66,14 @@ void SwingStrategy::RegisterForStrategyEvents(StrategyEventRegister* eventRegist
     }
 }
 
-bool orderDecision(Analytics::ScalarRollingWindow <double> priceWindow) {
-    return true;
+void SwingStrategy::UpdateSwing(const Bar & bar) {
+    priceWindow.push_back(bar.close());
+    maxSwing = max(maxSwing, bar.high());
+    minSwing = min(minSwing, bar.low());
+}
+
+DesiredPositionSide SwingStrategy::OrderDecision(const Analytics::ScalarRollingWindow <double> & priceWindow) {
+    return DESIRED_POSITION_SIDE_FLAT;
 }
 
 void SwingStrategy::OnTrade(const TradeDataEventMsg& msg) {	
@@ -76,10 +82,17 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg& msg) {
 void SwingStrategy::OnBar(const BarEventMsg& msg) {
     Bar currentBar = msg.bar();
     if(currentTrend == DESIRED_POSITION_SIDE_FLAT) {
-        priceWindow.push_back(currentBar.close());
+        UpdateSwing(currentBar);
         // TODO Implement 
-        if (orderDecision(priceWindow)) {
-            // TODO Send order
+        DesiredPositionSide decision = OrderDecision(priceWindow);
+
+        SendOrder(&msg.instrument(), 100 * decision);
+        currentTrend = decision;
+
+        if(decision == DESIRED_POSITION_SIDE_LONG) {
+            minSwing = currentBar.close();
+        } else {
+            maxSwing = currentBar.close();
         }
     } 
     else if(currentTrend == DESIRED_POSITION_SIDE_LONG) {
