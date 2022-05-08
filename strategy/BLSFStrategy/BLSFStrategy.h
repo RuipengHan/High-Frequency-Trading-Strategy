@@ -74,8 +74,11 @@ class BLSFStrategy : public Strategy {
     void SendQuoteOrder(const Instrument* instrument, int trade_size);
     void SendTradeOrder(const Instrument* instrument, int trade_size);
 
- private: /* from Strategy */
-
+/**
+ * @brief From Strategy
+ * 
+ */
+ private:
     virtual void RegisterForStrategyEvents(
                                         StrategyEventRegister* eventRegister,
                                         DateType currDate);
