@@ -21,6 +21,7 @@ lint-job:
         - pylint ./parser/alpaca_parser
         - pylint ./analysis
         - cpplint --recursive --filter=-readability/casting parser/nasdaq_parser
+        - cpplint --recursive --filter=-runtime/references,-build/namespaces ./strategy
 build-job:
     stage: build
     script:
