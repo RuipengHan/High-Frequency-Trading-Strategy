@@ -37,55 +37,56 @@ using namespace boost::gregorian;
 
 
 class BLSFStrategy : public Strategy {
-    public:
-        enum StrategyState {
-            BUY = 0,
-            SELL = 1
-        };
+ public:
+    enum StrategyState {
+        BUY = 0,
+        SELL = 1
+    };
 
-    public:
-        BLSFStrategy(
-            StrategyID strategyID,
-            const std::string& strategyName,
-            const std::string& groupName);
-        ~BLSFStrategy();
+ public:
+    BLSFStrategy(
+        StrategyID strategyID,
+        const std::string& strategyName,
+        const std::string& groupName);
+    ~BLSFStrategy();
 
-    public:
-        /**
-         * This event triggers whenever trade message arrives from a market data source.
-         */
-        virtual void OnTrade(const TradeDataEventMsg& msg);
-
-        /**
-         * This event triggers whenever a Bar interval completes for an instrument
-         */ 
-        virtual void OnBar(const BarEventMsg& msg);
-
-        /**
-         * This event triggers whenever new information arrives about a strategy's orders
-         */ 
-        virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
+ public:
+    /**
+     * This event triggers whenever trade message arrives from a market data source.
+     */
+    virtual void OnTrade(const TradeDataEventMsg& msg);
 
     /**
-     * @brief Helper functions specific to this strategy
-     * 
-     */
-    private: 
-        void SendQuoteOrder(const Instrument* instrument, int trade_size);
-        void SendTradeOrder(const Instrument* instrument, int trade_size);
+     * This event triggers whenever a Bar interval completes for an instrument
+     */ 
+    virtual void OnBar(const BarEventMsg& msg);
 
-    private: /* from Strategy */
-        
-        virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, 
-                                                DateType currDate); 
-        /**
-         * Define any strategy commands for use by the strategy
-         */ 
-        virtual void DefineStrategyCommands();
+    /**
+     * This event triggers whenever new information arrives about a strategy's orders
+     */ 
+    virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
 
-    private:
-        StrategyState currentState;     // Current state of the strategy
-        date currentDate;               // Marks the current date
+/**
+ * @brief Helper functions specific to this strategy
+ * 
+ */
+ private:
+    void SendQuoteOrder(const Instrument* instrument, int trade_size);
+    void SendTradeOrder(const Instrument* instrument, int trade_size);
+
+ private: /* from Strategy */
+
+    virtual void RegisterForStrategyEvents(
+                                        StrategyEventRegister* eventRegister,
+                                        DateType currDate);
+    /**
+     * Define any strategy commands for use by the strategy
+     */ 
+    virtual void DefineStrategyCommands();
+
+ private:
+    StrategyState currentState;     // Current state of the strategy
+    date currentDate;               // Marks the current date
 };
 
 extern "C" {
@@ -99,14 +100,14 @@ extern "C" {
                                                 unsigned strategyID,
                                                 const char* strategyName,
                                                 const char* groupName) {
-        if (strcmp(strategyType,GetType()) == 0) {
+        if (strcmp(strategyType, GetType()) == 0) {
             return *(new BLSFStrategy(strategyID, strategyName, groupName));
         } else {
             return NULL;
         }
     }
 
-    // must match an existing user within the system 
+    // must match an existing user within the system
     _STRATEGY_EXPORTS const char* GetAuthor() {
         return "dlariviere";
     }
@@ -116,7 +117,12 @@ extern "C" {
         return "UIUC";
     }
 
-    // used to ensure the strategy was built against a version of the SDK compatible with the server version
+    /**
+     * @brief Get the Release Version 
+     * Used to ensure the strategy was built against a version of the SDK
+     * compatible with the server version
+     * @return _STRATEGY_EXPORTS const* 
+     */
     _STRATEGY_EXPORTS const char* GetReleaseVersion() {
         return Strategy::release_version();
     }
