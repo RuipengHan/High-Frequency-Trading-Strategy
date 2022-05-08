@@ -9,6 +9,7 @@ lint-job:
         - pylint ./parser
         - pylint ./analysis
         - cpplint --recursive --filter=-readability/casting parser/Nasdaq_Parser
+        - cpplint --recursive --filter=-runtime/references,-build/namespaces ./strategy
 # playground-job:
 #     stage: playground
 #     script:
