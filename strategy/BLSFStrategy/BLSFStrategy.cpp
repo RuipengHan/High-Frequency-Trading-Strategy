@@ -60,7 +60,9 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
             currentDate = msg_date;
         }
         tm date_tm = to_tm(msg.adapter_time());
-        if (currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
+        if (currentState == BUY &&
+                date_tm.tm_hour == 19 &&
+                date_tm.tm_min >= 58) {
             std::cout << "OnTrade(): ("
                         << msg.adapter_time()
                         << "): "
@@ -74,7 +76,7 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
             cout << date_tm.tm_hour << "\t" << date_tm.tm_min << endl;
             currentState = SELL;
         }
-    } 
+    }
 }
 
 void BLSFStrategy::OnBar(const BarEventMsg& msg) {
@@ -86,7 +88,7 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg) {
         }
         if (date_tm.tm_hour == 13 && date_tm.tm_min < 30) {
             return;
-        } 
+        }
         currentDate = msg_date;
         std::cout << "Sending BAR order: ("
                     << msg.bar_time()
@@ -134,7 +136,7 @@ void BLSFStrategy::SendTradeOrder(
         (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_IEX :
             ((instrument->type() == INSTRUMENT_TYPE_OPTION) ?
             MARKET_CENTER_ID_CBOE_OPTIONS : MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
+        (trade_size > 0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
     std::cout << "SendTradeOrder(): about to send new order for "
@@ -182,10 +184,10 @@ void BLSFStrategy::SendQuoteOrder(
         ((instrument->type() == INSTRUMENT_TYPE_OPTION) ?
                             MARKET_CENTER_ID_CBOE_OPTIONS :
                             MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
+        (trade_size > 0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
-        
+
     trade_actions()->SendNewOrder(params);
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
