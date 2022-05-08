@@ -29,6 +29,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <string>
 
 using namespace RCM::StrategyStudio;
 using namespace boost::posix_time;
@@ -36,67 +37,68 @@ using namespace boost::gregorian;
 
 
 class BLSFStrategy : public Strategy {
-public:
-    enum StrategyState {
-        BUY = 0,
-        SELL = 1
-    };
+    public:
+        enum StrategyState {
+            BUY = 0,
+            SELL = 1
+        };
 
-public:
-    BLSFStrategy(
-        StrategyID strategyID,
-        const std::string& strategyName,
-        const std::string& groupName);
-    ~BLSFStrategy();
+    public:
+        BLSFStrategy(
+            StrategyID strategyID,
+            const std::string& strategyName,
+            const std::string& groupName);
+        ~BLSFStrategy();
 
-public:
+    public:
+        /**
+         * This event triggers whenever trade message arrives from a market data source.
+         */
+        virtual void OnTrade(const TradeDataEventMsg& msg);
+
+        /**
+         * This event triggers whenever a Bar interval completes for an instrument
+         */ 
+        virtual void OnBar(const BarEventMsg& msg);
+
+        /**
+         * This event triggers whenever new information arrives about a strategy's orders
+         */ 
+        virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
+
     /**
-     * This event triggers whenever trade message arrives from a market data source.
+     * @brief Helper functions specific to this strategy
+     * 
      */
-    virtual void OnTrade(const TradeDataEventMsg& msg);
+    private: 
+        void SendQuoteOrder(const Instrument* instrument, int trade_size);
+        void SendTradeOrder(const Instrument* instrument, int trade_size);
 
-    /**
-     * This event triggers whenever a Bar interval completes for an instrument
-     */ 
-    virtual void OnBar(const BarEventMsg& msg);
+    private: /* from Strategy */
+        
+        virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, 
+                                                DateType currDate); 
+        /**
+         * Define any strategy commands for use by the strategy
+         */ 
+        virtual void DefineStrategyCommands();
 
-    /**
-     * This event triggers whenever new information arrives about a strategy's orders
-     */ 
-    virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
-
-
-private: // Helper functions specific to this strategy
-    // void AdjustPortfolio(const Instrument* instrument, int desired_position);
-    void SendQuoteOrder(const Instrument* instrument, int trade_size);
-    void SendTradeOrder(const Instrument* instrument, int trade_size);
-
-private: /* from Strategy */
-    
-    virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
-    /**
-     * Define any strategy commands for use by the strategy
-     */ 
-    virtual void DefineStrategyCommands();
-
-private:
-    StrategyState currentState;     // Current state of the strategy
-    date currentDate;               // Marks the current date
+    private:
+        StrategyState currentState;     // Current state of the strategy
+        date currentDate;               // Marks the current date
 };
 
 extern "C" {
 
-    _STRATEGY_EXPORTS const char* GetType()
-    {
+    _STRATEGY_EXPORTS const char* GetType() {
         return "BLSFStrategy";
     }
 
     _STRATEGY_EXPORTS IStrategy* CreateStrategy(
-                                                const char* strategyType, 
-                                                unsigned strategyID, 
+                                                const char* strategyType,
+                                                unsigned strategyID,
                                                 const char* strategyName,
-                                                const char* groupName)
-    {
+                                                const char* groupName) {
         if (strcmp(strategyType,GetType()) == 0) {
             return *(new BLSFStrategy(strategyID, strategyName, groupName));
         } else {
@@ -104,21 +106,18 @@ extern "C" {
         }
     }
 
-     // must match an existing user within the system 
-    _STRATEGY_EXPORTS const char* GetAuthor()
-    {
+    // must match an existing user within the system 
+    _STRATEGY_EXPORTS const char* GetAuthor() {
         return "dlariviere";
     }
 
-    // must match an existing trading group within the system 
-    _STRATEGY_EXPORTS const char* GetAuthorGroup()
-    {
+    // must match an existing trading group within the system
+    _STRATEGY_EXPORTS const char* GetAuthorGroup() {
         return "UIUC";
     }
 
     // used to ensure the strategy was built against a version of the SDK compatible with the server version
-    _STRATEGY_EXPORTS const char* GetReleaseVersion()
-    {
+    _STRATEGY_EXPORTS const char* GetReleaseVersion() {
         return Strategy::release_version();
     }
 }
