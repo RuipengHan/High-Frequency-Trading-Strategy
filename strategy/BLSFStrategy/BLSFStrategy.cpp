@@ -55,13 +55,12 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
                     << std::endl;
         this->SendTradeOrder(&msg.instrument(), -1);
         currentState = BUY;
-    }
-    else {
-        if(currentDate == date(0)) {
+    } else {
+        if (currentDate == date(0)) {
             currentDate = msg_date;
         }
         tm date_tm = to_tm(msg.adapter_time());
-        if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
+        if (currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "OnTrade(): ("
                         << msg.adapter_time()
                         << "): "
@@ -82,7 +81,7 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg) {
     date msg_date = msg.bar_time().date();
     if (currentState == SELL && msg_date != currentDate) {
         tm date_tm = to_tm(msg.bar_time());
-        if(currentState == BUY && date_tm.tm_hour < 13) {
+        if (currentState == BUY && date_tm.tm_hour < 13) {
             return;
         }
         if (date_tm.tm_hour == 13 && date_tm.tm_min < 30) {
@@ -96,14 +95,12 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg) {
                     << std::endl;
         this->SendQuoteOrder(&msg.instrument(), -1);
         currentState = BUY;
-    }
-    // Buy at the end of the day
-    else {
-        if(currentDate == date(0)) {
+    } else {
+        if (currentDate == date(0)) {
             currentDate = msg_date;
         }
         tm date_tm = to_tm(msg.bar_time());
-        if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
+        if (currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "Sending BAR order: ("
                         << msg.bar_time()
                         << "): "
@@ -121,7 +118,7 @@ void BLSFStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {
                 << " "
                 << msg.name()
                 << std::endl;
-    if(msg.completes_order()) {
+    if (msg.completes_order()) {
         std::cout << "OnOrderUpdate(): order is complete; " << std::endl;
     }
 }
@@ -148,8 +145,7 @@ void BLSFStrategy::SendTradeOrder(
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
         std::cout << "Sending new trade order successful!" << std::endl;
-    }
-    else {
+    } else {
         std::cout << "Error sending new trade order..." << tra << std::endl;
     }
 }
@@ -158,8 +154,8 @@ void BLSFStrategy::SendTradeOrder(
 void BLSFStrategy::SendQuoteOrder(
         const Instrument* instrument,
         int trade_size) {
-    if(instrument->top_quote().ask()<.01 ||
-            instrument->top_quote().bid()<.01 ||
+    if (instrument->top_quote().ask() < .01 ||
+            instrument->top_quote().bid() < .01 ||
             !instrument->top_quote().ask_side().IsValid() ||
             !instrument->top_quote().ask_side().IsValid()) {
         std::stringstream ss;
@@ -175,14 +171,17 @@ void BLSFStrategy::SendQuoteOrder(
         return;
     }
 
-    double price = trade_size > 0 ? instrument->top_quote().bid() : instrument->top_quote().ask();
+    double price = trade_size > 0 ? instrument->top_quote().bid() :
+                                    instrument->top_quote().ask();
 
-    OrderParams params(*instrument, 
+    OrderParams params(*instrument,
         abs(trade_size),
-        price, 
-        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_NASDAQ :
-            ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS :
-            MARKET_CENTER_ID_CME_GLOBEX),
+        price,
+        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ?
+                            MARKET_CENTER_ID_NASDAQ :
+        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ?
+                            MARKET_CENTER_ID_CBOE_OPTIONS :
+                            MARKET_CENTER_ID_CME_GLOBEX),
         (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
@@ -191,8 +190,7 @@ void BLSFStrategy::SendQuoteOrder(
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
         std::cout << "Sending new quote order successful!" << std::endl;
-    }
-    else {
+    } else {
         std::cout << "Error sending new quote order!!!" << tra << std::endl;
     }
 }
