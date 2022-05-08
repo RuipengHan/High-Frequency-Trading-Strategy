@@ -74,7 +74,6 @@ private: // Helper functions specific to this strategy
 private: /* from Strategy */
     
     virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
-
     /**
      * Define any strategy commands for use by the strategy
      */ 
