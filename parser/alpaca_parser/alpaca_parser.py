@@ -54,7 +54,7 @@ class AlcapaParser:
     '''
     def __init__(self, key_id = None, secret = None):
         self._api = tradeapi.REST(key_id = key_id,
-                                secret_key = secret,
+                                secret_key = secret_key,
                                 base_url = 'https://data.alpaca.markets/v2')
 
 
@@ -143,7 +143,7 @@ class AlcapaParser:
                     f"{cur_day.isoformat()}",
                     f"{cur_day.isoformat()}").df
             raw_data_df.reset_index(inplace = True)
-
+            
             # select necessary columns
             new_df = raw_data_df[['timestamp', 'timestamp',
             'ask_exchange', 'ask_price', 'ask_size',
@@ -153,13 +153,16 @@ class AlcapaParser:
 
             # insert T and convert exchange center
             new_df.insert(2, "tick_type", "Q")
+            new_df.reset_index(inplace=True)
+            new_df= new_df.rename(columns={"index":"seq_num"})
+            new_df = new_df[['timestamp','seq_num','tick_type','ask_exchange','bid_exchange','ask_price', 'ask_size','bid_price', 'bid_size']]
+            
             new_df.replace({'ask_exchange':MKT_CENTER_CONVERT}, inplace=True)
             new_df.replace({'bid_exchange':MKT_CENTER_CONVERT}, inplace=True)
             new_df.dropna(inplace=True)
             print(f"tick_{tick}_{cur_day.year}{month}{day} quotes csv outputted")
             new_df.to_csv(f"quotes/{output}", index=False)
             new_df.to_csv(f"quotes/tick_{tick}_{cur_day.year}{month}{day}.csv", index=False)
-
 
         #raise NotImplementedError("Not yet supported!")
 
@@ -178,3 +181,5 @@ if __name__ == "__main__":
             parser.get_quote(t, args.start, args.end, args.output)
     else:
         raise ValueError("invalid mode")
+
+            
