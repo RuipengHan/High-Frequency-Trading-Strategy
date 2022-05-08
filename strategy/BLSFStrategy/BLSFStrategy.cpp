@@ -1,3 +1,14 @@
+/**
+ * @file BLSFStrategy.h
+ * @author Tomoyoshi Kimura
+ * @brief Buy last sell first strategy is a strategy were we buy at the end of the day and sell ath the beginning of the day
+ * @version 0.1
+ * @date 2022-05-08
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifdef _WIN32
     #include "stdafx.h"
 #endif
