@@ -1,7 +1,8 @@
 // cp BLSFStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
-// create_instance ssssas BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// start_backtest 2021-06-01 2021-06-01 name 0
-// export_cra_file backtesting-results/BACK_AL1123_2022-05-04_220943_start_06-01-2021_end_06-01-2021.cra backtesting-cra-exports
+// create_instance BLSFTest_10 BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
+// start_backtest 2021-06-01 2021-06-04 BLSFTest_10 1
+// start_backtest 2019-06-03 2019-06-07 BLSFTest_10 0
+// export_cra_file backtesting-results/BACK_BLSFTest_10_2022-05-08_171425_start_06-01-2021_end_06-04-2021.cra backtesting-cra-exports
 
 #ifdef _WIN32
     #include "stdafx.h"
@@ -81,10 +82,11 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
             currentDate = msg_date;
         }
         tm date_tm = to_tm(msg.adapter_time());
-        if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 59) {
+        if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "OnTrade(): (" << msg.adapter_time() << "): " << msg.instrument().symbol() << ": " << msg.trade().size() << " @ $" << msg.trade().price() << std::endl;
             // Buy
             this->SendSimpleOrder(&msg.instrument(), 1);
+            cout << date_tm.tm_hour << "\t" << date_tm.tm_min << endl;
             currentState = SELL;
         }
     }	
@@ -107,7 +109,6 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg)
         } 
         currentDate = msg_date;
         std::cout << "Sending BAR order: (" << msg.bar_time() << "): " << msg.instrument().symbol() << std::endl;
-        // TODO Change the order size
         this->SendOrder(&msg.instrument(), -1); //sell one share every time there is a trade
         currentState = BUY;
     }
@@ -117,10 +118,9 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg)
             currentDate = msg_date;
         }
         tm date_tm = to_tm(msg.bar_time());
-        if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 59) {
+        if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "Sending BAR order: (" << msg.bar_time() << "): " << msg.instrument().symbol() << std::endl;
             // Buy
-            // TODO Change the order size
             this->SendOrder(&msg.instrument(), 1);
             currentState = SELL;
         }
