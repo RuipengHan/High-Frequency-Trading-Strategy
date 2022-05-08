@@ -68,8 +68,8 @@ public:
 
 private: // Helper functions specific to this strategy
     // void AdjustPortfolio(const Instrument* instrument, int desired_position);
-    void SendOrder(const Instrument* instrument, int trade_size);
-    void SendSimpleOrder(const Instrument* instrument, int trade_size);
+    void SendQuoteOrder(const Instrument* instrument, int trade_size);
+    void SendTradeOrder(const Instrument* instrument, int trade_size);
 
 private: /* from Strategy */
     

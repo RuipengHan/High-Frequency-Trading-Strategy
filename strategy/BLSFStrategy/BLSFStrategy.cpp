@@ -45,7 +45,7 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
     if (currentState == SELL && msg_date != currentDate) {
         currentDate = msg_date;
         std::cout << "OnTrade(): (" << msg.adapter_time() << "): " << msg.instrument().symbol() << ": " << msg.trade().size() << " @ $" << msg.trade().price() << std::endl;
-        this->SendSimpleOrder(&msg.instrument(), -1); //sell one share every time there is a trade
+        this->SendTradeOrder(&msg.instrument(), -1); //sell one share every time there is a trade
         currentState = BUY;
     }
     // Buy at the end of the day
@@ -56,7 +56,7 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
         tm date_tm = to_tm(msg.adapter_time());
         if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "OnTrade(): (" << msg.adapter_time() << "): " << msg.instrument().symbol() << ": " << msg.trade().size() << " @ $" << msg.trade().price() << std::endl;
-            this->SendSimpleOrder(&msg.instrument(), 1);
+            this->SendTradeOrder(&msg.instrument(), 1);
             cout << date_tm.tm_hour << "\t" << date_tm.tm_min << endl;
             currentState = SELL;
         }
@@ -77,7 +77,7 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg)
         } 
         currentDate = msg_date;
         std::cout << "Sending BAR order: (" << msg.bar_time() << "): " << msg.instrument().symbol() << std::endl;
-        this->SendOrder(&msg.instrument(), -1); //sell one share every time there is a trade
+        this->SendQuoteOrder(&msg.instrument(), -1); //sell one share every time there is a trade
         currentState = BUY;
     }
     // Buy at the end of the day
@@ -88,7 +88,7 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg)
         tm date_tm = to_tm(msg.bar_time());
         if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "Sending BAR order: (" << msg.bar_time() << "): " << msg.instrument().symbol() << std::endl;
-            this->SendOrder(&msg.instrument(), 1);
+            this->SendQuoteOrder(&msg.instrument(), 1);
             currentState = SELL;
         }
     } 
@@ -103,7 +103,7 @@ void BLSFStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg)
     }
 }
 
-void BLSFStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size)
+void BLSFStrategy::SendTradeOrder(const Instrument* instrument, int trade_size)
 {
     double last_trade_price = instrument->last_trade().price();
     double price = trade_size > 0 ? last_trade_price : last_trade_price;
@@ -115,25 +115,24 @@ void BLSFStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size)
         (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
-    std::cout << "SendSimpleOrder(): about to send new order for " << trade_size << " at $" << price << std::endl;
+    std::cout << "SendTradeOrder(): about to send new order for " << trade_size << " at $" << price << std::endl;
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
-        std::cout << "SendOrder(): Sending new order successful!" << std::endl;
+        std::cout << "Sending new trade order successful!" << std::endl;
     }
     else {
-        std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
+        std::cout << "Error sending new trade order..." << tra << std::endl;
     }
-
 }
 
 
-void BLSFStrategy::SendOrder(const Instrument* instrument, int trade_size)
+void BLSFStrategy::SendQuoteOrder(const Instrument* instrument, int trade_size)
 {
     if(instrument->top_quote().ask()<.01 || instrument->top_quote().bid()<.01 || !instrument->top_quote().ask_side().IsValid() || !instrument->top_quote().ask_side().IsValid()) {
         std::stringstream ss;
         ss << "Sending buy order for " << instrument->symbol() << " at price " << instrument->top_quote().ask() << " and quantity " << trade_size <<" with missing quote data";   
         logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
-        std::cout << "SendOrder(): " << ss.str() << std::endl;
+        std::cout << "SendQuoteOrder(): " << ss.str() << std::endl;
         return;
     }
 
@@ -148,4 +147,11 @@ void BLSFStrategy::SendOrder(const Instrument* instrument, int trade_size)
         ORDER_TYPE_LIMIT);
         
     trade_actions()->SendNewOrder(params);
+    TradeActionResult tra = trade_actions()->SendNewOrder(params);
+    if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
+        std::cout << "Sending new quote order successful!" << std::endl;
+    }
+    else {
+        std::cout << "Error sending new quote order!!!" << tra << std::endl;
+    }
 }
