@@ -50,7 +50,6 @@ public:
     ~BLSFStrategy();
 
 public:
-
     /**
      * This event triggers whenever trade message arrives from a market data source.
      */
@@ -66,32 +65,15 @@ public:
      */ 
     virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
 
-    /**
-     *  Perform additional reset for strategy state 
-     */
-    void OnResetStrategyState();
- 
-    void OnDataSubscription(const DataSubscriptionEventMsg& msg) {}
-
-    void OnStrategyCommand(const StrategyCommandEventMsg& msg) {};
-
-    void OnParamChanged(StrategyParam& param) {};
 
 private: // Helper functions specific to this strategy
-    void AdjustPortfolio(const Instrument* instrument, int desired_position);
+    // void AdjustPortfolio(const Instrument* instrument, int desired_position);
     void SendOrder(const Instrument* instrument, int trade_size);
     void SendSimpleOrder(const Instrument* instrument, int trade_size);
-    void RepriceAll();
-    void Reprice(Order* order);
 
 private: /* from Strategy */
     
     virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
-    
-    /**
-     * Define any params for use by the strategy 
-     */     
-    virtual void DefineStrategyParams();
 
     /**
      * Define any strategy commands for use by the strategy

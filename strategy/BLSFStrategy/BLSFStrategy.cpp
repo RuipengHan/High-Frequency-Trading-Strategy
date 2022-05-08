@@ -29,27 +29,6 @@ BLSFStrategy::BLSFStrategy(StrategyID strategyID, const std::string& strategyNam
 
 BLSFStrategy::~BLSFStrategy(){}
 
-void BLSFStrategy::OnResetStrategyState()
-{
-}
-
-void BLSFStrategy::DefineStrategyParams()
-{
-    CreateStrategyParamArgs arg1("aggressiveness", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_DOUBLE);
-    params().CreateParam(arg1);
-    
-    CreateStrategyParamArgs arg2("debug", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_BOOL);
-    params().CreateParam(arg2);
-}
-
-void BLSFStrategy::DefineStrategyCommands()
-{
-    StrategyCommand command1(1, "Reprice Existing Orders");
-    commands().AddCommand(command1);
-
-    StrategyCommand command2(2, "Cancel All Orders");
-    commands().AddCommand(command2);
-}
 
 void BLSFStrategy::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
 {    
@@ -81,7 +60,7 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
             cout << date_tm.tm_hour << "\t" << date_tm.tm_min << endl;
             currentState = SELL;
         }
-    }	
+    } 
 }
 
 void BLSFStrategy::OnBar(const BarEventMsg& msg)
@@ -112,20 +91,16 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg)
             this->SendOrder(&msg.instrument(), 1);
             currentState = SELL;
         }
-    }	
+    } 
 }
 
 void BLSFStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg)
 {    
-	std::cout << "OnOrderUpdate(): " << msg.update_time() << " " << msg.name() << std::endl;
+ std::cout << "OnOrderUpdate(): " << msg.update_time() << " " << msg.name() << std::endl;
     if(msg.completes_order())
     {
-		std::cout << "OnOrderUpdate(): order is complete; " << std::endl;
+  std::cout << "OnOrderUpdate(): order is complete; " << std::endl;
     }
-}
-
-void BLSFStrategy::AdjustPortfolio(const Instrument* instrument, int desired_position)
-{
 }
 
 void BLSFStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size)
@@ -173,18 +148,4 @@ void BLSFStrategy::SendOrder(const Instrument* instrument, int trade_size)
         ORDER_TYPE_LIMIT);
         
     trade_actions()->SendNewOrder(params);
-}
-
-void BLSFStrategy::RepriceAll()
-{
-    for (IOrderTracker::WorkingOrdersConstIter ordit = orders().working_orders_begin(); ordit != orders().working_orders_end(); ++ordit) {
-        Reprice(*ordit);
-    }
-}
-
-void BLSFStrategy::Reprice(Order* order)
-{
-    OrderParams params = order->params();
-    params.price = (order->order_side() == ORDER_SIDE_BUY) ? order->instrument()->top_quote().bid() : order->instrument()->top_quote().ask();
-    trade_actions()->SendCancelReplaceOrder(order->order_id(), params);
 }
