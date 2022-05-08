@@ -1,3 +1,14 @@
+/**
+ * @file BLSFStrategy.h
+ * @author Tomoyoshi Kimura
+ * @brief Buy last sell first strategy is a strategy were we buy at the end of the day and sell ath the beginning of the day
+ * @version 0.1
+ * @date 2022-05-08
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #pragma once
 
 #ifdef _WIN32
@@ -99,10 +110,11 @@ extern "C" {
         return "BLSFStrategy";
     }
 
-    _STRATEGY_EXPORTS IStrategy* CreateStrategy(const char* strategyType, 
-                                   unsigned strategyID, 
-                                   const char* strategyName,
-                                   const char* groupName)
+    _STRATEGY_EXPORTS IStrategy* CreateStrategy(
+                                                const char* strategyType, 
+                                                unsigned strategyID, 
+                                                const char* strategyName,
+                                                const char* groupName)
     {
         if (strcmp(strategyType,GetType()) == 0) {
             return *(new BLSFStrategy(strategyID, strategyName, groupName));

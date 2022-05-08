@@ -1,9 +1,3 @@
-// cp BLSFStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
-// create_instance BLSFTest_10 BLSFStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// start_backtest 2021-06-01 2021-06-04 BLSFTest_10 1
-// start_backtest 2019-06-03 2019-06-07 BLSFTest_10 0
-// export_cra_file backtesting-results/BACK_BLSFTest_10_2022-05-08_171425_start_06-01-2021_end_06-04-2021.cra backtesting-cra-exports
-
 #ifdef _WIN32
     #include "stdafx.h"
 #endif
@@ -72,7 +66,6 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
     if (currentState == SELL && msg_date != currentDate) {
         currentDate = msg_date;
         std::cout << "OnTrade(): (" << msg.adapter_time() << "): " << msg.instrument().symbol() << ": " << msg.trade().size() << " @ $" << msg.trade().price() << std::endl;
-        // Sell
         this->SendSimpleOrder(&msg.instrument(), -1); //sell one share every time there is a trade
         currentState = BUY;
     }
@@ -84,7 +77,6 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
         tm date_tm = to_tm(msg.adapter_time());
         if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "OnTrade(): (" << msg.adapter_time() << "): " << msg.instrument().symbol() << ": " << msg.trade().size() << " @ $" << msg.trade().price() << std::endl;
-            // Buy
             this->SendSimpleOrder(&msg.instrument(), 1);
             cout << date_tm.tm_hour << "\t" << date_tm.tm_min << endl;
             currentState = SELL;
@@ -94,13 +86,10 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg)
 
 void BLSFStrategy::OnBar(const BarEventMsg& msg)
 {
-    // cout << msg.instrument().top_quote() << endl;
-    // cout << msg << endl;
     date msg_date = msg.bar_time().date();
     if (currentState == SELL && msg_date != currentDate) {
         tm date_tm = to_tm(msg.bar_time());
         // ensure the market begin time 
-        // TODO check the time zone
         if(currentState == BUY && date_tm.tm_hour < 13) {
             return;
         }
@@ -120,7 +109,6 @@ void BLSFStrategy::OnBar(const BarEventMsg& msg)
         tm date_tm = to_tm(msg.bar_time());
         if(currentState == BUY && date_tm.tm_hour == 19 && date_tm.tm_min >= 58) {
             std::cout << "Sending BAR order: (" << msg.bar_time() << "): " << msg.instrument().symbol() << std::endl;
-            // Buy
             this->SendOrder(&msg.instrument(), 1);
             currentState = SELL;
         }
@@ -152,15 +140,13 @@ void BLSFStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size)
         (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
-
     std::cout << "SendSimpleOrder(): about to send new order for " << trade_size << " at $" << price << std::endl;
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
         std::cout << "SendOrder(): Sending new order successful!" << std::endl;
     }
-    else
-    {
-    	std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
+    else {
+        std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
     }
 
 }
