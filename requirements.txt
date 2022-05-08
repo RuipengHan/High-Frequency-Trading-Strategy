@@ -5,3 +5,5 @@ cpplint
 plotly
 numpy
 pandas
+# alpaca data SDK
+alpaca_trade_api
