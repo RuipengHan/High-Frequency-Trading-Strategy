@@ -43,6 +43,11 @@ BLSFStrategy::BLSFStrategy(
 
 BLSFStrategy::~BLSFStrategy() {}
 
+void BLSFStrategy::OnResetStrategyState() {
+    currentDate = date(0);
+    currentState = BUY;
+}
+
 void BLSFStrategy::RegisterForStrategyEvents(
         StrategyEventRegister* eventRegister,
         DateType currDate
