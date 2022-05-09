@@ -45,9 +45,9 @@ SwingStrategy::SwingStrategy(
     beginFlag(true) {
 }
 
-SwingStrategy::~SwingStrategy(){}
+SwingStrategy::~SwingStrategy() {}
 
-void SwingStrategy::OnResetStrategyState(){
+void SwingStrategy::OnResetStrategyState() {
     maxSwing = -1;
     minSwing = 10000000;
     localMax = -1;
@@ -56,14 +56,14 @@ void SwingStrategy::OnResetStrategyState(){
 
 void SwingStrategy::RegisterForStrategyEvents(
                         StrategyEventRegister* eventRegister,
-                        DateType currDate) { 
+                        DateType currDate) {
     for (SymbolSetConstIter it = symbols_begin(); it != symbols_end(); ++it) {
         eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 10);
     }
 }
 
 void SwingStrategy::UpdateLocalSwing(const Bar & bar) {
-    if(beginFlag) {
+    if (beginFlag) {
         maxSwing = bar.close();
         minSwing = bar.close();
         beginFlag = false;
@@ -73,7 +73,7 @@ void SwingStrategy::UpdateLocalSwing(const Bar & bar) {
 }
 
 void SwingStrategy::UpdateLocalSwing(const Trade & trade) {
-    if(beginFlag) {
+    if (beginFlag) {
         maxSwing = trade.price();
         minSwing = trade.price();
         beginFlag = false;
@@ -84,7 +84,7 @@ void SwingStrategy::UpdateLocalSwing(const Trade & trade) {
 
 DesiredPositionSide SwingStrategy::OrderDecision(const Bar & bar) {
     DesiredPositionSide momentumTrend = swingMomentum.Update(bar.close());
-    if(momentumTrend == currentTrend) {
+    if (momentumTrend == currentTrend) {
         return DESIRED_POSITION_SIDE_FLAT;
     }
     return momentumTrend;
@@ -92,7 +92,7 @@ DesiredPositionSide SwingStrategy::OrderDecision(const Bar & bar) {
 
 DesiredPositionSide SwingStrategy::OrderDecision(const Trade & trade) {
     DesiredPositionSide momentumTrend = swingMomentum.Update(trade.price());
-    if(momentumTrend == currentTrend) {
+    if (momentumTrend == currentTrend) {
         return DESIRED_POSITION_SIDE_FLAT;
     }
     return momentumTrend;
@@ -103,12 +103,12 @@ void SwingStrategy::UpdateSwing() {
     minSwing = localMin;
 }
 
-void SwingStrategy::OnTrade(const TradeDataEventMsg& msg) {	
+void SwingStrategy::OnTrade(const TradeDataEventMsg & msg) {
     Trade currentTrade = msg.trade();
     if (currentTrade.price() < 0.01) {
         return;
     }
-    
+
     UpdateLocalSwing(currentTrade);
     DesiredPositionSide decisionTrend = OrderDecision(currentTrade);
 
@@ -119,7 +119,7 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg& msg) {
         return;
     }
 
-    if(currentTrade.price() > maxSwing) {
+    if (currentTrade.price() > maxSwing) {
         // cout << "Exceding the Max!" << endl;
         if (decisionTrend == DESIRED_POSITION_SIDE_SHORT) {
             SendTradeOrder(&msg.instrument(),
@@ -128,7 +128,7 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg& msg) {
         }
     }
 
-    if(currentTrade.price() < minSwing) {
+    if (currentTrade.price() < minSwing) {
         // cout << "Lower than the min!" << endl;
         if (decisionTrend == DESIRED_POSITION_SIDE_LONG) {
             SendTradeOrder(&msg.instrument(),
@@ -156,14 +156,14 @@ void SwingStrategy::OnBar(const BarEventMsg& msg) {
         return;
     }
 
-    if(currentBar.close() > maxSwing) {
+    if (currentBar.close() > maxSwing) {
         if (currentTrend == DESIRED_POSITION_SIDE_SHORT) {
             SendQuoteOrder(&msg.instrument(), 100 * currentTrend);
             UpdateSwing();
         }
     }
 
-    if(currentBar.close() < minSwing) {
+    if (currentBar.close() < minSwing) {
         if (currentTrend == DESIRED_POSITION_SIDE_LONG) {
             SendQuoteOrder(&msg.instrument(), 100 * currentTrend);
             UpdateSwing();
@@ -171,38 +171,47 @@ void SwingStrategy::OnBar(const BarEventMsg& msg) {
     }
 }
 
-void SwingStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg)
-{    
-	std::cout << "OnOrderUpdate(): " << msg.update_time() << " " << msg.name() << std::endl;
-    if(msg.completes_order())
-    {
+void SwingStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {
+    std::cout << "OnOrderUpdate(): "
+                << msg.update_time()
+                << " " << msg.name()
+                << std::endl;
+    if (msg.completes_order()) {
 		std::cout << "OnOrderUpdate(): order is complete; " << std::endl;
     }
 }
 
-void SwingStrategy::SendTradeOrder(const Instrument* instrument, int trade_size)
-{
+void SwingStrategy::SendTradeOrder(
+                                    const Instrument* instrument,
+                                    int trade_size) {
     double last_trade_price = instrument->last_trade().price();
     double price = trade_size > 0 ? last_trade_price : last_trade_price;
 
     OrderParams params(*instrument,
         abs(trade_size),
         price,
-        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_IEX :
-        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS :
-        MARKET_CENTER_ID_CME_GLOBEX),
+        (instrument->type() == INSTRUMENT_TYPE_EQUITY)
+                        ? MARKET_CENTER_ID_IEX :
+        ((instrument->type() == INSTRUMENT_TYPE_OPTION)
+                        ? MARKET_CENTER_ID_CBOE_OPTIONS :
+                        MARKET_CENTER_ID_CME_GLOBEX),
         (trade_size>0) ?    ORDER_SIDE_BUY :
                             ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
 
-    std::cout << "SendTrade(): about to send new order for " << trade_size << " at $" << price << std::endl;
+    std::cout << "SendTrade(): about to send new order for "
+                << trade_size << " at $"
+                << price << std::endl;
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
-        std::cout << "SendTradeOrder(): Sending new order successful!" << std::endl;
+        std::cout << "SendTradeOrder(): Sending new order successful!"
+                    << std::endl;
     }
     else {
-        std::cout << "SendTradeOrder(): Error sending new order!!!" << tra << std::endl;
+        std::cout << "SendTradeOrder(): Error sending new order!!!"
+                    << tra
+                    << std::endl;
     }
 
 }
@@ -227,18 +236,22 @@ void SwingStrategy::SendQuoteOrder(const Instrument* instrument, int trade_size)
         return;
     }
 
-    double price = trade_size > 0 ? instrument->top_quote().bid() : instrument->top_quote().ask();
+    double price = trade_size > 0 ?
+                    instrument->top_quote().bid() :
+                    instrument->top_quote().ask();
 
     OrderParams params(*instrument,
         abs(trade_size),
         price,
-        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_NASDAQ :
-        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS :
-        MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ?    ORDER_SIDE_BUY : 
+        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ?
+                                MARKET_CENTER_ID_NASDAQ :
+        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ?
+                                MARKET_CENTER_ID_CBOE_OPTIONS :
+                                MARKET_CENTER_ID_CME_GLOBEX),
+        (trade_size>0) ?    ORDER_SIDE_BUY :
                             ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
-        
+
     trade_actions()->SendNewOrder(params);
 }
