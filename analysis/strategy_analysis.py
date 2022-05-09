@@ -187,7 +187,12 @@ class StrategyAnalysis:
         date_data = time_pnl[:, 0]
         cumulative_pnl = time_pnl[:, 1]
 
-        time_series_fig = px.line(pnl_, x=pnl_['Time'], y="Cumulative PnL")
+        time_series_fig = px.line(
+                            pnl_,
+                            x=pnl_['Time'].str[:17],
+                            y="Cumulative PnL",
+                            title=f"{self.name} PnL",
+                            labels=f"{self.name}")
         time_series_fig.show()
 
         date_label = [date_data[0].split(' ')[0]]
@@ -216,6 +221,13 @@ class StrategyAnalysis:
                 low=[min(arr) for arr in pnl_by_date],
                 close=[arr[-1] for arr in pnl_by_date])
         ])
+
+        bar_fig.update_layout(
+            title=f"{self.name} PnL",
+            xaxis_title="Date",
+            yaxis_title="Price",
+            legend_title=f"{self.name}",
+        )
 
         bar_fig.show()
 

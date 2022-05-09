@@ -81,7 +81,7 @@ class CompareStrategy():
         dict_key = list(self.strategy_dict.keys())
         strategy_columns = []
         for key in dict_key:
-            strategy_measurements = self.strategy_dict[key].measure_strategy()
+            strategy_measurements = self.strategy_dict[key].measureStrategy()
             strategy_columns.append([key] + strategy_measurements)
         measurement_columns = [
             "Strategy Names",
