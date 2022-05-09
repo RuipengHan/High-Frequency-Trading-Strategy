@@ -118,10 +118,11 @@ class SwingStrategy : public Strategy {
          * Define any strategy commands for use by the strategy
          */ 
         virtual void DefineStrategyCommands();
+        virtual void OnParamChanged(StrategyParam& param);
+        virtual void DefineStrategyParams();
+        virtual void OnResetStrategyState();
 
  private:
-        // price windows
-        Analytics::ScalarRollingWindow <double> priceWindow;
         // Trend/side
         DesiredPositionSide currentTrend;
         // Momentum for trending analysis

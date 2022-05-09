@@ -63,7 +63,7 @@ void SwingStrategy::RegisterForStrategyEvents(StrategyEventRegister* eventRegist
 
 void SwingStrategy::UpdateLocalSwing(const Bar & bar) {
     if(beginFlag) {
-        maxSwing = trade.price()
+        maxSwing = bar.close();
         minSwing = bar.close();
         beginFlag = false;
     }
@@ -73,8 +73,8 @@ void SwingStrategy::UpdateLocalSwing(const Bar & bar) {
 
 void SwingStrategy::UpdateLocalSwing(const Trade & trade) {
     if(beginFlag) {
-        maxSwing = trade.price()
-        minSwing = trade.price()
+        maxSwing = trade.price();
+        minSwing = trade.price();
         beginFlag = false;
     }
     localMax = max(maxSwing, trade.price());
