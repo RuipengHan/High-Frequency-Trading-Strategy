@@ -32,7 +32,6 @@ class CompareStrategy():
         '''Add the StrategyAnalysis object to our container'''
         if strategy in self.strategy_dict:
             print("Warning: Strategy already exist, overwriting")
-        print(strategy.name)
         self.strategy_dict[strategy.name] = strategy
 
     # Return the user specified strategy
