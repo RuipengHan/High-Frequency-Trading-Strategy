@@ -2,17 +2,17 @@
 from compare_strategy import CompareStrategy
 from strategy_analysis import StrategyAnalysis
 
-# FILL_PATH1 = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_fill.csv"
-# ORDER_PATH1 = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_order.csv"
-# PNL_PATH1 = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_pnl.csv"
+FILL_PATH1 = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_fill.csv"
+ORDER_PATH1 = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_order.csv"
+PNL_PATH1 = "sample_data/BACK_TKSPY_2022-04-02_143804_start_10-30-2019_end_10-30-2019_pnl.csv"
 
-FILL_PATH1 = "data/BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_fill.csv"
-ORDER_PATH1 = "data/BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_order.csv"
-PNL_PATH1 = "data/BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_pnl.csv"
+# FILL_PATH1 = "data/BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_fill.csv"
+# ORDER_PATH1 = "data/BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_order.csv"
+# PNL_PATH1 = "data/BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_pnl.csv"
 
-FILL_PATH1 = "data/BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_fill.csv"
-ORDER_PATH1 = "data/BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_order.csv"
-PNL_PATH1 = "data/BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_pnl.csv"
+# FILL_PATH1 = "data/BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_fill.csv"
+# ORDER_PATH1 = "data/BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_order.csv"
+# PNL_PATH1 = "data/BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_pnl.csv"
 
 my_strategy1 = StrategyAnalysis(
     fill_file=FILL_PATH1,

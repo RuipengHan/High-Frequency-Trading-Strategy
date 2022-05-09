@@ -32,13 +32,14 @@ class CompareStrategy():
         '''Add the StrategyAnalysis object to our container'''
         if strategy in self.strategy_dict:
             print("Warning: Strategy already exist, overwriting")
+        print(strategy.name)
         self.strategy_dict[strategy.name] = strategy
 
     # Return the user specified strategy
     def get_strategy(self, name=None):
         '''Return the StrategyAnalysis object with the given name'''
         if name is None or not name in self.strategy_dict:
-            return self.strategy_dict
+            return self.strategy_dict[name]
         return self.strategy_dict
 
     # get Strategy in Dataframe Formate
@@ -50,7 +51,11 @@ class CompareStrategy():
             strategy_columns.append([key] + strategy_pnl)
 
         strategy_columns = np.array(strategy_columns).T
-        strategy_df = pd.DataFrame(strategy_columns[1:], columns=strategy_columns[0])
+        try:
+            strategy_df = pd.DataFrame(strategy_columns[1:], columns=strategy_columns[0])
+        except:
+            raise Exception("Invalid size")
+
         key = list(self.strategy_dict)[0]
         strategy_df.index = self.strategy_dict[key].get_data("pnl")['Time'].to_list()
         strategy_df.index.name = "Date"
@@ -64,6 +69,7 @@ class CompareStrategy():
         for key in list(self.strategy_dict.keys()):
             strategies.append(self.strategy_dict[key].pnl)
         strategies = pd.concat(strategies)
+        print(strategies)
         time_series_fig = px.line(
                                 strategies,
                                 x=strategies['Time'],
@@ -81,7 +87,7 @@ class CompareStrategy():
         dict_key = list(self.strategy_dict.keys())
         strategy_columns = []
         for key in dict_key:
-            strategy_measurements = self.strategy_dict[key].measureStrategy()
+            strategy_measurements = self.strategy_dict[key].measure_strategy()
             strategy_columns.append([key] + strategy_measurements)
         measurement_columns = [
             "Strategy Names",
