@@ -24,6 +24,7 @@
 #include <iostream>
 #include <cassert>
 #include <ctime>
+#include <algorithm>
 
 using namespace RCM::StrategyStudio;
 using namespace RCM::StrategyStudio::MarketModels;
@@ -215,7 +216,9 @@ void SwingStrategy::SendTradeOrder(
 }
 
 
-void SwingStrategy::SendQuoteOrder(const Instrument* instrument, int trade_size) {
+void SwingStrategy::SendQuoteOrder(
+                                    const Instrument* instrument,
+                                    int trade_size) {
     if (instrument->top_quote().ask() < .01 ||
         instrument->top_quote().bid() < .01 ||
         !instrument->top_quote().ask_side().IsValid() ||
