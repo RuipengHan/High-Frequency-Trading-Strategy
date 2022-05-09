@@ -1,0 +1,1 @@
+BLBSStrategy is a sample strategy for implementing a basic strategy that buys at the end of the day and sell in the beginning of the day
