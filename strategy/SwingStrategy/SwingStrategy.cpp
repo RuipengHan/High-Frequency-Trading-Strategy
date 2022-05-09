@@ -109,7 +109,6 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg & msg) {
     if (currentTrade.price() < 0.01) {
         return;
     }
-
     UpdateLocalSwing(currentTrade);
     DesiredPositionSide decisionTrend = OrderDecision(currentTrade);
 

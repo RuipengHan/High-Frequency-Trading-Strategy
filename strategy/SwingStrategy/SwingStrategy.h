@@ -44,7 +44,12 @@ enum DesiredPositionSide {
 };
 
 class Momentum {
+<<<<<<< HEAD
  public:
+=======
+public:
+    
+>>>>>>> 4e14348 (Added BSLF back)
     Momentum(
         int short_window_size = 10,
         int long_window_size = 30):
@@ -60,7 +65,11 @@ class Momentum {
     DesiredPositionSide Update(double val) {
         m_shortWindow.push_back(val);
         m_longWindow.push_back(val);
+<<<<<<< HEAD
         if (m_shortWindow.Mean() > m_longWindow.Mean()) {
+=======
+        if (m_shortWindow.Mean() > m_longWindow.Mean()){
+>>>>>>> 4e14348 (Added BSLF back)
             return DESIRED_POSITION_SIDE_LONG;
         } else if (m_shortWindow.Mean() < m_longWindow.Mean()) {
             return DESIRED_POSITION_SIDE_SHORT;
@@ -85,6 +94,7 @@ class SwingStrategy : public Strategy {
         ~SwingStrategy();
 
  public:
+<<<<<<< HEAD
         /**
          * This event triggers whenever trade message arrives from a market data source.
          */
@@ -134,11 +144,60 @@ class SwingStrategy : public Strategy {
         virtual void DefineStrategyParams() {}
 
  private:
+=======
+        SwingStrategy(
+            StrategyID strategyID,
+            const std::string& strategyName,
+            const std::string& groupName);
+        ~SwingStrategy();
+
+ public:
+        /**
+         * This event triggers whenever trade message arrives from a market data source.
+         */
+        virtual void OnTrade(const TradeDataEventMsg& msg);
+
+        /**
+         * This event triggers whenever a Bar interval completes for an instrument
+         */ 
+        virtual void OnBar(const BarEventMsg& msg);
+
+        /**
+         * This event triggers whenever new information arrives about a strategy's orders
+         */ 
+        virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
+
+ private: // Helper functions specific to this strategy
+        void SendQuoteOrder(const Instrument* instrument, int trade_size);
+        void SendTradeOrder(const Instrument* instrument, int trade_size);
+        void UpdateLocalSwing(const Bar & bar);
+        void UpdateLocalSwing(const Trade & trade);
+        void UpdateSwing();
+        DesiredPositionSide OrderDecision(const Bar & bar);
+        DesiredPositionSide OrderDecision(const Trade & trade);
+
+ private: /* from Strategy */
+        
+        virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
+        
+        /**
+         * Define any strategy commands for use by the strategy
+         */ 
+        virtual void DefineStrategyCommands();
+
+ private:
+        // price windows
+        Analytics::ScalarRollingWindow <double> priceWindow;
+>>>>>>> 4e14348 (Added BSLF back)
         // Trend/side
         DesiredPositionSide currentTrend;
         // Momentum for trending analysis
         Momentum swingMomentum;
+<<<<<<< HEAD
         // Swing status, Max and Low
+=======
+        // Swing status, Max and Low            
+>>>>>>> 4e14348 (Added BSLF back)
         double maxSwing;
         double minSwing;
         // Temporal Swing
@@ -153,27 +212,44 @@ extern "C" {
     }
 
     _STRATEGY_EXPORTS IStrategy* CreateStrategy(
+<<<<<<< HEAD
                                                 const char* strategyType,
                                                 unsigned strategyID,
                                                 const char* strategyName,
                                                 const char* groupName) {
         if (strcmp(strategyType, GetType()) == 0) {
+=======
+                                                const char* strategyType, 
+                                                unsigned strategyID, 
+                                                const char* strategyName,
+                                                const char* groupName) {
+        if (strcmp(strategyType,GetType()) == 0) {
+>>>>>>> 4e14348 (Added BSLF back)
             return *(new SwingStrategy(strategyID, strategyName, groupName));
         } else {
             return NULL;
         }
     }
 
+<<<<<<< HEAD
      // must match an existing user within the system
+=======
+     // must match an existing user within the system 
+>>>>>>> 4e14348 (Added BSLF back)
     _STRATEGY_EXPORTS const char* GetAuthor() {
         return "dlariviere";
     }
 
+<<<<<<< HEAD
     // must match an existing trading group within the system
+=======
+    // must match an existing trading group within the system 
+>>>>>>> 4e14348 (Added BSLF back)
     _STRATEGY_EXPORTS const char* GetAuthorGroup() {
         return "UIUC";
     }
 
+<<<<<<< HEAD
 
     /**
      * @brief Get the Release Version object
@@ -181,6 +257,9 @@ extern "C" {
      * against a version of the SDK compatible with the server version
      * @return _STRATEGY_EXPORTS const* 
      */
+=======
+    // used to ensure the strategy was built against a version of the SDK compatible with the server version
+>>>>>>> 4e14348 (Added BSLF back)
     _STRATEGY_EXPORTS const char* GetReleaseVersion() {
         return Strategy::release_version();
     }
