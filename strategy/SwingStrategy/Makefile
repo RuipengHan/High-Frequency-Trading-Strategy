@@ -5,6 +5,8 @@ else
     CC=g++
 endif
 
+WARNINGS = -Werror -Wextra -Wall
+
 ifdef DEBUG
     CFLAGS=-c -g -fPIC -fpermissive -std=c++11
 else
@@ -20,26 +22,16 @@ LIBRARY=SwingStrategy.so
 
 SOURCES=SwingStrategy.cpp
 HEADERS=SwingStrategy.h
- 
+
 OBJECTS=$(SOURCES:.cpp=.o)
 
 all: $(HEADERS) $(LIBRARY)
 
 $(LIBRARY) : $(OBJECTS)
 	$(CC) -shared -Wl,-soname,$(LIBRARY).1 -o $(LIBRARY) $(OBJECTS) $(LDFLAGS)
-	
+
 .cpp.o: $(HEADERS)
 	$(CC) $(CFLAGS) $(INCLUDES) $< -o $@
 
 clean:
 	rm -rf *.o $(LIBRARY)
-
-run_backtest: all
-	cd ~/Downloads/ss_backtesting ; echo $PWD ; ./run_backtest.sh
-
-output_results: 
-	export CRA_RESULT=`cd ~/Downloads/ss_backtesting ; find ./backtesting-results -name 'BACK*cra' | tail -n 1` ; \
-	echo $$CRA_RESULT
-	export TEST_VAR="hi" ; \
-	echo $$TEST_VAR
-	
