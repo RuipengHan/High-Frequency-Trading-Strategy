@@ -177,7 +177,7 @@ void SwingStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {
                 << " " << msg.name()
                 << std::endl;
     if (msg.completes_order()) {
-		std::cout << "OnOrderUpdate(): order is complete; " << std::endl;
+        std::cout << "OnOrderUpdate(): order is complete;" << std::endl;
     }
 }
 
@@ -195,7 +195,7 @@ void SwingStrategy::SendTradeOrder(
         ((instrument->type() == INSTRUMENT_TYPE_OPTION)
                         ? MARKET_CENTER_ID_CBOE_OPTIONS :
                         MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ?    ORDER_SIDE_BUY :
+        (trade_size > 0) ? ORDER_SIDE_BUY :
                             ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
@@ -207,20 +207,17 @@ void SwingStrategy::SendTradeOrder(
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
         std::cout << "SendTradeOrder(): Sending new order successful!"
                     << std::endl;
-    }
-    else {
+    } else {
         std::cout << "SendTradeOrder(): Error sending new order!!!"
                     << tra
                     << std::endl;
     }
-
 }
 
 
-void SwingStrategy::SendQuoteOrder(const Instrument* instrument, int trade_size)
-{
-    if (instrument->top_quote().ask()<.01 ||
-        instrument->top_quote().bid()<.01 ||
+void SwingStrategy::SendQuoteOrder(const Instrument* instrument, int trade_size) {
+    if (instrument->top_quote().ask() < .01 ||
+        instrument->top_quote().bid() < .01 ||
         !instrument->top_quote().ask_side().IsValid() ||
         !instrument->top_quote().ask_side().IsValid()) {
         std::stringstream ss;
@@ -248,8 +245,8 @@ void SwingStrategy::SendQuoteOrder(const Instrument* instrument, int trade_size)
         ((instrument->type() == INSTRUMENT_TYPE_OPTION) ?
                                 MARKET_CENTER_ID_CBOE_OPTIONS :
                                 MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ?    ORDER_SIDE_BUY :
-                            ORDER_SIDE_SELL,
+        (trade_size > 0) ? ORDER_SIDE_BUY :
+                        ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
 

@@ -28,6 +28,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <string>
 
 using namespace RCM::StrategyStudio;
 using namespace boost::posix_time;
@@ -127,8 +128,8 @@ class SwingStrategy : public Strategy {
 
  private: /* from Strategy */
         virtual void RegisterForStrategyEvents(
-                                                StrategyEventRegister* eventRegister,
-                                                DateType currDate);
+            StrategyEventRegister* eventRegister,
+            DateType currDate);
         // Needed for the Strategy Studio to create new instance
         virtual void DefineStrategyParams() {}
 
