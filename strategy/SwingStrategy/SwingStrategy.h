@@ -1,3 +1,13 @@
+/**
+ * @file SwingStrategy.h
+ * @author Tomoyoshi (Tommy Kimura)
+ * @brief 
+ * @version 0.1
+ * @date 2022-05-08
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #pragma once
 
 #ifdef _WIN32
@@ -35,10 +45,11 @@ enum DesiredPositionSide {
 class Momentum {
 public:
     
-    Momentum(int short_window_size = 10, int long_window_size = 30):
-        m_shortWindow(short_window_size), 
+    Momentum(
+        int short_window_size = 10,
+        int long_window_size = 30):
+        m_shortWindow(short_window_size),
         m_longWindow(long_window_size) {
-
     }
 
     void Reset() {
@@ -47,111 +58,93 @@ public:
     }
 
     DesiredPositionSide Update(double val) {
-
         m_shortWindow.push_back(val);
         m_longWindow.push_back(val);
-        if(m_shortWindow.Mean()>m_longWindow.Mean())
+        if (m_shortWindow.Mean() > m_longWindow.Mean()){
             return DESIRED_POSITION_SIDE_LONG;
-        else
+        } else if (m_shortWindow.Mean() < m_longWindow.Mean()) {
             return DESIRED_POSITION_SIDE_SHORT;
+        }
+        return DESIRED_POSITION_SIDE_FLAT;
     }
 
-    bool FullyInitialized() { 
-        return (m_shortWindow.full() && m_longWindow.full()); 
+    bool FullyInitialized() {
+        return (m_shortWindow.full() && m_longWindow.full());
     }
-    
+
     Analytics::ScalarRollingWindow <double> m_shortWindow;
     Analytics::ScalarRollingWindow <double> m_longWindow;
 };
 
 class SwingStrategy : public Strategy {
 
-public:
-    SwingStrategy(
-        StrategyID strategyID,
-        const std::string& strategyName,
-        const std::string& groupName);
-    ~SwingStrategy();
+ public:
+        SwingStrategy(
+            StrategyID strategyID,
+            const std::string& strategyName,
+            const std::string& groupName);
+        ~SwingStrategy();
 
-public:
+ public:
+        /**
+         * This event triggers whenever trade message arrives from a market data source.
+         */
+        virtual void OnTrade(const TradeDataEventMsg& msg);
 
-    /**
-     * This event triggers whenever trade message arrives from a market data source.
-     */
-    virtual void OnTrade(const TradeDataEventMsg& msg);
+        /**
+         * This event triggers whenever a Bar interval completes for an instrument
+         */ 
+        virtual void OnBar(const BarEventMsg& msg);
 
-    /**
-     * This event triggers whenever a Bar interval completes for an instrument
-     */ 
-    virtual void OnBar(const BarEventMsg& msg);
+        /**
+         * This event triggers whenever new information arrives about a strategy's orders
+         */ 
+        virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
 
-    /**
-     * This event triggers whenever new information arrives about a strategy's orders
-     */ 
-    virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
+ private: // Helper functions specific to this strategy
+        void SendQuoteOrder(const Instrument* instrument, int trade_size);
+        void SendTradeOrder(const Instrument* instrument, int trade_size);
+        void UpdateLocalSwing(const Bar & bar);
+        void UpdateLocalSwing(const Trade & trade);
+        void UpdateSwing();
+        DesiredPositionSide OrderDecision(const Bar & bar);
+        DesiredPositionSide OrderDecision(const Trade & trade);
 
-    /**
-     *  Perform additional reset for strategy state 
-     */
-    void OnResetStrategyState();
- 
-    void OnDataSubscription(const DataSubscriptionEventMsg& msg) {}
+ private: /* from Strategy */
+        
+        virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
+        
+        /**
+         * Define any strategy commands for use by the strategy
+         */ 
+        virtual void DefineStrategyCommands();
 
-    void OnStrategyCommand(const StrategyCommandEventMsg& msg) {};
-
-    void OnParamChanged(StrategyParam& param) {};
-
-private: // Helper functions specific to this strategy
-    void AdjustPortfolio(const Instrument* instrument, int desired_position);
-    void SendOrder(const Instrument* instrument, int trade_size);
-    void SendSimpleOrder(const Instrument* instrument, int trade_size);
-    void RepriceAll();
-    void Reprice(Order* order);
-    void UpdateSwing(const Bar & bar);
-    DesiredPositionSide OrderDecision(const Analytics::ScalarRollingWindow <double> & priceWindow);
-
-private: /* from Strategy */
-    
-    virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
-    
-    /**
-     * Define any params for use by the strategy 
-     */     
-    virtual void DefineStrategyParams();
-
-    /**
-     * Define any strategy commands for use by the strategy
-     */ 
-    virtual void DefineStrategyCommands();
-
-private:
-    // price windows
-    Analytics::ScalarRollingWindow <double> priceWindow;
-    // Trend/side
-    DesiredPositionSide currentTrend;
-    // Momentum for trending analysis
-    Momentum swingMomentum;
-    // Swing status, Max and Low            
-    double maxSwing;
-    double minSwing;
-    // Temporal Swing
-    double localMax;
-    double localMin;
-
+ private:
+        // price windows
+        Analytics::ScalarRollingWindow <double> priceWindow;
+        // Trend/side
+        DesiredPositionSide currentTrend;
+        // Momentum for trending analysis
+        Momentum swingMomentum;
+        // Swing status, Max and Low            
+        double maxSwing;
+        double minSwing;
+        // Temporal Swing
+        double localMax;
+        double localMin;
+        bool beginFlag;
 };
 
 extern "C" {
-
-    _STRATEGY_EXPORTS const char* GetType()
-    {
+    _STRATEGY_EXPORTS const char* GetType() {
         return "SwingStrategy";
     }
 
-    _STRATEGY_EXPORTS IStrategy* CreateStrategy(const char* strategyType, 
-                                   unsigned strategyID, 
-                                   const char* strategyName,
-                                   const char* groupName)
-    {
+    _STRATEGY_EXPORTS IStrategy* CreateStrategy(
+                                                const char* strategyType, 
+                                                unsigned strategyID, 
+                                                const char* strategyName,
+                                                const char* groupName) {
         if (strcmp(strategyType,GetType()) == 0) {
             return *(new SwingStrategy(strategyID, strategyName, groupName));
         } else {
@@ -160,21 +153,17 @@ extern "C" {
     }
 
      // must match an existing user within the system 
-    _STRATEGY_EXPORTS const char* GetAuthor()
-    {
+    _STRATEGY_EXPORTS const char* GetAuthor() {
         return "dlariviere";
     }
 
     // must match an existing trading group within the system 
-    _STRATEGY_EXPORTS const char* GetAuthorGroup()
-    {
+    _STRATEGY_EXPORTS const char* GetAuthorGroup() {
         return "UIUC";
     }
 
     // used to ensure the strategy was built against a version of the SDK compatible with the server version
-    _STRATEGY_EXPORTS const char* GetReleaseVersion()
-    {
+    _STRATEGY_EXPORTS const char* GetReleaseVersion() {
         return Strategy::release_version();
     }
 }
-

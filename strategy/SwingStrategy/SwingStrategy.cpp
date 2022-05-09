@@ -1,8 +1,13 @@
-// cp SwingStrategy.so ~/Desktop/strategy_studio/backtesting/strategies_dlls/
-// create_instance s11w SwingStrategy UIUC SIM-1001-101 dlariviere 10000000 -symbols SPY
-// start_backtest 2021-06-01 2021-06-01 name 0
-// export_cra_file backtesting-results/BACK_AL1123_2022-05-04_220943_start_06-01-2021_end_06-01-2021.cra backtesting-cra-exports
-
+/**
+ * @file SwingStrategy.cpp
+ * @author Tomoyoshi Kimura
+ * @brief 
+ * @version 0.1
+ * @date 2022-05-08
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #ifdef _WIN32
     #include "stdafx.h"
 #endif
@@ -31,26 +36,16 @@ SwingStrategy::SwingStrategy(
                             const std::string& strategyName,
                             const std::string& groupName):
     Strategy(strategyID, strategyName, groupName),
-    priceWindow(NUM_PRICE),
     currentTrend(DESIRED_POSITION_SIDE_FLAT),
-    swingMomentum(10, 30),
+    swingMomentum(2, 10),
     maxSwing(-1),
-    minSwing(-1),
+    minSwing(10000000),
     localMax(-1),
-    localMin(-1) {
+    localMin(-1),
+    beginFlag(true) {
 }
 
 SwingStrategy::~SwingStrategy(){}
-
-void SwingStrategy::OnResetStrategyState(){}
-
-void SwingStrategy::DefineStrategyParams() {
-    CreateStrategyParamArgs arg1("aggressiveness", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_DOUBLE);
-    params().CreateParam(arg1);
-    
-    CreateStrategyParamArgs arg2("debug", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_BOOL);
-    params().CreateParam(arg2);
-}
 
 void SwingStrategy::DefineStrategyCommands() {
     StrategyCommand command1(1, "Reprice Existing Orders");
@@ -66,39 +61,109 @@ void SwingStrategy::RegisterForStrategyEvents(StrategyEventRegister* eventRegist
     }
 }
 
-void SwingStrategy::UpdateSwing(const Bar & bar) {
-    priceWindow.push_back(bar.close());
-    maxSwing = max(maxSwing, bar.high());
-    minSwing = min(minSwing, bar.low());
+void SwingStrategy::UpdateLocalSwing(const Bar & bar) {
+    if(beginFlag) {
+        maxSwing = trade.price()
+        minSwing = bar.close();
+        beginFlag = false;
+    }
+    localMax = max(maxSwing, bar.high());
+    localMin = min(minSwing, bar.low());
 }
 
-DesiredPositionSide SwingStrategy::OrderDecision(const Analytics::ScalarRollingWindow <double> & priceWindow) {
-    return DESIRED_POSITION_SIDE_FLAT;
+void SwingStrategy::UpdateLocalSwing(const Trade & trade) {
+    if(beginFlag) {
+        maxSwing = trade.price()
+        minSwing = trade.price()
+        beginFlag = false;
+    }
+    localMax = max(maxSwing, trade.price());
+    localMin = min(minSwing, trade.price());
+}
+
+DesiredPositionSide SwingStrategy::OrderDecision(const Bar & bar) {
+    DesiredPositionSide momentumTrend = swingMomentum.Update(bar.close());
+    if(momentumTrend == currentTrend) {
+        return DESIRED_POSITION_SIDE_FLAT;
+    }
+    return momentumTrend;
+}
+
+DesiredPositionSide SwingStrategy::OrderDecision(const Trade & trade) {
+    DesiredPositionSide momentumTrend = swingMomentum.Update(trade.price());
+    if(momentumTrend == currentTrend) {
+        return DESIRED_POSITION_SIDE_FLAT;
+    }
+    return momentumTrend;
+}
+
+void SwingStrategy::UpdateSwing() {
+    maxSwing = localMax;
+    minSwing = localMin;
 }
 
 void SwingStrategy::OnTrade(const TradeDataEventMsg& msg) {	
+    Trade currentTrade = msg.trade();
+    if (currentTrade.price() < 0.01) {
+        return;
+    }
+    
+    UpdateLocalSwing(currentTrade);
+    DesiredPositionSide decisionTrend = OrderDecision(currentTrade);
+
+    if (currentTrade.price() > minSwing &&
+        currentTrade.price() < maxSwing) {
+        // within the swing, does not exectue
+        currentTrend = DESIRED_POSITION_SIDE_FLAT;
+        return;
+    }
+
+    if(currentTrade.price() > maxSwing) {
+        if (currentTrend == DESIRED_POSITION_SIDE_SHORT) {
+            SendQuoteOrder(&msg.instrument(), 
+                            currentTrade.price() * currentTrend);
+            UpdateSwing();
+        }
+    }
+
+    if(currentTrade.price() < minSwing) {
+        if (currentTrend == DESIRED_POSITION_SIDE_LONG) {
+            SendQuoteOrder(&msg.instrument(), 
+                            currentTrade.price() * currentTrend);
+            UpdateSwing();
+        }
+    }
 }
 
 void SwingStrategy::OnBar(const BarEventMsg& msg) {
     Bar currentBar = msg.bar();
-    if(currentTrend == DESIRED_POSITION_SIDE_FLAT) {
-        UpdateSwing(currentBar);
-        // TODO Implement 
-        DesiredPositionSide decision = OrderDecision(priceWindow);
 
-        SendOrder(&msg.instrument(), 100 * decision);
-        currentTrend = decision;
-
-        if(decision == DESIRED_POSITION_SIDE_LONG) {
-            minSwing = currentBar.close();
-        } else {
-            maxSwing = currentBar.close();
-        }
-    } 
-    else if(currentTrend == DESIRED_POSITION_SIDE_LONG) {
+    if (currentBar.close() < 0.01) {
+        return;
     }
-    else {
 
+    UpdateLocalSwing(currentBar);
+    DesiredPositionSide decisionTrend = OrderDecision(currentBar);
+
+    if (currentBar.close() > minSwing &&
+        currentBar.close() < maxSwing) {
+        // within the swing, does not exectue
+        currentTrend = DESIRED_POSITION_SIDE_FLAT;
+        return;
+    }
+
+    if(currentBar.close() > maxSwing) {
+        if (currentTrend == DESIRED_POSITION_SIDE_SHORT) {
+            SendQuoteOrder(&msg.instrument(), 100 * currentTrend);
+            UpdateSwing();
+        }
+    }
+
+    if(currentBar.close() < minSwing) {
+        if (currentTrend == DESIRED_POSITION_SIDE_LONG) {
+            SendQuoteOrder(&msg.instrument(), 100 * currentTrend);
+            UpdateSwing();
+        }
     }
 }
 
@@ -111,11 +176,7 @@ void SwingStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg)
     }
 }
 
-void SwingStrategy::AdjustPortfolio(const Instrument* instrument, int desired_position)
-{
-}
-
-void SwingStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size)
+void SwingStrategy::SendTradeOrder(const Instrument* instrument, int trade_size)
 {
     double last_trade_price = instrument->last_trade().price();
     double price = trade_size > 0 ? last_trade_price : last_trade_price;
@@ -123,56 +184,57 @@ void SwingStrategy::SendSimpleOrder(const Instrument* instrument, int trade_size
     OrderParams params(*instrument,
         abs(trade_size),
         price,
-        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_IEX : ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS : MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
+        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_IEX :
+        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS :
+        MARKET_CENTER_ID_CME_GLOBEX),
+        (trade_size>0) ?    ORDER_SIDE_BUY :
+                            ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
 
-    std::cout << "SendSimpleOrder(): about to send new order for " << trade_size << " at $" << price << std::endl;
+    std::cout << "SendTrade(): about to send new order for " << trade_size << " at $" << price << std::endl;
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
-        std::cout << "SendOrder(): Sending new order successful!" << std::endl;
+        std::cout << "SendTradeOrder(): Sending new order successful!" << std::endl;
     }
     else {
-    	std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
+        std::cout << "SendTradeOrder(): Error sending new order!!!" << tra << std::endl;
     }
 
 }
 
 
-void SwingStrategy::SendOrder(const Instrument* instrument, int trade_size)
+void SwingStrategy::SendQuoteOrder(const Instrument* instrument, int trade_size)
 {
-    if(instrument->top_quote().ask()<.01 || instrument->top_quote().bid()<.01 || !instrument->top_quote().ask_side().IsValid() || !instrument->top_quote().ask_side().IsValid()) {
+    if (instrument->top_quote().ask()<.01 ||
+        instrument->top_quote().bid()<.01 ||
+        !instrument->top_quote().ask_side().IsValid() ||
+        !instrument->top_quote().ask_side().IsValid()) {
         std::stringstream ss;
-        ss << "Sending buy order for " << instrument->symbol() << " at price " << instrument->top_quote().ask() << " and quantity " << trade_size <<" with missing quote data";   
+        ss << "Sending buy order for "
+            << instrument->symbol()
+            << " at price "
+            << instrument->top_quote().ask()
+            << " and quantity "
+            << trade_size
+            <<" with missing quote data";
         logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
-        std::cout << "SendOrder(): " << ss.str() << std::endl;
+        std::cout << "SendQuoteOrder(): " << ss.str() << std::endl;
         return;
     }
 
     double price = trade_size > 0 ? instrument->top_quote().bid() : instrument->top_quote().ask();
 
-    OrderParams params(*instrument, 
+    OrderParams params(*instrument,
         abs(trade_size),
-        price, 
-        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_NASDAQ : ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS : MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
+        price,
+        (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_NASDAQ :
+        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS :
+        MARKET_CENTER_ID_CME_GLOBEX),
+        (trade_size>0) ?    ORDER_SIDE_BUY : 
+                            ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
         
     trade_actions()->SendNewOrder(params);
-}
-
-void SwingStrategy::RepriceAll()
-{
-    for (IOrderTracker::WorkingOrdersConstIter ordit = orders().working_orders_begin(); ordit != orders().working_orders_end(); ++ordit) {
-        Reprice(*ordit);
-    }
-}
-
-void SwingStrategy::Reprice(Order* order)
-{
-    OrderParams params = order->params();
-    params.price = (order->order_side() == ORDER_SIDE_BUY) ? order->instrument()->top_quote().bid() : order->instrument()->top_quote().ask();
-    trade_actions()->SendCancelReplaceOrder(order->order_id(), params);
 }
