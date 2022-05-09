@@ -101,6 +101,23 @@ class SwingStrategy : public Strategy {
          */ 
         virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
 
+        /**
+        *  Perform reset for strategy state 
+        */
+        void OnResetStrategyState();
+
+        /**
+        * This event triggers whenever a custom strategy command is sent from the client
+        * Needed for the Strategy Studio to create new instance
+        */ 
+        void OnStrategyCommand(const StrategyCommandEventMsg& msg) {};
+
+        /**
+        * Notifies strategy for every succesfull change in the value of a strategy parameter.
+        * Needed for the Strategy Studio to create new instance
+        */ 
+        void OnParamChanged(StrategyParam& param) {};
+
  private: // Helper functions specific to this strategy
         void SendQuoteOrder(const Instrument* instrument, int trade_size);
         void SendTradeOrder(const Instrument* instrument, int trade_size);
@@ -114,13 +131,8 @@ class SwingStrategy : public Strategy {
         
         virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
         
-        /**
-         * Define any strategy commands for use by the strategy
-         */ 
-        virtual void DefineStrategyCommands();
-        virtual void OnParamChanged(StrategyParam& param);
-        virtual void DefineStrategyParams();
-        virtual void OnResetStrategyState();
+        // Needed for the Strategy Studio to create new instance
+        virtual void DefineStrategyParams() {};
 
  private:
         // Trend/side
