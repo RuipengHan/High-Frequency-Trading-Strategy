@@ -1,4 +1,10 @@
+# vagrant cache
 /.vagrant
+# vscode cache
 /.vscode
+# meeting log for canvas upload
 meeting_log/*pdf
+# python cache
 */__pycache__
+# cpp build
+parser/nasdaq_parser/nasdaq_parser

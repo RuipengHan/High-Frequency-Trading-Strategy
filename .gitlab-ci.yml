@@ -1,14 +1,32 @@
+variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+    paths:
+        - .cache/pip
+        - pyvenv/
+
+before_script:
+    - python3 -V               
+    - python3 -m venv pyvenv
+    - source pyvenv/bin/activate
+
 stages:          # List of stages for jobs, and their order of execution
     - lint
+    - build
 lint-job:
     stage: lint
     script:
-        - python3 -m venv pyvenv
-        - source pyvenv/bin/activate
         - pip3 install -r requirements.txt
-        - pylint ./parser
+        - pylint ./parser/alpaca_parser
         - pylint ./analysis
-        - cpplint --recursive --filter=-readability/casting parser/Nasdaq_Parser
+        - cpplint --recursive --filter=-readability/casting parser/nasdaq_parser
+        - cpplint --recursive --filter=-runtime/references,-build/namespaces ./strategy
+build-job:
+    stage: build
+    script:
+        - cd ./parser/nasdaq_parser
+        - make
 # playground-job:
 #     stage: playground
 #     script:
