@@ -108,6 +108,7 @@ def process_interactive():
                     pnl_file=result_files[2],
                     initial_value=10000000)
         my_strategies.add_strategy(strategy)
+        # strategy.measure_strategy()
         strategy.visualize_pnl()
         end = input(
             "Do you want to continue adding strategy? (yes / no)\n"

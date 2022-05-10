@@ -38,7 +38,7 @@ class CompareStrategy():
     def get_strategy(self, name=None):
         '''Return the StrategyAnalysis object with the given name'''
         if name is None or not name in self.strategy_dict:
-            return self.strategy_dict[name]
+            return self.strategy_dict
         return self.strategy_dict
 
     # get Strategy in Dataframe Formate
@@ -68,7 +68,7 @@ class CompareStrategy():
         for key in list(self.strategy_dict.keys()):
             strategies.append(self.strategy_dict[key].pnl)
         strategies = pd.concat(strategies)
-        print(strategies)
+        strategies['Time'] = strategies['Time'].str[:12]
         time_series_fig = px.line(
                                 strategies,
                                 x=strategies['Time'],
@@ -76,9 +76,9 @@ class CompareStrategy():
                                 color="Name")
         time_series_fig.show()
 
-        strategies = self.get_strategy_df()
-        fig = px.area(strategies, facet_col="Company", facet_col_wrap=2)
-        fig.show()
+        # strategies = self.get_strategy_df()
+        # fig = px.area(strategies, facet_col="Company", facet_col_wrap=2)
+        # fig.show()
 
     # Get the Measurements for each strategy as a Dataframe
     def get_measurements(self):
