@@ -52,8 +52,8 @@ class CompareStrategy():
         strategy_columns = np.array(strategy_columns).T
         try:
             strategy_df = pd.DataFrame(strategy_columns[1:], columns=strategy_columns[0])
-        except:
-            raise Exception("Invalid size")
+        except Exception as exc:
+            raise Exception("Invalid size") from exc
 
         key = list(self.strategy_dict)[0]
         strategy_df.index = self.strategy_dict[key].get_data("pnl")['Time'].to_list()
