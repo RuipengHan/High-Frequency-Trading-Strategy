@@ -18,7 +18,13 @@ For our final project, we developed a High Frequencey Trading strategy pipeline 
 
 ### DevOps
 
-> TODO: Please update the DevOps Structure 
+#### CI/CD
+
+To ensure the codes are readable and functions properly, we set up an automatic GitLab CI/CD pipeline that runs whenever a pull request to main is opened. The runner rests on Azure VM and runs code linting/compiling. Python codes are checked against PEP8 standard and C/C++ code are checked against Google style. We also used strict compiling flags ```-Werror -Wextra -Wall``` to detect errors during compile time.
+
+#### Vagrant
+
+We repackaged Prof's FIN566 VM to include a built in Python 3.7 that provides access to additional dependencies requiring Python > 3.6. We also included automatic setup and job running script in the Vagrant file, so all the tasks can be done with one click.
 
 ### Data parsers
 
