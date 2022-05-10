@@ -1,0 +1,1 @@
+Swing Strategy is a strategy that functions like swings with a high and low end. Whenever the current market exceed the high end, we could observe a trend and predict when the market will fall, and vice versa. We utilize the property of this to stay low when the market is between our swings, and perform actions when the market is certain.
