@@ -73,6 +73,14 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 #### Mean Reversion Strategy
 
+##### Description
+
+- The mean reversion trading strategy involves betting that prices will revert back towards the mean or average (of historical trades of size n, where n is tunable hyperparameter). Markets are forever moving in and out of phases of mean reversion and momentum. Therefore it’s possible to develop strategies for both types of market. A simplistic example of a mean reversion strategy is to buy a stock after it has had a large fall in price. When a stock has seen a big drop, there’s usually a good chance that it will bounce back to a more normal level.
+
+- Currently, we have set the sample size to 1000 (i.e calculating the mean of last 1000 trades).
+
+##### Result
+
 #### Swing Strategy
 
 ##### Description
