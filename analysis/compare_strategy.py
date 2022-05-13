@@ -131,9 +131,12 @@ class CompareStrategy():
         row_names = measurement_df.columns.to_numpy()[1:].reshape((10, 1)).T
         row_values = measurement_df.to_numpy()[:, 1:]
         rows = np.concatenate((row_names, row_values), axis=0)
+        strategy_name_list =  measurement_df["Strategy Names"].to_list()
+        names_ = "_".join(strategy_name_list)
         fig = go.Figure(
             data=[
-                go.Table(header=dict(values=["Types"] + measurement_df["Strategy Names"].to_list()),
+                go.Table(header=dict(values=["Types"] + strategy_name_list),
                 cells=dict(values=rows))
             ])
         fig.show()
+        fig.write_image(f"figs/{names_}_measurement.png")

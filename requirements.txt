@@ -2,3 +2,4 @@ pylint
 plotly
 numpy
 pandas
+kaleido
