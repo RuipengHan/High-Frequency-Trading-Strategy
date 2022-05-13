@@ -3,11 +3,11 @@ Strategy class that contains information about each strategy
 '''
 import os
 import sys
-
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
+from plotly.subplots import make_subplots
 
 class StrategyAnalysis:
     """
@@ -104,6 +104,48 @@ class StrategyAnalysis:
         self.begin_time = self.fill['TradeTime'][0]
         self.end_time = self.fill['TradeTime'][len(self.fill) - 1]
         self.initial_value = initial_value
+        self.ticks = None
+
+    def read_ticks(self, tick_files):
+        ticks_df = []
+        for file in tick_files:
+            tick = pd.read_csv(file)
+            ticks_df.append(tick)
+        ticks_df = pd.concat(ticks_df)
+        ticks_time_price = ticks_df[["timestamp", "price"]]
+        time_price = ticks_time_price.to_numpy()
+        time_price = time_price[time_price[:, 0].argsort()]
+
+        self.date_price_full = time_price
+
+        time_ = time_price[:, 0]
+        price_ = time_price[:, 1]
+
+        date_label = [time_[0].split(' ')[0]]
+        price_by_date = []
+        temp = [price_[0]]
+        for i in range(1, time_price.shape[0]):
+                date = time_[i].split(' ')[0]
+                if date == date_label[-1]:
+                        temp.append(float(price_[i]))
+                else:
+                        date_label.append(date)
+                        price_by_date.append(np.array(temp))
+                        temp = [price_[i]]
+        # date
+        date_label = np.array(date_label)
+        self.date_label = date_label
+        # each date corresponds to an array of price belonging to that day
+        price_by_date.append(np.array(temp))
+        date_price_dict = {
+            date: {
+                "open": price_by_date[i][0],
+                "high": max(price_by_date[i]),
+                "low": min(price_by_date[i]),
+                "close": price_by_date[i][-1]
+            } for i, date in enumerate(date_label)
+        }
+        self.date_price_dict = date_price_dict
 
     def measure_strategy(self, print_value = False):
         """
@@ -186,13 +228,31 @@ class StrategyAnalysis:
             None
         """
         pnl_ = self.pnl[['Time', 'Cumulative PnL']]
+        month_dict = {
+            'Jan' : '01',
+            'Feb' : '02',
+            'Mar' : '03',
+            'Apr' : '04',
+            'May' : '05',
+            'Jun' : '06',
+            'Jul' : '07',
+            'Aug' : '08',
+            'Sep' : '09',
+            'Oct' : '10',
+            'Nov' : '11',
+            'Dec' : '12',
+        }
+        pnl_['Time'] = pnl_['Time'].replace(month_dict, regex=True)
         time_pnl = pnl_.to_numpy()
+        time_pnl = time_pnl[time_pnl[:, 0].argsort()]
+        
         date_data = time_pnl[:, 0]
+
         cumulative_pnl = time_pnl[:, 1]
 
         time_series_fig = px.line(
                             pnl_,
-                            x=pnl_['Time'].str[:17],
+                            x=pnl_['Time'].str[:19],
                             y="Cumulative PnL",
                             title=f"{self.name} PnL",
                             labels=f"{self.name}")
@@ -211,28 +271,59 @@ class StrategyAnalysis:
                 temp = [cumulative_pnl[i]]
         pnl_by_date.append(temp)
 
-        # pnl_open = [arr[0] for arr in pnl_by_date]
-        # pnl_last = [arr[-1] for arr in pnl_by_date]
-        # pnl_high = [max(arr) for arr in pnl_by_date]
-        # pnl_low = [min(arr) for arr in pnl_by_date]
+        self.pnl_by_date = pnl_by_date
 
-        bar_fig = go.Figure(data=[
-            go.Candlestick(
-                x=date_label,
-                open=[arr[0] for arr in pnl_by_date],
-                high=[max(arr) for arr in pnl_by_date],
-                low=[min(arr) for arr in pnl_by_date],
-                close=[arr[-1] for arr in pnl_by_date])
-        ])
+        if self.date_price_dict is not None:
+            tick_open = [0]
+            tick_high = [0]
+            tick_low = [0]
+            tick_close = [0]
+            for i in range(0, len(date_label)):
+                date_ = date_label[i]
+                if date_ not in list(self.date_price_dict):
+                    tick_open.append(tick_open[-1])
+                    tick_high.append(tick_high[-1])
+                    tick_low.append(tick_low[-1])
+                    tick_close.append(tick_close[-1])
+                else:
+                    tick_open.append(self.date_price_dict[date_]["open"])
+                    tick_high.append(self.date_price_dict[date_]["high"])
+                    tick_low.append(self.date_price_dict[date_]["low"])
+                    tick_close.append(self.date_price_dict[date_]["close"])
 
-        bar_fig.update_layout(
-            title=f"{self.name} PnL",
-            xaxis_title="Date",
-            yaxis_title="Price",
-            legend_title=f"{self.name}",
-        )
 
-        bar_fig.show()
+            fig = make_subplots(rows=1, cols=2)
+            fig.add_trace(
+                go.Candlestick(
+                    x=date_label,
+                    open=[arr[0] for arr in pnl_by_date],
+                    high=[max(arr) for arr in pnl_by_date],
+                    low=[min(arr) for arr in pnl_by_date],
+                    close=[arr[-1] for arr in pnl_by_date],
+                    name="Profit and Loss"
+                ), row = 1, col = 1,
+            )
+            fig.add_trace(
+                go.Candlestick(
+                    x=date_label,
+                    open=tick_open[1:],
+                    high=tick_high[1:],
+                    low=tick_low[1:],
+                    close=tick_close[1:],
+                    increasing_line_color= '#1F77B4',
+                    decreasing_line_color= '#FECB52',
+                    name = "Tick data",
+                ), row = 1, col = 2
+            )
+
+            fig.update_layout(
+                title=f"{self.name} PnL",
+                xaxis_title="Date",
+                yaxis_title="Price",
+                legend_title=f"{self.name}",
+            )
+
+            fig.show()
 
     # Get relevant data by type
     def get_data(self, types = None):

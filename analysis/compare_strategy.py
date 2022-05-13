@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 import pandas as pd
+from random import sample
 
 class CompareStrategy():
     """
@@ -33,6 +34,9 @@ class CompareStrategy():
         if strategy in self.strategy_dict:
             print("Warning: Strategy already exist, overwriting")
         self.strategy_dict[strategy.name] = strategy
+    
+    def add_ticks(tick_files):
+        print("Hello")
 
     # Return the user specified strategy
     def get_strategy(self, name=None):
@@ -64,21 +68,43 @@ class CompareStrategy():
     # Visualize the strategies
     def visualize_strategies(self):
         '''Visualize all the strategies'''
-        strategies = []
+        color_map = [
+            ("green", "red"),
+            ("#4c78a8", "#BAB0AC"),
+            ("#636efa", "#fecb52"),
+            ("#00fe35", "#fc6955")
+        ]
+        date_ = None
+        fig = go.Figure()
+        counter = 1
         for key in list(self.strategy_dict.keys()):
-            strategies.append(self.strategy_dict[key].pnl)
-        strategies = pd.concat(strategies)
-        strategies['Time'] = strategies['Time'].str[:12]
-        time_series_fig = px.line(
-                                strategies,
-                                x=strategies['Time'],
-                                y="Cumulative PnL",
-                                color="Name")
-        time_series_fig.show()
-
-        # strategies = self.get_strategy_df()
-        # fig = px.area(strategies, facet_col="Company", facet_col_wrap=2)
-        # fig.show()
+            date_ = self.strategy_dict[key].date_label
+            strategy_candle_df =  pd.DataFrame( 
+                {
+                        "open":[arr[0] for arr in self.strategy_dict[key].pnl_by_date],
+                        "high":[max(arr) for arr in self.strategy_dict[key].pnl_by_date],
+                        "low":[min(arr) for arr in self.strategy_dict[key].pnl_by_date],
+                        "close":[arr[-1] for arr in self.strategy_dict[key].pnl_by_date],
+                }
+            )
+            random_color = sample(color_map, 1)[0]
+            print(random_color)
+            fig.add_trace(
+                go.Candlestick(
+                    x=date_,
+                    open=strategy_candle_df["open"],
+                    high=strategy_candle_df["high"],
+                    low=strategy_candle_df["low"],
+                    close=strategy_candle_df["close"],
+                    name=self.strategy_dict[key].name,
+                    yaxis=f"y{counter}",
+                    increasing_line_color=random_color[0],
+                    decreasing_line_color=random_color[1]
+                )
+            )
+            counter += 1
+        fig.update_layout(yaxis2=dict(overlaying='y1', side='right'))
+        fig.show()
 
     # Get the Measurements for each strategy as a Dataframe
     def get_measurements(self):

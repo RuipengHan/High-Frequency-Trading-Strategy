@@ -3,6 +3,7 @@ Analysis runner
 '''
 
 import os
+from unittest import result
 
 from compare_strategy import CompareStrategy
 from strategy_analysis import StrategyAnalysis
@@ -54,46 +55,61 @@ def parse_files():
     '''
     Parse input files
     '''
-    strategy_file = input(
-            "Please enter the Strategy Studio Export file path\t" +
-            "(prefix of the files until fill, order and pnl.csv) \n"
+    strategy_name = input(
+        "Please enter the name of your strategy\n"
         )
+    strategy_name = f"_{strategy_name}_"
     result_files = []
 
-    invalid_file = False
-    # BACK_Swing11_2022-05-09_172753_start_06-02-2021_end_06-04-2021_
-    # BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_
-    for result_type in ["fill", "order", "pnl"]:
-        file_path = strategy_file + result_type + ".csv"
-        if not os.path.exists(file_path):
-            if not os.path.exists("data/" + file_path):
-                print(
-                    "Invalid file, please make sure you have " +
-                    file_path +
-                    " in your current directory."
-                )
-                invalid_file = True
-                break
-            file_path = "data/" + file_path
+    for file in os.listdir("sample_data"):
+        if strategy_name in file:
+            result_files.append("sample_data/" + file)
 
-        result_files.append(
-            file_path
-        )
-    if invalid_file is True:
+    print(result_files)
+    if len(result_files) < 3:
         print("Invalid file, please re-enter!\n")
         return None
+    
+    if len(result_files) > 3:
+        strategy_id = input(
+            "Please enter the id of your strategy\n"
+        )
+        new_result_files = []
+        for file in result_files:
+            if strategy_id in file:
+                new_result_files.append(file)
+        result_files = new_result_files
+        if len(result_files) < 3:
+            print("Invalid file, please re-enter!\n")
+            return None
 
-    return result_files
+    return_files = ["", "", ""]
+    for target_file in result_files:
+        if target_file[-8:] == "fill.csv":
+            return_files[0] = target_file
+        elif target_file[-9:] == "order.csv":
+            return_files[1] = target_file
+        elif target_file[-7:] == "pnl.csv":
+            return_files[2] = target_file
+    return return_files
+
+def parse_ticks():
+    '''
+    Parse ticker files
+    '''
+    tick_name = input(
+        "Please enter the name of the tickers\n"
+        )
+    tick_name = f"_{tick_name}_"
+    tick_files = []
+    for file in os.listdir("final_data/spy"):
+        if tick_name in file:
+            tick_files.append(tick_name)
 
 def process_interactive():
     '''
     Interative mode for users to add strategy
     '''
-    # while True:
-    #     start_time, end_time = check_valid_time()
-    #     if start_time is None or end_time is None:
-    #         continue
-    #     break
 
     print("Parsing Strategy studio export files")
     print("="*30)
@@ -101,13 +117,14 @@ def process_interactive():
         result_files = parse_files()
         if result_files is None:
             continue
-
+        tick_files = parse_ticks()
         strategy = StrategyAnalysis(
                     fill_file=result_files[0],
                     order_file=result_files[1],
                     pnl_file=result_files[2],
                     initial_value=10000000)
         my_strategies.add_strategy(strategy)
+        my_strategies.add_ticks(tick_files)
         # strategy.measure_strategy()
         strategy.visualize_pnl()
         end = input(
