@@ -38,7 +38,7 @@ SwingStrategy::SwingStrategy(
                             const std::string& groupName):
     Strategy(strategyID, strategyName, groupName),
     currentTrend(DESIRED_POSITION_SIDE_FLAT),
-    swingMomentum(1, 2),
+    swingMomentum(3, 1000),
     maxSwing(-1),
     minSwing(10000000),
     localMax(-1),
@@ -74,25 +74,21 @@ void SwingStrategy::UpdateLocalSwing(const Bar & bar) {
 }
 
 void SwingStrategy::UpdateLocalSwing(const Trade & trade) {
-    if (beginFlag) {
-        maxSwing = trade.price();
-        minSwing = trade.price();
-        beginFlag = false;
-    }
     localMax = max(localMax, trade.price());
     localMin = min(localMin, trade.price());
 }
 
 DesiredPositionSide SwingStrategy::OrderDecision(const Bar & bar) {
-    DesiredPositionSide momentumTrend = swingMomentum.Update(bar.close());
-    if (momentumTrend == currentTrend) {
-        return DESIRED_POSITION_SIDE_FLAT;
-    }
+    DesiredPositionSide momentumTrend = swingMomentum.Update(
+                                        bar.close(),
+                                        currentTrend);
     return momentumTrend;
 }
 
 DesiredPositionSide SwingStrategy::OrderDecision(const Trade & trade) {
-    DesiredPositionSide momentumTrend = swingMomentum.Update(trade.price());
+    DesiredPositionSide momentumTrend = swingMomentum.Update(
+                                        trade.price(),
+                                        currentTrend);
     if (momentumTrend == currentTrend) {
         return DESIRED_POSITION_SIDE_FLAT;
     }
@@ -109,22 +105,27 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg & msg) {
     if (currentTrade.price() < 0.01) {
         return;
     }
+
+    if (beginFlag) {
+        maxSwing = currentTrade.price();
+        minSwing = currentTrade.price();
+        beginFlag = false;
+    }
+
     UpdateLocalSwing(currentTrade);
     DesiredPositionSide decisionTrend = OrderDecision(currentTrade);
-
     if (currentTrade.price() > minSwing &&
         currentTrade.price() < maxSwing) {
-        // within the swing, does not exectue
         currentTrend = DESIRED_POSITION_SIDE_FLAT;
         return;
     }
 
     if (currentTrade.price() > maxSwing) {
-        // cout << "Exceding the Max!" << endl;
         if (decisionTrend == DESIRED_POSITION_SIDE_SHORT) {
             SendTradeOrder(&msg.instrument(),
-                            currentTrade.size() * decisionTrend);
+                            currentTrade.size() * -1);
             UpdateSwing();
+            decisionTrend = DESIRED_POSITION_SIDE_LONG;
         }
     }
 
@@ -132,14 +133,16 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg & msg) {
         // cout << "Lower than the min!" << endl;
         if (decisionTrend == DESIRED_POSITION_SIDE_LONG) {
             SendTradeOrder(&msg.instrument(),
-                            currentTrade.size() * decisionTrend);
+                            currentTrade.size() * 1);
             UpdateSwing();
+            decisionTrend = DESIRED_POSITION_SIDE_SHORT;
         }
     }
     currentTrend = decisionTrend;
 }
 
 void SwingStrategy::OnBar(const BarEventMsg& msg) {
+    return;
     Bar currentBar = msg.bar();
 
     if (currentBar.close() < 0.01) {

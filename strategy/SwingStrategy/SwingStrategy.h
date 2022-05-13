@@ -57,13 +57,26 @@ class Momentum {
         m_longWindow.clear();
     }
 
-    DesiredPositionSide Update(double val) {
+    DesiredPositionSide Update(double val, DesiredPositionSide currentTrend) {
+        double prev_back = m_shortWindow.back();
         m_shortWindow.push_back(val);
         m_longWindow.push_back(val);
+        if (currentTrend == DESIRED_POSITION_SIDE_LONG && prev_back > val) {
+            return DESIRED_POSITION_SIDE_FLAT;
+        }
+        if (currentTrend == DESIRED_POSITION_SIDE_SHORT && prev_back < val) {
+            return DESIRED_POSITION_SIDE_FLAT;
+        }
+
+        double price_diff = m_shortWindow.Mean() - m_longWindow.Mean();
         if (m_shortWindow.Mean() > m_longWindow.Mean()) {
-            return DESIRED_POSITION_SIDE_LONG;
+            if (price_diff / m_longWindow.Mean() < 0.000006) {
+                return DESIRED_POSITION_SIDE_LONG;
+            }
         } else if (m_shortWindow.Mean() < m_longWindow.Mean()) {
-            return DESIRED_POSITION_SIDE_SHORT;
+            if (price_diff / m_longWindow.Mean() > -0.000006) {
+                return DESIRED_POSITION_SIDE_SHORT;
+            }
         }
         return DESIRED_POSITION_SIDE_FLAT;
     }
