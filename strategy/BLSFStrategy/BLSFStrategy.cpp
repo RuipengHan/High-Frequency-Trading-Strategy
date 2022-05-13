@@ -38,10 +38,18 @@ BLSFStrategy::BLSFStrategy(
         const std::string& groupName):
     Strategy(strategyID, strategyName, groupName),
     currentState(BUY),
-    currentDate(0) {
+    currentDate(0),
+    prevPrice(0),
+    prevOrder(0),
+    totalHold(0) {
 }
 
 BLSFStrategy::~BLSFStrategy() {}
+
+void BLSFStrategy::OnResetStrategyState() {
+    currentDate = date(0);
+    currentState = BUY;
+}
 
 void BLSFStrategy::RegisterForStrategyEvents(
         StrategyEventRegister* eventRegister,
@@ -55,8 +63,12 @@ void BLSFStrategy::RegisterForStrategyEvents(
 void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
     date msg_date = msg.adapter_time().date();
     if (currentState == SELL && msg_date != currentDate) {
+        double diff = msg.trade().price() - prevPrice;
+        if (diff < 0) {
+            return;
+        }
         currentDate = msg_date;
-        std::cout << "OnTrade(): ("
+        std::cout << "OnTrade() SELL: ("
                     << msg.adapter_time()
                     << "): "
                     << msg.instrument().symbol()
@@ -64,7 +76,8 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
                     << " @ $"
                     << msg.trade().price()
                     << std::endl;
-        this->SendTradeOrder(&msg.instrument(), -1);
+        this->SendTradeOrder(&msg.instrument(), -1 * totalHold);
+        cout << "Switching state to BUY" << endl;
         currentState = BUY;
     } else {
         if (currentDate == date(0)) {
@@ -74,7 +87,7 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
         if (currentState == BUY &&
                 date_tm.tm_hour == 19 &&
                 date_tm.tm_min >= 58) {
-            std::cout << "OnTrade(): ("
+            std::cout << "OnTrade() BUY: ("
                         << msg.adapter_time()
                         << "): "
                         << msg.instrument().symbol()
@@ -83,14 +96,22 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
                         << " @ $"
                         << msg.trade().price()
                         << std::endl;
-            this->SendTradeOrder(&msg.instrument(), 1);
+            this->SendTradeOrder(&msg.instrument(), msg.trade().size());
+            prevPrice = (prevPrice * prevOrder + msg.trade().price());
+            prevPrice /= (prevOrder + 1);
+            prevOrder += 1;
             cout << date_tm.tm_hour << "\t" << date_tm.tm_min << endl;
+            cout << "Switching State to SELL" << endl;
             currentState = SELL;
         }
     }
 }
 
 void BLSFStrategy::OnBar(const BarEventMsg& msg) {
+    return;
+    if (msg.bar().close() < 0.01) {
+        return;
+    }
     date msg_date = msg.bar_time().date();
     if (currentState == SELL && msg_date != currentDate) {
         tm date_tm = to_tm(msg.bar_time());
@@ -159,6 +180,9 @@ void BLSFStrategy::SendTradeOrder(
                 << std::endl;
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
+        if (trade_size > 0) {
+            totalHold += trade_size;
+        }
         std::cout << "Sending new trade order successful!" << std::endl;
     } else {
         std::cout << "Error sending new trade order..." << tra << std::endl;

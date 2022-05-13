@@ -66,6 +66,25 @@ class BLSFStrategy : public Strategy {
      */ 
     virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
 
+    /**
+    *  Perform reset for strategy state 
+    */
+    void OnResetStrategyState();
+
+    /**
+    * This event triggers whenever a custom strategy command 
+    * is sent from the client
+    * Needed for the Strategy Studio to create new instance
+    */ 
+    void OnStrategyCommand(const StrategyCommandEventMsg& msg) {}
+
+    /**
+    * Notifies strategy for every succesfull change in the value 
+    * of a strategy parameter.
+    * Needed for the Strategy Studio to create new instance
+    */ 
+    void OnParamChanged(StrategyParam& param) {}
+
 /**
  * @brief Helper functions specific to this strategy
  * 
@@ -82,14 +101,15 @@ class BLSFStrategy : public Strategy {
     virtual void RegisterForStrategyEvents(
                                         StrategyEventRegister* eventRegister,
                                         DateType currDate);
-    /**
-     * Define any strategy commands for use by the strategy
-     */ 
-    virtual void DefineStrategyCommands();
+
+    virtual void DefineStrategyParams() {}
 
  private:
     StrategyState currentState;     // Current state of the strategy
     date currentDate;               // Marks the current date
+    double prevPrice;
+    int prevOrder;
+    double totalHold;
 };
 
 extern "C" {
@@ -130,4 +150,3 @@ extern "C" {
         return Strategy::release_version();
     }
 }
-
