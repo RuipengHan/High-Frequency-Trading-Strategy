@@ -137,7 +137,8 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ###### Real Time Analysis
 
-- SPY<img src="./figs/swing_spy_line.png" />
+- SPY
+  <img src="./figs/swing_spy_line.png" />
 - APPLE (APPL)
   <img src="./figs/Swing_AAPL_line.png" />
 
