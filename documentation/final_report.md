@@ -62,7 +62,11 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ##### Trades
 
+- Trade data can reveal general trends in world trade, and Strategy Studio provide registration for Trades (and quotes), and we could use the trade data to feed our strategy to test the performance. To sue Trade data, we often implement the function `onTrade` which is called everytime the tick-reader has detected a trade tick. Then, we would use the passed in TradeEventMessage to update our variables, and then decide whether or not we would like to send an order to buy or sell. 
+
 ##### Quotes (BBO)
+
+- Quotes, BBO, or Best Bid & Offer provides us the best bid/ask price in the current market. Unlike Trade data, for which the function `onTrade` is specifically called, `onQuote` does not behave the same and is only called when the best new data is updated. In this case, we use the function `onBar` to reach our goal. For strategy studio, on bar allow us to access the tick information within a short amount of period (bar). Everytime, we could access these information to make a trade. 
 
 ------
 
@@ -70,15 +74,44 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 #### Arb Strategy
 
+##### Description
+
+##### Results
+
 #### Buy Last Sell First Strategy
 
 ##### Description
 
-- This strategy is an introductory strategy that we implemented to understand the Strategy Studio interface. The basic pipeline is that we are buying at the end of the day, right before the market closes. Then, we would sell when the market opens. 
+- This strategy is an introductory strategy that we implemented to understand the Strategy Studio interface. The basic pipeline is that we are buying at the end of the day, right before the market closes. Then, we would sell when the market opens. This was recommended by the Professor of the course to start off with, and we have modified a few aspects to make the algorithm more robust to extreme market cases. 
+- The central belief of the algorithm is that the market price would raise during the closure of the market at night, and therefore buying before the closure and selling right after could theoretically give us a profit based on this belieft. However, with the increasing instability of the market, we might not see the stated pattern as the price of the market could dramatically fall with surprising news negatively affecting our world. Therefore, with only a minor modification to the original algorithm, we decided to add a few variables to keep track of the previous bought price in order for us to compare with the new price. If the new price to sell is lower than the price we bought it, we would keep it until the price is higher. This of course induce the possibility of long term stock holding, however, it would improve the confidence for us to lose less money when the market is in extremely bad conditions. 
+- We would also keep tracks of the number of stocks we own. Everytime we sell, we would sell the entire amont of stocks we have bought. And when we buy, we would just buy the maximum number of size from the trade message. 
+- Buy Last Sell First Strategy utilizes the Time Type variable that is passed in through the `TradeEventMessage` or `BarEventMessage`. Since the time of the market is the most important metric of this algorithm, either type of message or data feed would be fine to work with. 
 
-##### Results
+##### Visual Results
 
-- Results
+###### Real Time Analysis
+
+- SPY
+
+  <img src="./figs/BLSF_SPY_line.png" />
+
+- APPLE (AAPL)
+  <img src="./figs/BLSF_AAPL_line.png" />
+
+###### Profit and Loss with respect to the market data
+
+- SPY 
+  <img src="./figs/BLSF_SPY_BAR.png" />
+- APPLE (AAPL)
+  <img src="./figs/BLSF_AAPL_BAR.png" />
+
+###### Measurement Table
+
+<img src="./figs/BLSF_SWING_AAPL_measurement.png" />
+
+##### Analysis
+
+- From the measurement table, we could see that the BLSF trading algorithm actually performs well in playing safe for a profit. We have picked the period from April 5th to May 6th, when the traders have been in fear due to the war and the shortage in many supplies. Both SPY and AAPL fell roughly around 10 percent. However, our trading algorithm still managed to give us a positive return. It is definitely not the most profitable algorithm, but it is a safe algorithm to run to reduce the cost of gigantic loss. We could see from the measurment table that the maiximum profit and loss outweighs the minimum profit and loss for both SPY and Apple, which shows the generality it has over different symbols. 
 
 #### Mean Reversion Strategy
 
@@ -99,35 +132,26 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ##### Results
 
-###### Market Price (Yahoo Finance)
-
-<img src="./figs/spy.png" style="zoom:40%"/>
-
-<img src="./figs/apple.png" style="zoom: 40%"/>
-
 ###### Real Time Analysis
 
 - SPY<img src="./figs/swing_spy_line.png" />
 - APPLE (APPL)
-  <img src="./figs/swing_appl_line.png" />
+  <img src="./figs/Swing_AAPL_line.png" />
 
-- Together
-  <img src="./figs/swing_appl_spy_line.png" />
-
-###### Daily Bar Graph
+###### Profit and Loss with respect to the market data
 
 - SPY
   <img src="./figs/swing_spy_bar.png" />
 - APPLE (APPL)
-  <img src="./figs/swing_appl_bar.png" />
+  <img src="./figs/swing_aapl_bar.png" />
 
 ###### Measurement Table
 
-<img src="./figs/swing_appl_spy_measurement.png" style="zoom: 120%"/>
+<img src="./figs/swing_spy_aapl_measurement.png" style="zoom: 120%"/>
 
-##### Analysis
+##### Analysis 
 
-We have run the strategy for two different tickers, SPY and Apple from April 5th to April 19th. We use the analysis component we wrote for analysis. 
+We have run the strategy for two different tickers, SPY and Apple from April 5th to May 6th. We use the analysis component we wrote to calculate the measurement and generate visualization. We could see that the Swing Strategy has an extremely poor result compared to the other strategies we have implemented. However, we can see that even though the Market was down by roughly ten percent, our strategy was able to lose 4 percent and less, as shown in the cumulative return section of the measurement table. Nevertheless, we have also conducted another experiement on another date, when the market is in a stable rising state. In this case, we had a very high positive Profit and Loss. TThis reflects on the fact that our Swing Algorithm would take the bold move, unlike some other strategies like BLSF, and it would behave extremely well if the move is successful, and lose very badly if the market has gone down. There are, though, some parameters that we would like to continue tuning for a better performance. Such as the momentum calculation for the general trend, and an expectation for the Swings that is more reasonble based on the existing trends. 
 
 ------
 
