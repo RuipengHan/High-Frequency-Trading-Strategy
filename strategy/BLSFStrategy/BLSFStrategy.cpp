@@ -46,7 +46,7 @@ BLSFStrategy::BLSFStrategy(
 
 BLSFStrategy::~BLSFStrategy() {}
 
-void BLSFStrategy::OnResetStrategyState(){
+void BLSFStrategy::OnResetStrategyState() {
     currentDate = date(0);
     currentState = BUY;
 }
@@ -97,7 +97,8 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
                         << msg.trade().price()
                         << std::endl;
             this->SendTradeOrder(&msg.instrument(), msg.trade().size());
-            prevPrice = (prevPrice * prevOrder + msg.trade().price()) / (prevOrder + 1);
+            prevPrice = (prevPrice * prevOrder + msg.trade().price());
+            prevPrice /= (prevOrder + 1);
             prevOrder += 1;
             cout << date_tm.tm_hour << "\t" << date_tm.tm_min << endl;
             cout << "Switching State to SELL" << endl;

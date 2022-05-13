@@ -76,14 +76,14 @@ class BLSFStrategy : public Strategy {
     * is sent from the client
     * Needed for the Strategy Studio to create new instance
     */ 
-    void OnStrategyCommand(const StrategyCommandEventMsg& msg) {};
+    void OnStrategyCommand(const StrategyCommandEventMsg& msg) {}
 
     /**
     * Notifies strategy for every succesfull change in the value 
     * of a strategy parameter.
     * Needed for the Strategy Studio to create new instance
     */ 
-    void OnParamChanged(StrategyParam& param) {};
+    void OnParamChanged(StrategyParam& param) {}
 
 /**
  * @brief Helper functions specific to this strategy
@@ -101,8 +101,8 @@ class BLSFStrategy : public Strategy {
     virtual void RegisterForStrategyEvents(
                                         StrategyEventRegister* eventRegister,
                                         DateType currDate);
-                                        
-    virtual void DefineStrategyParams() {};
+
+    virtual void DefineStrategyParams() {}
 
  private:
     StrategyState currentState;     // Current state of the strategy
@@ -150,4 +150,3 @@ extern "C" {
         return Strategy::release_version();
     }
 }
-
