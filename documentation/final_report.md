@@ -126,6 +126,19 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ##### Result
 
+###### Real Time Analysis
+
+- SPY<img src="./figs/mean_reversion41_SPY_line.png" />
+
+###### Profit and Loss with respect to the market data
+
+- SPY
+  <img src="./figs/mean_reversion41_SPY_bar.png" />
+
+###### Measurement Table
+
+<img src="./figs/mean_reversion41_SPY_measurement.png" style="zoom: 120%"/>
+
 #### Swing Strategy
 
 ##### Description
