@@ -102,9 +102,9 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 ###### Profit and Loss with respect to the market data
 
 - SPY 
-  <img src="./figs/BLSF_SPY_BAR.png" />
+  <img src="./figs/BLSF_SPY_bar.png" />
 - APPLE (AAPL)
-  <img src="./figs/BLSF_AAPL_BAR.png" />
+  <img src="./figs/BLSF_AAPL_bar.png" />
 
 ###### Measurement Table
 
@@ -150,7 +150,8 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ###### Real Time Analysis
 
-- SPY<img src="./figs/swing_spy_line.png" />
+- SPY
+  <img src="./figs/swing_spy_line.png" />
 - APPLE (APPL)
   <img src="./figs/Swing_AAPL_line.png" />
 
