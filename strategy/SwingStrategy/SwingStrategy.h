@@ -28,6 +28,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <string>
 
 using namespace RCM::StrategyStudio;
 using namespace boost::posix_time;
@@ -37,14 +38,13 @@ using namespace boost::gregorian;
 
 
 enum DesiredPositionSide {
-    DESIRED_POSITION_SIDE_SHORT=-1,
-    DESIRED_POSITION_SIDE_FLAT=0,
-    DESIRED_POSITION_SIDE_LONG=1
+    DESIRED_POSITION_SIDE_SHORT = -1,
+    DESIRED_POSITION_SIDE_FLAT = 0,
+    DESIRED_POSITION_SIDE_LONG = 1
 };
 
 class Momentum {
-public:
-    
+ public:
     Momentum(
         int short_window_size = 10,
         int long_window_size = 30):
@@ -61,6 +61,7 @@ public:
         double prev_back = m_shortWindow.back();
         m_shortWindow.push_back(val);
         m_longWindow.push_back(val);
+<<<<<<< HEAD
         if (currentTrend == DESIRED_POSITION_SIDE_LONG && prev_back > val) {
             return DESIRED_POSITION_SIDE_FLAT;
         }
@@ -75,6 +76,10 @@ public:
                 return DESIRED_POSITION_SIDE_LONG;
             }
             // cout << price_diff / m_longWindow.Mean() << endl;
+=======
+        if (m_shortWindow.Mean() > m_longWindow.Mean()) {
+            return DESIRED_POSITION_SIDE_LONG;
+>>>>>>> 653d2d1d817ecf45a674fa4f2e32de56405adf37
         } else if (m_shortWindow.Mean() < m_longWindow.Mean()) {
             if (price_diff / m_longWindow.Mean() > -0.000006) {
                 return DESIRED_POSITION_SIDE_SHORT;
@@ -93,7 +98,6 @@ public:
 };
 
 class SwingStrategy : public Strategy {
-
  public:
         SwingStrategy(
             StrategyID strategyID,
@@ -126,15 +130,15 @@ class SwingStrategy : public Strategy {
         * This event triggers whenever a custom strategy command is sent from the client
         * Needed for the Strategy Studio to create new instance
         */ 
-        void OnStrategyCommand(const StrategyCommandEventMsg& msg) {};
+        void OnStrategyCommand(const StrategyCommandEventMsg& msg) {}
 
         /**
         * Notifies strategy for every succesfull change in the value of a strategy parameter.
         * Needed for the Strategy Studio to create new instance
         */ 
-        void OnParamChanged(StrategyParam& param) {};
+        void OnParamChanged(StrategyParam& param) {}
 
- private: // Helper functions specific to this strategy
+ private:
         void SendQuoteOrder(const Instrument* instrument, int trade_size);
         void SendTradeOrder(const Instrument* instrument, int trade_size);
         void UpdateLocalSwing(const Bar & bar);
@@ -144,18 +148,18 @@ class SwingStrategy : public Strategy {
         DesiredPositionSide OrderDecision(const Trade & trade);
 
  private: /* from Strategy */
-        
-        virtual void RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate); 
-        
+        virtual void RegisterForStrategyEvents(
+            StrategyEventRegister* eventRegister,
+            DateType currDate);
         // Needed for the Strategy Studio to create new instance
-        virtual void DefineStrategyParams() {};
+        virtual void DefineStrategyParams() {}
 
  private:
         // Trend/side
         DesiredPositionSide currentTrend;
         // Momentum for trending analysis
         Momentum swingMomentum;
-        // Swing status, Max and Low            
+        // Swing status, Max and Low
         double maxSwing;
         double minSwing;
         // Temporal Swing
@@ -170,28 +174,34 @@ extern "C" {
     }
 
     _STRATEGY_EXPORTS IStrategy* CreateStrategy(
-                                                const char* strategyType, 
-                                                unsigned strategyID, 
+                                                const char* strategyType,
+                                                unsigned strategyID,
                                                 const char* strategyName,
                                                 const char* groupName) {
-        if (strcmp(strategyType,GetType()) == 0) {
+        if (strcmp(strategyType, GetType()) == 0) {
             return *(new SwingStrategy(strategyID, strategyName, groupName));
         } else {
             return NULL;
         }
     }
 
-     // must match an existing user within the system 
+     // must match an existing user within the system
     _STRATEGY_EXPORTS const char* GetAuthor() {
         return "dlariviere";
     }
 
-    // must match an existing trading group within the system 
+    // must match an existing trading group within the system
     _STRATEGY_EXPORTS const char* GetAuthorGroup() {
         return "UIUC";
     }
 
-    // used to ensure the strategy was built against a version of the SDK compatible with the server version
+
+    /**
+     * @brief Get the Release Version object
+     * Used to ensure the strategy was built
+     * against a version of the SDK compatible with the server version
+     * @return _STRATEGY_EXPORTS const* 
+     */
     _STRATEGY_EXPORTS const char* GetReleaseVersion() {
         return Strategy::release_version();
     }
