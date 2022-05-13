@@ -54,7 +54,7 @@ Please create a issue for additional softwares so that we can put it in vagrant 
         - Installing Dependencies
           - pip3 install -r requirements.txt 
         - Usage
-          1. Run <code>./download.sh</code> to download the source IEX deep data (.gz format).
+          1. Direct to the IexDownloaderParser directory and run <code>./download.sh</code> to download the source IEX deep data (.gz format).
             To retrieve data in a specific range of dates, open and edit the download.sh, only modifies the start-date and end-date arguments:
 
               <code> python3 src/download_iex_pcaps.py --start-date 2021-11-15 --end-date 2021-11-16 --download-dir data/iex_downloads </code>
@@ -80,6 +80,28 @@ Please create a issue for additional softwares so that we can put it in vagrant 
           5. The tick_SPY_20171218.txt (*or your custom data file*) is ready to feed in SS.
 
     - NASDAQ
+      - Description
+
+          We implemented a NASDAQ TotalView-ITCH 5.0 parser in C. We have implemented the parser according to the rules and requirements of NASDAQ TotalView-ITCH 5.0 [speicifcation](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf); specifically, we used we use the bswap macros to do the conversion from binary/raw data to texts. The data-decoding part is tedious and non-trivial; with limited time and less usage on order book data, we only implemented the parse to parse only traded data from NASDAQ among a total 23 supported message types.
+
+          For ease of use, we included a makefile in the parse directory so users can simply make and run.
+
+      - Directions
+        - Installing Dependencies
+          - pip3 install -r requirements.txt 
+        - Usage
+          1. Direct to the nasdaq_parser directory in where the makefile is located, and run <code>make</code>.
+              This should generate an executable of the parser named nasdaq_parser.
+          2. Run the nasdaq_parser with the following arguments:
+
+              <code>./nasdaq_parser [input_file_path] [output_folder_path] [Message type = T]</code>
+
+              Please notice that current Nasdaq parser can only parse trade data, so the last argument should be set to T.
+
+          3. The parsed trade message will be outputed to the specified directory in the format of csv. These files are ready to be used by Strategy Studio for backtesting.
+        - References
+
+            Nasdaq offcial guide on TotalView-ITCH 5.0 data: https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf
 
     - Alpaca
 
