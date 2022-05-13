@@ -12,8 +12,8 @@ from strategy_analysis import StrategyAnalysis
 
 
 my_strategies = CompareStrategy()
-TICKER_DIRECTORY = "vagrant/Desktop/strategy_studio/backtesting/text_tick_data"
-DATA_DIRECTORY = "vagrant/Desktop/strategy_studio/backtesting/backtesting-cra-exports"
+TICKER_DIRECTORY = "home/vagrant/Desktop/strategy_studio/backtesting/text_tick_data"
+DATA_DIRECTORY = "home/vagrant/Desktop/strategy_studio/backtesting/backtesting-cra-exports"
 
 
 def parse_files(strategy_name, strategy_id = None):
@@ -123,7 +123,18 @@ def process_cml(fill_, order_, pnl_, strategy_tick_):
     my_strategies.measurement_table()
 
 if __name__ == "__main__":
+    if not os.path.exists(DATA_DIRECTORY):
+        print(f"Export directory not found: {DATA_DIRECTORY}")
+        exit(1)
+
+    if not os.path.exists(TICKER_DIRECTORY):
+        print(f"Tick data directory not found: {TICKER_DIRECTORY}")
+        exit(1)
+
     list_of_files = glob.glob(f"{DATA_DIRECTORY}/*")
+    if len(list_of_files) == 0:
+        exit(1)
+
     list_of_files.sort(key=os.path.getctime)
     FILL = ""
     ORDER = ""
