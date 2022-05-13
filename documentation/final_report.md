@@ -121,6 +121,8 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 - In our project, due to limitations on hardware, we can't take long-trend mean value that reflects the true underlying value of an equity (using months or years of data). Thus, we instead calculate the mean value of a simple, fixed size trades to "mock" the value of the equity. In our case, that size is a hyperparamter and we have set it to 1000 (i.e calculating the mean of last 1000 trades). Since 1000 trades is an extremely short term considered many trades may occur within the same millisecond, our mean-reversion strategy has a much higher trading-frequency than other strategies, which introducues a large memory consumption that crashed our VMs. To counter this effect, we tuned the buy and sell threshold greater so the trade frequency is lower, but at the cost of failing the pnl.
 
+- Mean calculation: We used a class Analytics::RollingWindow from the Strategy Studio's library to calcualte the mean price of a tick. This class behaviors just like a vector of integers, meanwhile providing the current statistics of these integers, such as mean, standard deviation, and even z-score. Thre is an window_size parameter to define an upperl limit on number of integers to store in the window, which is currently 1000. In our implementation, we used a std::map to map each tick symbol to its own means (a Analytics::RollingWindow object) so that each equity can have its own reference/standard to compare with. For each trade message read in, we will push the current equity's price to its corresponding window, if there is an overflow, then the integer oldest by time will be dropped so new space is released.
+
 ##### Result
 
 #### Swing Strategy
