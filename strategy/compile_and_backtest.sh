@@ -40,12 +40,12 @@ then
 fi
 
 # compile and copy dll
-cd ~/Desktop/strategy_studio/localdev/RCM/StrategyStudio/examples/strategies/$instanceName
+cd /home/vagrant/Desktop/strategy_studio/localdev/RCM/StrategyStudio/examples/strategies/$instanceName
 make
 cp $instanceName.so /home/vagrant/Desktop/strategy_studio/backtesting/strategies_dlls/
 
 # create instance
-cd ~/Desktop/strategy_studio/backtesting/
+cd /home/vagrant/Desktop/strategy_studio/backtesting/
 ./StrategyServerBacktesting &
 sleep 1
 cd ./utilities/
@@ -53,7 +53,7 @@ cd ./utilities/
 ./StrategyCommandLine cmd strategy_instance_list
 
 # run back test
-./StrategyCommandLine cmd start_backtest $startDate $endDate $instanceName 0
+./StrategyCommandLine cmd start_backtest $startDate $endDate $instanceName 1
 
 # Get the line number which ends with finished. 
 foundFinishedLogFile=$(grep -nr "finished." /home/vagrant/Desktop/strategy_studio/backtesting/logs/main_log.txt | gawk '{print $1}' FS=":"|tail -1)
