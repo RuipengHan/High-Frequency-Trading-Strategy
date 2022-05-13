@@ -4,17 +4,19 @@ Analysis runner
 
 import os
 import sys
-import getopt
+import glob
 
+import pandas as pd
 from compare_strategy import CompareStrategy
 from strategy_analysis import StrategyAnalysis
+
 
 # BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_
 # BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_order
 
 my_strategies = CompareStrategy()
-TICKER_DIRECTORY = "final_data/spy"
-DATA_DIRECTORY = "sample_data"
+TICKER_DIRECTORY = "vagrant/Desktop/strategy_studio/backtesting/text_tick_data"
+DATA_DIRECTORY = "vagrant/desktop/strategy_studio/backtesting/export_cra"
 
 def parse_date(date_string, reverse=False):
     """
@@ -143,36 +145,15 @@ def process_interactive():
         my_strategies.visualize_strategies()
     my_strategies.measurement_table()
 
-def process_cml(argv):
+def process_cml(fill_, order_, pnl_, strategy_tick_):
     '''
     Process Command Line Arguments
     '''
-    strategy_name = ''
-    strategy_id = ''
-    strategy_tick = ''
-    try:
-        opts, _ = getopt.getopt(argv,"n:i:t:",["strategyName=","strategyId=", "strategyTick="])
-    except getopt.GetoptError:
-        print ('main.py -n StrategyName -i StrategyId -t StrategyTick')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt in ("-n", "--strategyName"):
-            strategy_name = arg
-        elif opt in ("-i", "--strategyId"):
-            strategy_id = arg
-        elif opt in ("-t", "--strategyTick"):
-            strategy_tick = arg
-
-    result_files = parse_files(strategy_name, strategy_id)
-    if result_files is None:
-        return
-    tick_files = parse_ticks(strategy_tick)
-    if tick_files is None:
-        print("Invalid Tick files")
+    tick_files = parse_ticks(strategy_tick_)
     strategy = StrategyAnalysis(
-                fill_file=result_files[0],
-                order_file=result_files[1],
-                pnl_file=result_files[2],
+                fill_file=fill_,
+                order_file=order_,
+                pnl_file=pnl_,
                 initial_value=10000000)
     if len(tick_files) > 0:
         strategy.read_ticks(tick_files)
@@ -182,7 +163,23 @@ def process_cml(argv):
     my_strategies.measurement_table()
 
 if __name__ == "__main__":
-    if len(sys.argv) in [4, 7]:
-        process_cml(sys.argv[1:])
-    else:
+    list_of_files = glob.glob("sample_data/*") # * means all if need specific format then *.csv
+    list_of_files.sort(key=os.path.getctime)
+    FILL = ""
+    ORDER = ""
+    PNL = ""
+    for new_file in list_of_files[-3:]:
+        if new_file[-8:] == "fill.csv":
+            FILL = new_file
+        elif new_file[-9:] == "order.csv":
+            ORDER = new_file
+        elif new_file[-7:] == "pnl.csv":
+            PNL = new_file
+    fill_df = pd.read_csv(FILL)
+    strategy_tick = fill_df["Symbol"][0]
+    if not os.path.exists("figs/"):
+        os.mkdir("figs")
+    if len(sys.argv) == 1:
+        process_cml(FILL, ORDER, PNL, strategy_tick)
+    elif sys.argv[2] == "-i":
         process_interactive()
