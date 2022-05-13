@@ -1,7 +1,7 @@
 // Copyright [2022] <UIUC IE498 SP22 Group1>
 // Author Yihong Jian, Zihan Zhou
 
-#include "ArbStrategy.h"
+//#include "ArbStrategy.h"
 
 #ifdef _WIN32
     #include "stdafx.h"
@@ -12,7 +12,7 @@
 #include "ExecutionTypes.h"
 #include <Utilities/Cast.h>
 #include <Utilities/utils.h>
-
+#include "arb.h"
 #include <math.h>
 #include <iostream>
 #include <cassert>
@@ -45,9 +45,7 @@ ArbStrategy::ArbStrategy(StrategyID strategyID,
     currentState(START),
     quantityHeld(0), lastExePrice(0),
     upThreshold(0.02), downThreshold(0.02)  // parameter to tune 
-
-    debugOn(false) {
-    instBars.clear();
+     {
 }
 
 ArbStrategy::~ArbStrategy() {
@@ -77,21 +75,18 @@ void ArbStrategy::RegisterForStrategyEvents(
     }
 }
 
-void ArbStrategy::Ontrade(const TradeDataEventMsg& msg) {
-    if(debugOn) {
-        ostringstream str;
-        str << msg.instrument().symbol() << ": " << msg.trade();
-        logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-    }
+void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
+    //std::cout<< msg.instrument().symbol() << ": " << msg.trade();
+    std::cout << "OnTrade(): (" << msg.adapter_time() << "): " << msg.instrument().symbol() << ": " << msg.trade().size() << " @ $" << msg.trade().price() << std::endl;
     if (msg.instrument().symbol() == "SPY") {
         if (instrucmentSignal!=NULL){
             if(currentState==START){
-                if(msg.trade().price() - min(signalLastPrice[3] ,signalLastPrice[1], signalLastPrice[2]) > upThreshold){
+                if(msg.trade().price() - min(signalLastPrice[3] ,min(signalLastPrice[1], signalLastPrice[2])) > upThreshold){
                     currentState = BUY;
                 }   
             }
             if (currentState == HOLD){
-                if(msg.trade().price() - max(signalLastPrice[3], signalLastPrice[1], signalLastPrice[2]) < - downThreshold){
+                if(msg.trade().price() - max(signalLastPrice[3], max(signalLastPrice[1], signalLastPrice[2])) < - downThreshold){
                     currentState = SELL;
                 }
             }
