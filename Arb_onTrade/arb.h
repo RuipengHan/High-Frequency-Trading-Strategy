@@ -25,6 +25,9 @@ using namespace RCM::StrategyStudio;
 using std::string;
 using std::unordered_map;
 
+
+
+
 class ArbStrategy : public Strategy {
  public:
     ArbStrategy(StrategyID strategyID,
@@ -32,6 +35,16 @@ class ArbStrategy : public Strategy {
         const std::string& groupName);
     ~ArbStrategy();
 
+enum StrategyState {
+
+    START = 0,
+    SENT_BUY=1,
+    BUY = 2,
+    HOLD = 3,
+    SELL = 4,
+    SENT_SELL = 5
+
+};
  public: /* from IEventCallback */
     /**
      * This event triggers whenever a Bar interval completes for an instrument
@@ -42,13 +55,13 @@ class ArbStrategy : public Strategy {
     /**
      * This event triggers whenever a signal trade trend is detected
      */ 
-    virtual void ArbStrategy::Ontrade(const TradeDataEventMsg& msg);
+    virtual void Ontrade(const TradeDataEventMsg& msg);
     
 
     /**
      * This function detect completed orders and compute quantityHeld
      */ 
-    void ArbStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg)
+    void OnOrderUpdate(const OrderUpdateEventMsg& msg);
     /**
      * 
      *  Perform additional reset for strategy state 
@@ -98,16 +111,16 @@ class ArbStrategy : public Strategy {
     const MarketModels::Instrument* instrucmentTrade;
     
     double signalLastPrice[3];     // price container for signal ticker
-    double tradeLastPrice[3;      // price container for trade ticker
+    double tradeLastPrice[3];      // price container for trade ticker
     double tradeLastQuantity;      // last trade quantity of trade ticker 
     double lastExePrice;          
     // hyper params:
     double upThreshold;             // threshold for upward trend
     double downThreshold;           // threshold for downward trend
     // string signal:
-    std::string signal;             // signal ticker: SPY
-    std::string totrade;            // trade ticker: AAPL
-    StrategyState currentState;
+    string signal;             // signal ticker: SPY
+    string totrade;            // trade ticker: AAPL
+    StrategyState currentState; // enum
     double quantityHeld;       // instrument quantility already held
 
 };
