@@ -35,13 +35,15 @@ Vagrant.configure("2") do |config|
       sd.vm.provision "file", source: "parser/alpaca_parser/alpaca_parser.py", destination: "/home/vagrant/Desktop/alpaca_parser.py"
       sd.vm.provision "file", source: "parser/download_from_alpaca.sh", destination: "/home/vagrant/Desktop/download_from_alpaca.sh"
 
-      # copy python dependencies
+      # copy visualization scripts
+      sd.vm.provision "file", source: "analysis/compare_strategy.py", destination: "/home/vagrant/Desktop/compare_strategy.py"
+      sd.vm.provision "file", source: "analysis/strategy_analysis.py", destination: "/home/vagrant/Desktop/strategy_analysis.py"
+      sd.vm.provision "file", source: "analysis/main.py", destination: "/home/vagrant/Desktop/main.py"
+
+      # install python dependencies
       sd.vm.provision "file", source: "requirements.txt", destination: "/home/vagrant/Desktop/requirements.txt"
       sd.vm.provision "shell", inline: "ls -lhs" # checks that vm is actually started
-      
-      # run jobs
       sd.vm.provision "shell", inline: "/usr/local/bin/pip3.7 install -r /home/vagrant/Desktop/requirements.txt" # install additional python packages
-      #sd.vm.provision "shell", inline: "bash /home/vagrant/Desktop/compile_and_backtest.sh -s '2019-10-30' -e '2019-10-30' -i 'SwingStrategy' -t 'SPY'"
     end
     
   end
