@@ -150,11 +150,11 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 - SPY
 
-  <img src="./figs/mean_reversion41_SPY_measurement.png" style="zoom: 120%"/>
+  <img src="./figs/mean_reversion41_SPY_measurement.png"/>
 
 - AAPL
 
-  <img src="./figs/mean_reversion42_AAPL_measurement.png" style="zoom: 120%"/>
+  <img src="./figs/mean_reversion42_AAPL_measurement.png"/>
 
 ##### Analysis
 
