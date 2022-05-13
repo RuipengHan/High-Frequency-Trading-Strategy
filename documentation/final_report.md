@@ -32,7 +32,16 @@ We repackaged Prof's FIN566 VM to include a built in Python 3.7 that provides ac
 
 ##### IEX
 
+We directly imported the Professor's IEX downloader/parser as a submodule of our project so we can directly use it to download DEEP and TRADE data from IEX exchange that is ready to be feed into Strategy Studio for strategy development and backtesting. The link to Professor's IEX downloader/parser is [here](https://gitlab.engr.illinois.edu/shared_code/iexdownloaderparser). Details on directions of using the IEX downloader/parser can be found on the README.md under the project root directory.
+
 ##### NASDAQ
+
+Our NASDAQ parser (specifically, parser for NASDAQ TotalView-ITCH 5.0) is implemented in C.
+We have implemented the parser according to the rules and requirements of NASDAQ TotalView-ITCH 5.0 [speicifcation](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf); specifically, we used we use the bswap macros to do the conversion from binary/raw data to texts.
+
+Performance: The time to parse a 3G gz raw file is roughly two minutes.
+
+Details on directions of using the NASDAQ can be found on the README.md under the project root directory.
 
 ##### Alpaca
 
