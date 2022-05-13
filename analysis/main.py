@@ -11,50 +11,10 @@ from compare_strategy import CompareStrategy
 from strategy_analysis import StrategyAnalysis
 
 
-# BACK_Swing10_2022-05-09_172753_start_06-02-2021_end_06-04-2021_
-# BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_order
-
 my_strategies = CompareStrategy()
 TICKER_DIRECTORY = "vagrant/Desktop/strategy_studio/backtesting/text_tick_data"
-DATA_DIRECTORY = "vagrant/desktop/strategy_studio/backtesting/export_cra"
+DATA_DIRECTORY = "vagrant/Desktop/strategy_studio/backtesting/backtesting-cra-exports"
 
-def parse_date(date_string, reverse=False):
-    """
-    Convert YYYYMMDD to YYYY-MM-DD
-
-    Parameters
-    ----------
-        types : str
-            date in YYYYMMDD string format
-    """
-    if len(date_string) != 8:
-        return None
-
-    if reverse:
-        return f"{date_string[4:6]}-{date_string[6:]}-{date_string[0:4]}"
-    return f"{date_string[0:4]}-{date_string[4:6]}-{date_string[6:]}"
-
-
-def check_valid_time():
-    '''
-    Check validity of input time
-    '''
-    start_time = input("What is the desired start time? (YYYYMMDD)\n")
-    end_time = input("What is the desired end time? (YYYYMMDD)\n")
-    start_time_list = parse_date(start_time).split("-")
-    end_time_list = parse_date(end_time).split("-")
-    if start_time_list is None or end_time_list is None:
-        print("Invalid start time and end time")
-        return None, None
-    for i in range(3):
-        start_i = int(start_time_list[i])
-        end_i = int(end_time_list[i])
-        if start_i > end_i:
-            print("Invalid start and end time..\n\n")
-            return None, None
-        if start_i < end_i:
-            break
-    return start_time, end_time
 
 def parse_files(strategy_name, strategy_id = None):
     '''
@@ -163,7 +123,7 @@ def process_cml(fill_, order_, pnl_, strategy_tick_):
     my_strategies.measurement_table()
 
 if __name__ == "__main__":
-    list_of_files = glob.glob("sample_data/*") # * means all if need specific format then *.csv
+    list_of_files = glob.glob(f"{DATA_DIRECTORY}/*")
     list_of_files.sort(key=os.path.getctime)
     FILL = ""
     ORDER = ""
