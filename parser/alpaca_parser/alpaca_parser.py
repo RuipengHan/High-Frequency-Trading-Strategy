@@ -94,6 +94,9 @@ class AlcapaParser:
             raw_data_df = self._api.get_trades(tick,
                     f"{cur_day.isoformat()}",
                     f"{cur_day.isoformat()}").df
+            if len(raw_data_df.index) == 0:
+                print(f"No trade data on {cur_day}")
+                continue
             raw_data_df.reset_index(inplace = True)
 
             # select necessary columns
@@ -105,8 +108,7 @@ class AlcapaParser:
             new_df.replace({'exchange':MKT_CENTER_CONVERT}, inplace=True)
             new_df.dropna(inplace=True)
             print(f"tick_{tick}_{cur_day.year}{month}{day} trades csv outputted")
-            new_df.to_csv(f"trades/{output}", index=False)
-            new_df.to_csv(f"trades/tick_{tick}_{cur_day.year}{month}{day}.csv", index=False)
+            new_df.to_csv(output, index=False)
 
     def get_quote(self, tick, start_date, end_date, dest_dir = "./quotes"):
         '''
@@ -142,6 +144,9 @@ class AlcapaParser:
             raw_data_df = self._api.get_quotes(tick,
                     f"{cur_day.isoformat()}",
                     f"{cur_day.isoformat()}").df
+            if len(raw_data_df.index) == 0:
+                print(f"No trade data on {cur_day}")
+                continue
             raw_data_df.reset_index(inplace = True)
 
             # select necessary columns
@@ -153,15 +158,16 @@ class AlcapaParser:
 
             # insert T and convert exchange center
             new_df.insert(2, "tick_type", "Q")
+            new_df.reset_index(inplace=True)
+            new_df= new_df.rename(columns={"index":"seq_num"})
+            new_df = new_df[['timestamp', 'timestamp', 'seq_num','tick_type',
+                'ask_exchange','bid_exchange','bid_price', 'bid_size','ask_price', 'ask_size']]
+
             new_df.replace({'ask_exchange':MKT_CENTER_CONVERT}, inplace=True)
             new_df.replace({'bid_exchange':MKT_CENTER_CONVERT}, inplace=True)
             new_df.dropna(inplace=True)
             print(f"tick_{tick}_{cur_day.year}{month}{day} quotes csv outputted")
-            new_df.to_csv(f"quotes/{output}", index=False)
-            new_df.to_csv(f"quotes/tick_{tick}_{cur_day.year}{month}{day}.csv", index=False)
-
-
-        #raise NotImplementedError("Not yet supported!")
+            new_df.to_csv(output, index=False)
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -169,7 +175,6 @@ if __name__ == "__main__":
         raise ValueError("Start date must be before end date")
 
     parser = AlcapaParser()
-
     if args.mode == "T":
         for t in args.tickers:
             parser.get_trade(t, args.start, args.end, args.output)
