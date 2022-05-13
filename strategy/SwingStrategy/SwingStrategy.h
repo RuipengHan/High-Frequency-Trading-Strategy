@@ -61,7 +61,6 @@ class Momentum {
         double prev_back = m_shortWindow.back();
         m_shortWindow.push_back(val);
         m_longWindow.push_back(val);
-<<<<<<< HEAD
         if (currentTrend == DESIRED_POSITION_SIDE_LONG && prev_back > val) {
             return DESIRED_POSITION_SIDE_FLAT;
         }
@@ -70,21 +69,14 @@ class Momentum {
         }
 
         double price_diff = m_shortWindow.Mean() - m_longWindow.Mean();
-        // std::cout << price_diff / m_longWindow.Mean() << std::endl;
-        if (m_shortWindow.Mean() > m_longWindow.Mean()){
+        if (m_shortWindow.Mean() > m_longWindow.Mean()) {
             if(price_diff / m_longWindow.Mean() < 0.000006) {
                 return DESIRED_POSITION_SIDE_LONG;
             }
-            // cout << price_diff / m_longWindow.Mean() << endl;
-=======
-        if (m_shortWindow.Mean() > m_longWindow.Mean()) {
-            return DESIRED_POSITION_SIDE_LONG;
->>>>>>> 653d2d1d817ecf45a674fa4f2e32de56405adf37
         } else if (m_shortWindow.Mean() < m_longWindow.Mean()) {
             if (price_diff / m_longWindow.Mean() > -0.000006) {
                 return DESIRED_POSITION_SIDE_SHORT;
             }
-            // cout << price_diff / m_longWindow.Mean() << endl;
         }
         return DESIRED_POSITION_SIDE_FLAT;
     }
