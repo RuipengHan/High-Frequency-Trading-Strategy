@@ -28,3 +28,5 @@ echo "Finish downloading data, start backtesting SwingStrategy"
 sleep 5
 vagrant ssh -c "bash /home/vagrant/Desktop/compile_and_backtest.sh -s '2022-04-05' -e '2022-04-05' -i 'SwingStrategy' -t 'SPY'"
 echo "Done backtesting, start running analysis"
+vagrant ssh -c "python3.7 /home/vagrant/Desktop/main.py"
+echo "Done generating visualizations, files in VM, under /home/vagrant/Desktop/figs"
