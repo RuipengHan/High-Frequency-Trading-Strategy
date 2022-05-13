@@ -44,7 +44,7 @@ SwingStrategy::SwingStrategy(
     localMax(-1),
     localMin(10000000),
     beginFlag(true) {
-} 
+}
 
 SwingStrategy::~SwingStrategy() {}
 
@@ -79,19 +79,23 @@ void SwingStrategy::UpdateLocalSwing(const Trade & trade) {
 }
 
 DesiredPositionSide SwingStrategy::OrderDecision(const Bar & bar) {
-    DesiredPositionSide momentumTrend = swingMomentum.Update(bar.close(), currentTrend);
+    DesiredPositionSide momentumTrend = swingMomentum.Update(
+                                        bar.close(),
+                                        currentTrend);
     return momentumTrend;
 }
 
 DesiredPositionSide SwingStrategy::OrderDecision(const Trade & trade) {
-    DesiredPositionSide momentumTrend = swingMomentum.Update(trade.price(), currentTrend);
-    if(momentumTrend == currentTrend) {
+    DesiredPositionSide momentumTrend = swingMomentum.Update(
+                                        trade.price(),
+                                        currentTrend);
+    if (momentumTrend == currentTrend) {
         return DESIRED_POSITION_SIDE_FLAT;
     }
     return momentumTrend;
 }
 
-void SwingStrategy::UpdateSwing() { 
+void SwingStrategy::UpdateSwing() {
     maxSwing = localMax;
     minSwing = localMin;
 }
@@ -102,7 +106,7 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg & msg) {
         return;
     }
 
-    if(beginFlag) {
+    if (beginFlag) {
         maxSwing = currentTrade.price();
         minSwing = currentTrade.price();
         beginFlag = false;
@@ -116,19 +120,19 @@ void SwingStrategy::OnTrade(const TradeDataEventMsg & msg) {
         return;
     }
 
-    if(currentTrade.price() > maxSwing) {
+    if (currentTrade.price() > maxSwing) {
         if (decisionTrend == DESIRED_POSITION_SIDE_SHORT) {
-            SendTradeOrder(&msg.instrument(), 
+            SendTradeOrder(&msg.instrument(),
                             currentTrade.size() * -1);
             UpdateSwing();
             decisionTrend = DESIRED_POSITION_SIDE_LONG;
-        } 
+        }
     }
 
     if (currentTrade.price() < minSwing) {
         // cout << "Lower than the min!" << endl;
         if (decisionTrend == DESIRED_POSITION_SIDE_LONG) {
-            SendTradeOrder(&msg.instrument(), 
+            SendTradeOrder(&msg.instrument(),
                             currentTrade.size() * 1);
             UpdateSwing();
             decisionTrend = DESIRED_POSITION_SIDE_SHORT;

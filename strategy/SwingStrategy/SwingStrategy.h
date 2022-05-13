@@ -70,7 +70,7 @@ class Momentum {
 
         double price_diff = m_shortWindow.Mean() - m_longWindow.Mean();
         if (m_shortWindow.Mean() > m_longWindow.Mean()) {
-            if(price_diff / m_longWindow.Mean() < 0.000006) {
+            if (price_diff / m_longWindow.Mean() < 0.000006) {
                 return DESIRED_POSITION_SIDE_LONG;
             }
         } else if (m_shortWindow.Mean() < m_longWindow.Mean()) {
