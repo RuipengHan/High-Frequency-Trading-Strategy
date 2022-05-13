@@ -128,16 +128,36 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ###### Real Time Analysis
 
-- SPY<img src="./figs/mean_reversion41_SPY_line.png" />
+- SPY
+
+  <img src="./figs/mean_reversion41_SPY_line.png" />
+
+- AAPL
+
+  <img src="./figs/mean_reversion42_AAPL_line.png" />
 
 ###### Profit and Loss with respect to the market data
 
 - SPY
+
   <img src="./figs/mean_reversion41_SPY_bar.png" />
+
+- AAPL
+
+  <img src="./figs/mean_reversion42_AAPL_bar.png" />
 
 ###### Measurement Table
 
-<img src="./figs/mean_reversion41_SPY_measurement.png" style="zoom: 120%"/>
+- SPY
+
+  <img src="./figs/mean_reversion41_SPY_measurement.png" style="zoom: 120%"/>
+
+- AAPL
+
+  <img src="./figs/mean_reversion42_AAPL_measurement.png" style="zoom: 120%"/>
+
+##### Analysis
+
 
 #### Swing Strategy
 
