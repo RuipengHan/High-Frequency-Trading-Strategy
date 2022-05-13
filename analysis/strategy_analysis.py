@@ -26,10 +26,6 @@ class StrategyAnalysis:
         Name of the Strategy
     symbol: str
         Symbol of the given Strategy
-    begin_time: str
-        Begin time of the Strategy
-    end_time: str
-        End time of the Strategy
     initial_value: int
         Initial value that the strategy started with
 
@@ -65,7 +61,7 @@ class StrategyAnalysis:
             fill = pd.read_csv(fill_file)
             cols = ["StrategyName", "Symbol","TradeTime", "Price", "Quantity", "ExecutionCost"]
             assert all(col in fill.columns for col in cols)
-            self.fill = fill[cols]
+            fill = fill[cols]
         except Exception as exc:
             raise Exception('Invalid fill file ' + fill_file) from exc
         try:
@@ -85,7 +81,6 @@ class StrategyAnalysis:
                 "MarketCenter"
             ]
             assert all(col in order.columns for col in cols)
-            self.order = order[cols]
         except Exception as exc:
             raise Exception('Invalid order file ' + order_file) from exc
         try:
@@ -95,18 +90,21 @@ class StrategyAnalysis:
 
 
         self.name = None
-        if len(self.fill) > 0:
-            symbol = self.fill["Symbol"][0]
-            name = self.fill["StrategyName"][0]
+        if len(fill) > 0:
+            symbol = fill["Symbol"][0]
+            name = fill["StrategyName"][0]
             self.name = f"{name}_{symbol}"
             self.pnl["Name"] = f"{name}_{symbol}"
 
-        self.begin_time = self.fill['TradeTime'][0]
-        self.end_time = self.fill['TradeTime'][len(self.fill) - 1]
         self.initial_value = initial_value
-        self.ticks = None
+        self.date_price_dict = None
+        self.pnl_by_date = None
+        self.date_label = None
 
     def read_ticks(self, tick_files):
+        '''
+        Read the passed in tick files for visualization
+        '''
         ticks_df = []
         for file in tick_files:
             tick = pd.read_csv(file)
@@ -116,8 +114,6 @@ class StrategyAnalysis:
         time_price = ticks_time_price.to_numpy()
         time_price = time_price[time_price[:, 0].argsort()]
 
-        self.date_price_full = time_price
-
         time_ = time_price[:, 0]
         price_ = time_price[:, 1]
 
@@ -125,13 +121,13 @@ class StrategyAnalysis:
         price_by_date = []
         temp = [price_[0]]
         for i in range(1, time_price.shape[0]):
-                date = time_[i].split(' ')[0]
-                if date == date_label[-1]:
-                        temp.append(float(price_[i]))
-                else:
-                        date_label.append(date)
-                        price_by_date.append(np.array(temp))
-                        temp = [price_[i]]
+            date = time_[i].split(' ')[0]
+            if date == date_label[-1]:
+                temp.append(float(price_[i]))
+            else:
+                date_label.append(date)
+                price_by_date.append(np.array(temp))
+                temp = [price_[i]]
         # date
         date_label = np.array(date_label)
         self.date_label = date_label
@@ -245,21 +241,20 @@ class StrategyAnalysis:
         pnl_['Time'] = pnl_['Time'].replace(month_dict, regex=True)
         time_pnl = pnl_.to_numpy()
         time_pnl = time_pnl[time_pnl[:, 0].argsort()]
-        
         date_data = time_pnl[:, 0]
 
         cumulative_pnl = time_pnl[:, 1]
 
-        time_series_fig = px.line(
+        fig = px.line(
                             pnl_,
                             x=pnl_['Time'].str[:19],
                             y="Cumulative PnL",
                             title=f"{self.name} PnL",
                             labels=f"{self.name}")
-        time_series_fig.show()
+        fig.show()
 
         date_label = [date_data[0].split(' ')[0]]
-        pnl_by_date = []
+        self.pnl_by_date = []
         temp = [cumulative_pnl[0]]
         for i in range(1, time_pnl.shape[0]):
             date = date_data[i].split(' ')[0]
@@ -267,39 +262,37 @@ class StrategyAnalysis:
                 temp.append(float(cumulative_pnl[i]))
             else:
                 date_label.append(date)
-                pnl_by_date.append(np.array(temp))
+                self.pnl_by_date.append(np.array(temp))
                 temp = [cumulative_pnl[i]]
-        pnl_by_date.append(temp)
-
-        self.pnl_by_date = pnl_by_date
+        self.pnl_by_date.append(temp)
 
         if self.date_price_dict is not None:
             tick_open = [0]
             tick_high = [0]
             tick_low = [0]
             tick_close = [0]
-            for i in range(0, len(date_label)):
-                date_ = date_label[i]
-                if date_ not in list(self.date_price_dict):
+            for i in enumerate(date_label):
+                date = date_label[i[0]]
+                if date not in list(self.date_price_dict):
                     tick_open.append(tick_open[-1])
                     tick_high.append(tick_high[-1])
                     tick_low.append(tick_low[-1])
                     tick_close.append(tick_close[-1])
                 else:
-                    tick_open.append(self.date_price_dict[date_]["open"])
-                    tick_high.append(self.date_price_dict[date_]["high"])
-                    tick_low.append(self.date_price_dict[date_]["low"])
-                    tick_close.append(self.date_price_dict[date_]["close"])
+                    tick_open.append(self.date_price_dict[date]["open"])
+                    tick_high.append(self.date_price_dict[date]["high"])
+                    tick_low.append(self.date_price_dict[date]["low"])
+                    tick_close.append(self.date_price_dict[date]["close"])
 
 
             fig = make_subplots(rows=1, cols=2)
             fig.add_trace(
                 go.Candlestick(
                     x=date_label,
-                    open=[arr[0] for arr in pnl_by_date],
-                    high=[max(arr) for arr in pnl_by_date],
-                    low=[min(arr) for arr in pnl_by_date],
-                    close=[arr[-1] for arr in pnl_by_date],
+                    open=[arr[0] for arr in self.pnl_by_date],
+                    high=[max(arr) for arr in self.pnl_by_date],
+                    low=[min(arr) for arr in self.pnl_by_date],
+                    close=[arr[-1] for arr in self.pnl_by_date],
                     name="Profit and Loss"
                 ), row = 1, col = 1,
             )
@@ -326,23 +319,13 @@ class StrategyAnalysis:
             fig.show()
 
     # Get relevant data by type
-    def get_data(self, types = None):
+    def get_data(self):
         """
         Return the specified type of data, or all of them
 
         Parameters
         ----------
             types : str
-                the type of the data the user want
-                fill, order, pnl, or none
+                return pnl
         """
-        if types is None:
-            return [self.fill, self.order, self.pnl]
-        types = types.lower()
-        if types == "fill":
-            return self.fill
-        if types == "order":
-            return self.order
-        if types == "pnl":
-            return self.pnl
-        return [self.fill, self.order, self.pnl]
+        return self.pnl

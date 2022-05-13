@@ -3,7 +3,6 @@ Analysis runner
 '''
 
 import os
-from unittest import result
 
 from compare_strategy import CompareStrategy
 from strategy_analysis import StrategyAnalysis
@@ -12,6 +11,7 @@ from strategy_analysis import StrategyAnalysis
 # BACK_Swing11_2022-05-09_180350_start_06-10-2019_end_06-14-2019_order
 
 my_strategies = CompareStrategy()
+TICKER_DIRECTORY = "final_data/spy"
 
 def parse_date(date_string, reverse=False):
     """
@@ -65,11 +65,10 @@ def parse_files():
         if strategy_name in file:
             result_files.append("sample_data/" + file)
 
-    print(result_files)
     if len(result_files) < 3:
         print("Invalid file, please re-enter!\n")
         return None
-    
+
     if len(result_files) > 3:
         strategy_id = input(
             "Please enter the id of your strategy\n"
@@ -102,9 +101,10 @@ def parse_ticks():
         )
     tick_name = f"_{tick_name}_"
     tick_files = []
-    for file in os.listdir("final_data/spy"):
+    for file in os.listdir(TICKER_DIRECTORY):
         if tick_name in file:
-            tick_files.append(tick_name)
+            tick_files.append(TICKER_DIRECTORY + "/" + file)
+    return tick_files
 
 def process_interactive():
     '''
@@ -118,13 +118,15 @@ def process_interactive():
         if result_files is None:
             continue
         tick_files = parse_ticks()
+        if tick_files is None:
+            print("Invalid Tick files")
         strategy = StrategyAnalysis(
                     fill_file=result_files[0],
                     order_file=result_files[1],
                     pnl_file=result_files[2],
                     initial_value=10000000)
+        strategy.read_ticks(tick_files)
         my_strategies.add_strategy(strategy)
-        my_strategies.add_ticks(tick_files)
         # strategy.measure_strategy()
         strategy.visualize_pnl()
         end = input(

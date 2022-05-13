@@ -1,11 +1,10 @@
 '''
 Python Class that compares the two or more strategies
 '''
-import plotly.graph_objects as go
-import plotly.express as px
+from random import sample
 import numpy as np
 import pandas as pd
-from random import sample
+import plotly.graph_objects as go
 
 class CompareStrategy():
     """
@@ -34,9 +33,6 @@ class CompareStrategy():
         if strategy in self.strategy_dict:
             print("Warning: Strategy already exist, overwriting")
         self.strategy_dict[strategy.name] = strategy
-    
-    def add_ticks(tick_files):
-        print("Hello")
 
     # Return the user specified strategy
     def get_strategy(self, name=None):
@@ -50,7 +46,7 @@ class CompareStrategy():
         '''Return the data frame containing all the strategies'''
         strategy_columns = []
         for key, value_strategy in self.strategy_dict.items():
-            strategy_pnl = value_strategy.get_data("pnl")['Cumulative PnL'].to_list()
+            strategy_pnl = value_strategy.get_data()['Cumulative PnL'].to_list()
             strategy_columns.append([key] + strategy_pnl)
 
         strategy_columns = np.array(strategy_columns).T
@@ -60,7 +56,7 @@ class CompareStrategy():
             raise Exception("Invalid size") from exc
 
         key = list(self.strategy_dict)[0]
-        strategy_df.index = self.strategy_dict[key].get_data("pnl")['Time'].to_list()
+        strategy_df.index = self.strategy_dict[key].get_data()['Time'].to_list()
         strategy_df.index.name = "Date"
         strategy_df.columns.name = "Company"
         return strategy_df
@@ -79,7 +75,7 @@ class CompareStrategy():
         counter = 1
         for key in list(self.strategy_dict.keys()):
             date_ = self.strategy_dict[key].date_label
-            strategy_candle_df =  pd.DataFrame( 
+            strategy_candle_df =  pd.DataFrame(
                 {
                         "open":[arr[0] for arr in self.strategy_dict[key].pnl_by_date],
                         "high":[max(arr) for arr in self.strategy_dict[key].pnl_by_date],
@@ -88,7 +84,6 @@ class CompareStrategy():
                 }
             )
             random_color = sample(color_map, 1)[0]
-            print(random_color)
             fig.add_trace(
                 go.Candlestick(
                     x=date_,
