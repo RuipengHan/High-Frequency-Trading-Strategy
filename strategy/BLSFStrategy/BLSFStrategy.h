@@ -107,6 +107,9 @@ class BLSFStrategy : public Strategy {
  private:
     StrategyState currentState;     // Current state of the strategy
     date currentDate;               // Marks the current date
+    double prevPrice;
+    int prevOrder;
+    double totalHold;
 };
 
 extern "C" {
@@ -147,3 +150,4 @@ extern "C" {
         return Strategy::release_version();
     }
 }
+
