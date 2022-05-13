@@ -119,7 +119,7 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 - The mean reversion trading strategy involves betting that prices will revert back towards the mean or average (of historical trades of size n, where n is tunable hyperparameter). Markets are forever moving in and out of phases of mean reversion and momentum. Therefore it’s possible to develop strategies for both types of market. A simplistic example of a mean reversion strategy is to buy a stock after it has had a large fall in price. When a stock has seen a big drop, there’s usually a good chance that it will bounce back to a more normal level.
 
-- Currently, we have set the sample size to 1000 (i.e calculating the mean of last 1000 trades).
+- In our project, due to limitations on hardware, we can't take long-trend mean value that reflects the true underlying value of an equity (using months or years of data). Thus, we instead calculate the mean value of a simple, fixed size trades to "mock" the value of the equity. In our case, that size is a hyperparamter and we have set it to 1000 (i.e calculating the mean of last 1000 trades). Since 1000 trades is an extremely short term considered many trades may occur within the same millisecond, our mean-reversion strategy has a much higher trading-frequency than other strategies, which introducues a large memory consumption that crashed our VMs. To counter this effect, we tuned the buy and sell threshold greater so the trade frequency is lower, but at the cost of failing the pnl.
 
 ##### Result
 
