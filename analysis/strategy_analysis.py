@@ -252,6 +252,7 @@ class StrategyAnalysis:
                             title=f"{self.name} PnL",
                             labels=f"{self.name}")
         fig.show()
+        fig.write_image(f"figs/{self.name}_line.png")
 
         date_label = [date_data[0].split(' ')[0]]
         self.pnl_by_date = []
@@ -317,6 +318,7 @@ class StrategyAnalysis:
             )
 
             fig.show()
+            fig.write_image(f"figs/{self.name}_bar.png")
 
     # Get relevant data by type
     def get_data(self):
