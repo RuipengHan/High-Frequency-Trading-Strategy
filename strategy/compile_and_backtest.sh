@@ -40,12 +40,12 @@ then
 fi
 
 # compile and copy dll
-cd ~/Desktop/strategy_studio/localdev/RCM/StrategyStudio/examples/strategies/$instanceName
+cd /home/vagrant/Desktop/strategy_studio/localdev/RCM/StrategyStudio/examples/strategies/$instanceName
 make
 cp $instanceName.so /home/vagrant/Desktop/strategy_studio/backtesting/strategies_dlls/
 
 # create instance
-cd ~/Desktop/strategy_studio/backtesting/
+cd /home/vagrant/Desktop/strategy_studio/backtesting/
 ./StrategyServerBacktesting &
 sleep 1
 cd ./utilities/
