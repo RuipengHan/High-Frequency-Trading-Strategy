@@ -126,13 +126,13 @@ if __name__ == "__main__":
 
     if not os.path.exists(DATA_DIRECTORY):
         print(f"Export directory not found: {DATA_DIRECTORY}")
-        exit(1)
+        sys.exit()
     if not os.path.exists(TICKER_DIRECTORY):
         print(f"Tick data directory not found: {TICKER_DIRECTORY}")
     list_of_files = glob.glob(f"{DATA_DIRECTORY}/*")
     if len(list_of_files) == 0:
         print("No such file found")
-        exit(1)
+        sys.exit()
     list_of_files.sort(key=os.path.getctime)
     FILL = ""
     ORDER = ""
