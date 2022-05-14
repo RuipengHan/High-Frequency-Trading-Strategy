@@ -108,7 +108,7 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ###### Measurement Table
 
-<img src="./figs/BLSF_SWING_AAPL_measurement.png" />
+<img src="./figs/BLSF_swing_aapl_measurement.png" />
 
 ##### Analysis
 
@@ -185,11 +185,11 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 - SPY
   <img src="./figs/swing_spy_bar.png" />
 - APPLE (APPL)
-  <img src="./figs/swing_aapl_bar.png" />
+  <img src="./figs/Swing_aapl_bar.png" />
 
 ###### Measurement Table
 
-<img src="./figs/swing_spy_aapl_measurement.png" style="zoom: 120%"/>
+<img src="./figs/Swing_SPY_AAPL_measurement.png" style="zoom: 120%"/>
 
 ##### Analysis 
 
