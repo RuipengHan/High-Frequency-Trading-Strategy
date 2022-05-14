@@ -1,20 +1,72 @@
-# Group 1 IE 498 High Frequency Trading Final Report
+# High Frequency Trading Strategies with RCM Strategy Studio
+
+**Group 1 IE 498 High Frequency Trading Final Report**
 
 Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
 
 [TOC]
 
+## Team
+
+**Ruipeng (Ray), Han**
+
+- 
+
+**Yihong, Jian (Project Leader)**
+
+- 
+
+**Tomoyoshi (Tommy), Kimura**
+
+- Con
+
+**Zihan, Zhou**
+
+- 
+
+
+
 ## Introduction
 
-### Background
+### Project Description
 
-Strategy Studio is a proprietary software from RCM used for trading strategy developement and testing. However, the software is hard to use due to numerous reasons. For instance, the software does not provide any built in data, so users have to collect and handle high frequency data on their own. Also, running the software would launch another terminal, making the already complicated C++ CLI development even harder. Therefore, our final project aims to streamline this process. 
+Strategy Studio is a proprietary software from RCM used for trading strategy developement and testing. However, the software is hard to use due to numerous reasons. For instance, the software does not provide any built in data, so users have to collect and handle high frequency data on their own. Also, running the software would launch another terminal, making the already complicated C++ CLI development even harder. Therefore, our final project aims to streamline this process. For our final project, we developed a High Frequencey Trading strategy pipeline containing three major components: data, strategy, and analysis. For data, we implemented data aquisions and parsing script for SIP data from Alpaca, and data parsing script for NASDAQ ITCH. For strategy part, we implemented four distinct strategies using Strategy Studio(SS). For the analysis part, we implemented interpretation and visualization script for SS backtesting output. In addition, we also packaged vagrant boxes for automated backtesting and set up GitLab CI/CD for code quality assurance.
 
-### Overview
+### Technologies
 
-For our final project, we developed a High Frequencey Trading strategy pipeline containing three major components: data, strategy, and analysis. For data, we implemented data aquisions and parsing script for SIP data from Alpaca, and data parsing script for NASDAQ ITCH. For strategy part, we implemented four distinct strategies using Strategy Studio(SS). For the analysis part, we implemented interpretation and visualization script for SS backtesting output. In addition, we also packaged vagrant boxes for automated backtesting and set up GitLab CI/CD for code quality assurance.
+#### Programming Languages
 
-## Project Structure
+- C++
+- Python 3.7.11
+
+#### Softwares
+
+- Strategy Studio
+
+#### Pipeline Frameworks
+
+#### Packages
+
+- Strategy Studios Includes
+
+- Analysis packages
+
+  ```bash
+  plotly
+  numpy
+  pandas
+  alpaca_trade_api
+  kaleido
+  ```
+
+- Pipeline packages
+
+  ```bash
+  pylint
+  cpplint
+  ```
+
+## Components
 
 ### DevOps
 
@@ -94,21 +146,21 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 - SPY
 
-  <img src="./figs/BLSF_SPY_line.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_SPY_line.png" />
 
 - APPLE (AAPL)
-  <img src="./figs/BLSF_AAPL_line.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_AAPL_line.png" />
 
 ###### Profit and Loss with respect to the market data
 
 - SPY 
-  <img src="./figs/BLSF_SPY_bar.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_SPY_bar.png" />
 - APPLE (AAPL)
-  <img src="./figs/BLSF_AAPL_bar.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_AAPL_bar.png" />
 
 ###### Measurement Table
 
-<img src="./figs/BLSF_swing_aapl_measurement.png" />
+<img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_swing_aapl_measurement.png" />
 
 ##### Analysis
 
@@ -132,31 +184,31 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 - SPY
 
-  <img src="./figs/mean_reversion41_SPY_line.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion41_SPY_line.png" />
 
 - AAPL
 
-  <img src="./figs/mean_reversion42_AAPL_line.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion42_AAPL_line.png" />
 
 ###### Profit and Loss with respect to the market data
 
 - SPY
 
-  <img src="./figs/mean_reversion41_SPY_bar.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion41_SPY_bar.png" />
 
 - AAPL
 
-  <img src="./figs/mean_reversion42_AAPL_bar.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion42_AAPL_bar.png" />
 
 ###### Measurement Table
 
 - SPY
 
-  <img src="./figs/mean_reversion41_SPY_measurement.png"/>
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion41_SPY_measurement.png"/>
 
 - AAPL
 
-  <img src="./figs/mean_reversion42_AAPL_measurement.png"/>
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion42_AAPL_measurement.png"/>
 
 ##### Analysis
 
@@ -176,20 +228,20 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 ###### Real Time Analysis
 
 - SPY
-  <img src="./figs/swing_spy_line.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/swing_spy_line.png" />
 - APPLE (APPL)
-  <img src="./figs/Swing_AAPL_line.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_AAPL_line.png" />
 
 ###### Profit and Loss with respect to the market data
 
 - SPY
-  <img src="./figs/swing_spy_bar.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/swing_spy_bar.png" />
 - APPLE (APPL)
-  <img src="./figs/Swing_aapl_bar.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_aapl_bar.png" />
 
 ###### Measurement Table
 
-<img src="./figs/Swing_SPY_AAPL_measurement.png" style="zoom: 120%"/>
+<img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_SPY_AAPL_measurement.png" style="zoom: 120%"/>
 
 ##### Analysis 
 
@@ -207,27 +259,27 @@ We have run the strategy for two different tickers, SPY and Apple from April 5th
 
   - Maximum Profit and Loss
 
-    <img src="./figs/max_pnl.png" />
+    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/max_pnl.png" />
 
   - Minimum Profit and Loss
 
-    <img src="./figs/min_pnl.png" />
+    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/min_pnl.png" />
 
   - Net Profit and Loss
 
-    <img src="./figs/net_pnl.png" />
+    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/net_pnl.png" />
 
   - Cumulative Returns
 
-    <img src="./figs/cumulative_pnl.png" />
+    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/cumulative_pnl.png" />
 
   - Sharpe Ratio
 
-    <img src="./figs/sharpe.png" />
+    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/sharpe.png" />
 
   - Max Drowndown
 
-    <img src="./figs/max_drown.png" />
+    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/max_drown.png" />
 
 #### Visualization
 
@@ -246,7 +298,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 ###### Compare Strategy
 
 - The strategy acts like a container that holds all the Strategy object we mentioned earlier. In this class, we could evaluate the performance of each strategy with each other, and output graph and table for traders to analyze each strategy. The measurement table for Swing between Apple and SPY could be an example, and another example is the evaluation of BLSF Strategy and Swing Strategy on SPY market data. 
-  <img src="./figs/Swing_BLSF_SPY.png" />
+  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_BLSF_SPY.png" />
 
 ------
 
