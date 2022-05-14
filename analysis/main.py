@@ -12,8 +12,8 @@ from strategy_analysis import StrategyAnalysis
 
 
 my_strategies = CompareStrategy()
-TICKER_DIRECTORY = "vagrant/Desktop/strategy_studio/backtesting/text_tick_data"
-DATA_DIRECTORY = "vagrant/Desktop/strategy_studio/backtesting/backtesting-cra-exports"
+TICKER_DIRECTORY = "/home/vagrant/Desktop/strategy_studio/backtesting/text_tick_data"
+DATA_DIRECTORY = "/home/vagrant/Desktop/strategy_studio/backtesting/backtesting-cra-exports"
 
 
 def parse_files(strategy_name, strategy_id = None):
@@ -123,18 +123,31 @@ def process_cml(fill_, order_, pnl_, strategy_tick_):
     my_strategies.measurement_table()
 
 if __name__ == "__main__":
+
+    if not os.path.exists(DATA_DIRECTORY):
+        print(f"Export directory not found: {DATA_DIRECTORY}")
+        sys.exit()
+    if not os.path.exists(TICKER_DIRECTORY):
+        print(f"Tick data directory not found: {TICKER_DIRECTORY}")
     list_of_files = glob.glob(f"{DATA_DIRECTORY}/*")
+    if len(list_of_files) == 0:
+        print("No such file found")
+        sys.exit()
     list_of_files.sort(key=os.path.getctime)
     FILL = ""
     ORDER = ""
     PNL = ""
     for new_file in list_of_files[-3:]:
+        print(new_file)
         if new_file[-8:] == "fill.csv":
             FILL = new_file
         elif new_file[-9:] == "order.csv":
             ORDER = new_file
         elif new_file[-7:] == "pnl.csv":
             PNL = new_file
+    print(FILL)
+    print(ORDER)
+    print(PNL)
     fill_df = pd.read_csv(FILL)
     strategy_tick = fill_df["Symbol"][0]
     if not os.path.exists("figs/"):
