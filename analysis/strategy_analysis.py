@@ -111,6 +111,7 @@ class StrategyAnalysis:
             ticks_df.append(tick)
         ticks_df = pd.concat(ticks_df)
         ticks_time_price = ticks_df[["timestamp", "price"]]
+        ticks_time_price = ticks_time_price.dropna()
         time_price = ticks_time_price.to_numpy()
         time_price = time_price[time_price[:, 0].argsort()]
 
@@ -251,7 +252,7 @@ class StrategyAnalysis:
                             y="Cumulative PnL",
                             title=f"{self.name} PnL",
                             labels=f"{self.name}")
-        fig.show()
+        # fig.show()
         fig.write_image(f"figs/{self.name}_line.png")
 
         date_label = [date_data[0].split(' ')[0]]
@@ -317,7 +318,7 @@ class StrategyAnalysis:
                 legend_title=f"{self.name}",
             )
 
-            fig.show()
+            # fig.show()
             fig.write_image(f"figs/{self.name}_bar.png")
 
     # Get relevant data by type

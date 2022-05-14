@@ -99,7 +99,7 @@ class CompareStrategy():
             )
             counter += 1
         fig.update_layout(yaxis2=dict(overlaying='y1', side='right'))
-        fig.show()
+        # fig.show()
 
     # Get the Measurements for each strategy as a Dataframe
     def get_measurements(self):
@@ -138,5 +138,5 @@ class CompareStrategy():
                 go.Table(header=dict(values=["Types"] + strategy_name_list),
                 cells=dict(values=rows))
             ])
-        fig.show()
+        # fig.show()
         fig.write_image(f"figs/{names_}_measurement.png")
