@@ -47,7 +47,6 @@ class ArbStrategy : public Strategy {
      * This event triggers whenever a signal trade trend is detected
      */ 
     virtual void OnTrade(const TradeDataEventMsg& msg);
-    
 
     /**
      * This function detect completed orders and compute quantityHeld
@@ -95,24 +94,23 @@ class ArbStrategy : public Strategy {
     int numToTrade;
     // debugging flag
     bool debugOn;
- 
- private: 
+
+ private:
     // instruments and quotes
     const MarketModels::Instrument* instrucmentSignal;
     const MarketModels::Instrument* instrucmentTrade;
      double m_aggressiveness;
     double signalLastPrice[3];     // price container for signal ticker
-    double lastExePrice;          
+    double lastExePrice;         
     // hyper params:
-    double upThreshold;             
-    double downThreshold;           
+    double upThreshold;           
+    double downThreshold;          
     // string signal:
-    string signal;             // signal ticker: SPY
-    string totrade;            // trade ticker: AAPL
-   // StrategyState currentState; // enum
+    string signal;          // signal ticker: SPY
+    string totrade;          // trade ticker: AAPL
+    // StrategyState currentState
     double currentState;
-    double quantityHeld;       
-
+    double quantityHeld;     
 };
 
 extern "C" {
