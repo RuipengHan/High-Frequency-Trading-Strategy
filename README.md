@@ -4,15 +4,13 @@ This is the base git project for group 01 of IE498 HFT in Spring 2022.
 
 [TOC]
 
-
-
 ## Teammates
 
 Yihong Jian - yihongj2@illinois.edu (Team Leader)
 
 Ruipeng Han - ruipeng2@illinois.edu
 
-Zihan zhou - zihanz12@illinois.edu
+Zihan Zhou - zihanz12@illinois.edu
 
 Tomoyoshi (Tommy) Kimura - tkimura4@illinois.edu
 
@@ -20,10 +18,15 @@ Tomoyoshi (Tommy) Kimura - tkimura4@illinois.edu
 
 Standard development environment is provided using vagrant box.
 
-### Software included
+### Software
 - Strategy Studio
 - Python 3.7.11
   - Additional Packages should be included in ```requirements.txt```.
+- Virtual Machine Setup
+  - Virtual Box
+  - Vagrant
+  - Box file
+
 
 Please create a issue for additional softwares so that we can put it in vagrant provisioning.
 
@@ -43,7 +46,7 @@ Please create a issue for additional softwares so that we can put it in vagrant 
 
 ## Project structure
 
-### Market Data Parsers
+### Market Data Parser
 
 All the data parser (Nasdaq/IEX/alpaca) should be placed under ```parser``` folder. 
 
@@ -133,18 +136,20 @@ group_01_project
 ├── ...
 ├── strategy
 │	├── ArbStrategy
-│		├── ArbStrategy.cpp
-│		├── ArbStrategy.h
+		├── ArbStrategy.cpp
+		└──  ArbStrategy.h
+│
 │	├── BLSFStrategy
-│		├── BLSFStrategy.cpp
-│		├── BLSFStrategy.h 
+		├── BLSFStrategy.cpp
+		└──  BLSFStrategy.h 
+│
 │	├── MeanReversionStrategy
-│		├── MeanReversionStrategy.cpp
-│		├── MeanReversionStrategy.h
+		├── MeanReversionStrategy.cpp
+		└──  MeanReversionStrategy.h
+│
 │	├── SwingStrategy
-│		├── SwingStrategy.cpp
-│		├── SwingStrategy.h
-│		└── ArbStrategy.h
+		├── SwingStrategy.cpp
+		└──  SwingStrategy.h
 │	└── compile_and_backtest.sh
 ├── ...
 ```
@@ -182,9 +187,9 @@ group_01_project
 ├── ...
 ├── ...
 ├── strategy
-│	├── compare_strategy.py
-│	├── main.py
-│	├── strategy_analysis.py
+	├── compare_strategy.py
+	├── main.py
+	├── strategy_analysis.py
 ├── ...
 
 ```
@@ -235,7 +240,27 @@ group_01_project
     - `Ticks` of the strategy, or the symbol, for example:`SPY` 
   - When we enter no for adding strategy, the interactive mode would also outputs the **measurement table** with each strategy statistics as a column
 
+### Documentation
+
+#### Final Report
+
+```bash
+group_01_project
+├── ...
+├── ...
+├── documenation
+	├── figs
+		├── ...
+	├── final_report.md
+├── ...
+
+
+```
+
+
+
 ### Quality assurance
+
 - **Code Sanity**
   - Python code will be checked by ```PyLint``` under PEP8 standard.
   - C++ files will be checked by `cpplint` under Googel CPP standard

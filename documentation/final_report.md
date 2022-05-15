@@ -177,7 +177,7 @@ To run our compiled demo, follow these steps:
 > git clone https://gitlab.engr.illinois.edu/ie598_high_frequency_trading_spring_2022/ie498_hft_spring_2022_group_01/group_01_project.git
 > cd group_01_project
 ```
-3. Create a folder called dependencies. You should add three files to it: 1. our vagrant box; 2. your StrategyStudio license; 3. Your strategy studio cmd options.
+3. Create a folder called dependencies. You should add three files to it: 1. our [vagrant box](https://uofi.box.com/s/wlyq6b23k41dbw1bz7sfff631osp1049); 2. your StrategyStudio license; 3. Your strategy studio cmd options.
 ```bash
 ├── dependencies 
 	├── IE498hftGroup1VM.box
@@ -326,7 +326,7 @@ Strategy Studio offers a great tool for data feed – text tick reader. This all
 3. **Depth Update By Order (OrderBook data)**
 4. **Depth Update By Price (OrderBook data)**
 5. **Order Book Reset**
-6. **Imbalance**
+6. Imbalance
 
 For this project, we would mainly focus on two specfic events: **Trades** and **Quotes (BBO)**. 
 
