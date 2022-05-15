@@ -4,6 +4,12 @@
 
 Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
 
+**Useful links**
+
+- [Project repository]()
+- [Readme]()
+- [Final Report]()
+
 [TOC]
 
 ## Team
@@ -18,7 +24,7 @@ Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
 
 **Tomoyoshi (Tommy), Kimura**
 
-- Con
+- Tommy is a current sophomore majoring in Computer Science in the Grainger Engineering Department at the University of Illinois at Urbana-Champaign. Although Tommy entered UIUC in 2020 Fall, he plans to graduate May 2023 for his Bachelor’s or graduate May 2024 with both a Bachelor’s degree and a degree in Master of Computer Science. Tommy is passionate about the application of Computer Science in interdisciplinary areas, which is reflected by his internship at National Center for Supercomputing Application using Computer Vision techniques for crucial agricultural studies. Tommy enjoys learning, and he is interested in Software engineering, System engineering, High Frequency Trading, Machine Learning, Front End Development, and Human Computer Interaction. 
 
 **Zihan, Zhou**
 
@@ -36,14 +42,26 @@ Strategy Studio is a proprietary software from RCM used for trading strategy dev
 
 #### Programming Languages
 
-- C++
+- C/C++
+  - Strategy Studio provides the interface entirely in C++ and allow us to implement various strategies in C++. 
+  - We have also used C to write our Nasdaq data parser. 
 - Python 3.7.11
+  - We used Python for several tasks dealing with data. We have implemented the Alpaca data parser with Python to download data from the Alpaca API and convert them into valid format for Strategy Studio Tick Readers. Alpaca API provides very useful Python package, and this is the primary reason we chose Python for this task.
+  - Our IEX data parser is also implemented in Python. 
+  - Python is also the major language for result analysis and visualization. We chose Python because there is a very powerful Visualization for financial market data called Plotly. 
+- Bash
+  - We write bash scripts for automation works.
 
 #### Softwares
 
 - Strategy Studio
+  - We are grateful that **RCM** has sponsored us to give us free access to Strategy Studio for implementing and backtesting our strategies with the market data. 
 
 #### Pipeline Frameworks
+
+- Gitlab
+  - CI/CD
+- Azure Virtual Machine
 
 #### Packages
 
@@ -68,6 +86,53 @@ Strategy Studio is a proprietary software from RCM used for trading strategy dev
 
 ## Components
 
+- This is a simple block diagram of our project. Everything is automated, meaning that with only one command, the three components start sequentially and generate the analyzed output for our chosen strategy over the chosen time period, 
+
+<img src="./figs/block_diagram.png" />
+
+### Repository Layout
+
+```bash
+group_01_project
+├── analysis 
+	└── ...
+	├── compare_strategy.py
+	├── main.py
+	└── strategy_analysis.py
+│
+├── meeting_log 
+│	├── ...
+│
+├── parser
+	├── alpaca_parser
+		├── ...
+	├── nasdaq_parser
+		├── ...
+	├── iex_pareser
+		├── ...
+	└── download_from_alpaca.sh
+│
+├── strategy
+	├── ArbStrategy
+		├── ...
+	├── BLSFStrategy
+		├── ...
+	├── MeanReversionStrategy
+		├── ...
+	├── SwingStrategy
+		├── ...
+	└── compile_and_backtest.sh
+│
+├── .gitlab-ci.yml
+├── IE 498 Group 1 Project Proposal.md
+├── README.md
+├── Vagrantfile
+├── go.sh
+├── requirements.txt
+```
+
+
+
 ### DevOps
 
 #### CI/CD
@@ -86,6 +151,56 @@ We repackaged Prof's FIN566 VM to include a built in Python 3.7 that provides ac
 
 We directly imported the Professor's IEX downloader/parser as a submodule of our project so we can directly use it to download DEEP and TRADE data from IEX exchange that is ready to be feed into Strategy Studio for strategy development and backtesting. The link to Professor's IEX downloader/parser is [here](https://gitlab.engr.illinois.edu/shared_code/iexdownloaderparser). Details on directions of using the IEX downloader/parser can be found on the README.md under the project root directory.
 
+```bash
+parser
+└── iex_parser
+	├── src
+	    ├── download_iex_pcaps.py
+	    ├── parse_compress_iex_pcaps.py
+    	├── parse_iex_caps.py
+    	├── stockbook.py
+    ├── README.md
+    ├── download.sh
+    ├── parse_all.sh
+    
+```
+
+###### IEX Usage
+
+1. Direct to the IexDownloaderParser directory `cd parser/IexDownloaderParser`and run <code>./download.sh</code> to download the source IEX deep data (.gz format). To retrieve data in a specific range of dates, open and edit the download.sh, only modifies the start-date and end-date arguments:
+
+   ```bash
+   python3 src/download_iex_pcaps.py --start-date 2021-11-15 --end-date 2021-11-16 --download-dir data/iex_downloads
+   ```
+
+   Note that git-submodules need to be pulled separately, detailed instruction for pulling git-submodule can be found [here](https://stackoverflow.com/questions/1030169/easy-way-to-pull-latest-of-all-git-submodules)
+
+2. Check that the downloaded raw IEX DEEP dat files should be stored at `iexdownloaderparsers/data/iex_downlaods/DEEP`
+
+3. Run `./parse_all.sh` to parse IEX deep data. Result will be stored under `iexdownloaderparsers/data/text_tick_data` with the foramt `tick_SYMBOL_YYYYMMDD.txt.gz`.  
+
+   To specify the company symbols, edit the `--symbols` argument in `parse_all.sh`. The default is SPY only. You can add more companys:
+
+   ```bash
+   gunzip -d -c $pcap | tcpdump -r - -w - -s 0 | $PYTHON_INTERP src/parse_iex_pcap.py /dev/stdin --symbols SPY,APPL,GOOG,QQQ --trade-date $pcap_date --output-deep-books-too
+   ```
+
+4. The parsed data is in `.gz` format. We want to extract it and save it to a `.txt` file which can be feed into Strategy Studio. Run the following command under `iexdownloaderparsers/data/text_tick_data`  ***(please change your symbol and dates accordingly)***:
+
+   ```bash
+   gunzip -d -c tick_SPY_20171218.txt.gz | awk -F',' '$4 == "P" {print $0}' > tick_SPY_20171218.txt
+   ```
+
+   This command extracts the data and rows where the fourth column is "P", which corresponds to the format of "Depth Update By Price (OrderBook data)" in Strategy Studio. 
+
+   If instead you want to retrive only the trade data, simply change "P" to "T" in the above command, which is following:
+
+   ```bash
+   gunzip -d -c tick_SPY_20171218.txt.gz | awk -F',' '$4 == "T" {print $0}' > tick_SPY_20171218.txt
+   ```
+
+5. The `tick_SPY_20171218.txt` (*or your custom data file*) is ready to feed in SS.
+
 ##### NASDAQ
 
 Our NASDAQ parser (specifically, parser for NASDAQ TotalView-ITCH 5.0) is implemented in C.
@@ -95,10 +210,47 @@ Performance: The time to parse a 3G gz raw file is roughly two minutes.
 
 Details on directions of using the NASDAQ can be found on the README.md under the project root directory.
 
+```bash
+parser
+└── nasdaq_parser
+    ├── makefile
+    ├── nasdaq_itch_parser.c
+    
+```
+
+###### NASDAQ Usage
+
+1. Direct to the `nasdaq_parser` directory (`cd parser/nasdaq_parser`) in where the makefile is located, and run <code>make</code>.
+   This should generate an executable of the parser named `nasdaq_parser`.
+
+2. Run the nasdaq_parser with the following arguments:
+
+   ```bash
+   ./nasdaq_parser [input_file_path] [output_folder_path] [Message type = T]
+   ```
+
+   Please notice that current Nasdaq parser can only parse trade data, so the last argument should be set to T.
+
+3. The parsed trade message will be outputed to the specified directory in the format of csv. These files are ready to be used by Strategy Studio for backtesting.
+
 ##### Alpaca
 
 The Alpaca parser is implemented in python, with two utitlity endpoints consists of `get_trade` and `get_quote` functions.
 Alpaca parser is built with the help of sdk provided by alpaca [specification](https://pypi.org/project/alpaca-trade-api/) and [instruction](https://alpaca.markets/docs/market-data/) , and it requires dependency of `alpaca-trade-api` library; specifically, run command `python3.7 /home/vagrant/Desktop/alpaca_parser.py tick_name startdate_yyyymmdd enddate_yyyymmdd --mode=T --output='/home/vagrant/Desktop/strategy_studio/backtesting/text_tick_data'` would download `tick_name` trade data start form `startdate` to `enddate` by calling aplaca historical data api. Altenatively, running with `-mode=Q` would download accodingly `quote` data. More specific instructions can be found in `download_from_alpaca.sh` in parser folder. In our project, we are using `trade` data to built order book in strategy_studio, since alpaca quote data is initialized to be NBBO involved two trade_center, but strategy_studio only accept quote data from one trade_center.
+
+```bash
+parser
+├── alpaca_parser
+	├── alpaca_parser.py
+```
+
+###### Alpaca Usage
+
+- We have provided a simple bash file for automatic parsing. Simply change your personal IDs and the desired date in the `sh` file and simply run the following command
+
+  ```bash
+  ./download_from_alpaca.sh
+  ```
 
 #### Strategy Studio Data Feeds
 
@@ -120,6 +272,12 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 ##### Quotes (BBO)
 
 - Quotes, BBO, or Best Bid & Offer provides us the best bid/ask price in the current market. Unlike Trade data, for which the function `onTrade` is specifically called, `onQuote` does not behave the same and is only called when the best new data is updated. In this case, we use the function `onBar` to reach our goal. For strategy studio, on bar allow us to access the tick information within a short amount of period (bar). Everytime, we could access these information to make a trade. 
+
+#### Example CSV Output
+
+<img src="./figs/data_parser_output.jpeg" />
+
+
 
 ------
 
@@ -251,6 +409,15 @@ We have run the strategy for two different tickers, SPY and Apple from April 5th
 
 ### Interpretation & Visualization
 
+#### Interrpetation & Visualization Layout
+
+```
+strategy
+	├── compare_strategy.py
+	├── main.py
+	├── strategy_analysis.py
+```
+
 #### Interpretation
 
 - There are various metrics that we would like to evaluate on our result. Strategy Studio outputs three files: fills, orders, and PnL (Profit and Loss). For analysis, we would mainly focus on PnL since the net loss is what we care about the most as traders. 
@@ -300,9 +467,50 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 - The strategy acts like a container that holds all the Strategy object we mentioned earlier. In this class, we could evaluate the performance of each strategy with each other, and output graph and table for traders to analyze each strategy. The measurement table for Swing between Apple and SPY could be an example, and another example is the evaluation of BLSF Strategy and Swing Strategy on SPY market data. 
   <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_BLSF_SPY.png" />
 
-------
+##### Interpretation & Visualization Usage
 
-## Conclusion
+- Direct to `analysis` directory (`cd ./analysis`)
+- Simply run `python3 main.py` would run visualization by using the latest three files (Fill, Order, and PnL). This will generate figures and store in `./figs/` directory. 
+- There is also an interactive version by runing `python3 main.py -i` and follows the promot.
+  - Interactive mode would ask you to add strategy by entering the 
+    - `Name` of the strategy
+    - `ID` of the strategy output if the strategy is ran multiple times
+    - `Ticks` of the strategy, or the symbol, for example:`SPY` 
+  - When we enter no for adding strategy, the interactive mode would also outputs the **measurement table** with each strategy statistics as a column
+
+## Conclusion / Reflections
+
+### **Ruipeng (Ray), Han**
+
+1. **What did you specifically do individually for this project?**
+2. **What did you learn as a result of doing your project?**
+3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+
+### **Yihong, Jian (Project Leader)**
+
+1. **What did you specifically do individually for this project?**
+2. **What did you learn as a result of doing your project?**
+3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+
+### **Tomoyoshi (Tommy), Kimura**
+
+1. **What did you specifically do individually for this project?**
+2. **What did you learn as a result of doing your project?**
+3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+
+### Zihan, Zhou
+
+1. **What did you specifically do individually for this project?**
+2. **What did you learn as a result of doing your project?**
+3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
 
 ## Reference
 
@@ -310,5 +518,6 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 2. https://optionalpha.com/help/backtesting-results-summary
 3. https://blog.quantinsti.com/backtesting/
 4. https://blog.quantinsti.com/stock-market-data-analysis-python/
-5. 
+5. https://plotly.com/
+6. https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf
 

@@ -239,7 +239,3 @@ group_01_project
 - **Code Sanity**
   - Python code will be checked by ```PyLint``` under PEP8 standard.
   - C++ files will be checked by `cpplint` under Googel CPP standard
-
-## Reference
-
-Nasdaq offcial guide on TotalView-ITCH 5.0 data: https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf
