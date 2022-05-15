@@ -304,21 +304,21 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 - SPY
 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_SPY_line.png" />
+  <img src="./figs/BLSF_SPY_line.png" />
 
 - APPLE (AAPL)
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_AAPL_line.png" />
+  <img src="./figs/BLSF_AAPL_line.png" />
 
 ###### Profit and Loss with respect to the market data
 
 - SPY 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_SPY_bar.png" />
+  <img src="./figs/BLSF_SPY_bar.png" />
 - APPLE (AAPL)
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_AAPL_bar.png" />
+  <img src="./figs/BLSF_AAPL_bar.png" />
 
 ###### Measurement Table
 
-<img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/BLSF_swing_aapl_measurement.png" />
+<img src="./figs/BLSF_swing_aapl_measurement.png" />
 
 ##### Analysis
 
@@ -342,31 +342,31 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 - SPY
 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion41_SPY_line.png" />
+  <img src="./figs/mean_reversion41_SPY_line.png" />
 
 - AAPL
 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion42_AAPL_line.png" />
+  <img src="./figs/mean_reversion42_AAPL_line.png" />
 
 ###### Profit and Loss with respect to the market data
 
 - SPY
 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion41_SPY_bar.png" />
+  <img src="./figs/mean_reversion41_SPY_bar.png" />
 
 - AAPL
 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion42_AAPL_bar.png" />
+  <img src="./figs/mean_reversion42_AAPL_bar.png" />
 
 ###### Measurement Table
 
 - SPY
 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion41_SPY_measurement.png"/>
+  <img src="./figs/mean_reversion41_SPY_measurement.png"/>
 
 - AAPL
 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/mean_reversion42_AAPL_measurement.png"/>
+  <img src="./figs/mean_reversion42_AAPL_measurement.png"/>
 
 ##### Analysis
 
@@ -386,20 +386,20 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 ###### Real Time Analysis
 
 - SPY
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/swing_spy_line.png" />
+  <img src="./figs/swing_spy_line.png" />
 - APPLE (APPL)
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_AAPL_line.png" />
+  <img src="./figs/Swing_AAPL_line.png" />
 
 ###### Profit and Loss with respect to the market data
 
 - SPY
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/swing_spy_bar.png" />
+  <img src="./figs/swing_spy_bar.png" />
 - APPLE (APPL)
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_aapl_bar.png" />
+  <img src="./figs/Swing_AAPL_bar.png" />
 
 ###### Measurement Table
 
-<img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_SPY_AAPL_measurement.png" style="zoom: 120%"/>
+<img src="./figs/Swing_SPY_AAPL_measurement.png" style="zoom: 120%"/>
 
 ##### Analysis 
 
@@ -426,27 +426,27 @@ strategy
 
   - Maximum Profit and Loss
 
-    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/max_pnl.png" />
+    <img src="./figs/max_pnl.png" />
 
   - Minimum Profit and Loss
 
-    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/min_pnl.png" />
+    <img src="./figs/min_pnl.png" />
 
   - Net Profit and Loss
 
-    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/net_pnl.png" />
+    <img src="./figs/net_pnl.png" />
 
   - Cumulative Returns
 
-    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/cumulative_pnl.png" />
+    <img src="./figs/cumulative_pnl.png" />
 
   - Sharpe Ratio
 
-    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/sharpe.png" />
+    <img src="./figs/sharpe.png" />
 
   - Max Drowndown
 
-    <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/max_drown.png" />
+    <img src="./figs/max_drown.png" />
 
 #### Visualization
 
@@ -465,7 +465,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 ###### Compare Strategy
 
 - The strategy acts like a container that holds all the Strategy object we mentioned earlier. In this class, we could evaluate the performance of each strategy with each other, and output graph and table for traders to analyze each strategy. The measurement table for Swing between Apple and SPY could be an example, and another example is the evaluation of BLSF Strategy and Swing Strategy on SPY market data. 
-  <img src="/Users/tomoyoshikimura/Desktop/IE 498/group_01_project/documentation/figs/Swing_BLSF_SPY.png" />
+  <img src="./figs/Swing_BLSF_SPY.png" />
 
 ##### Interpretation & Visualization Usage
 
