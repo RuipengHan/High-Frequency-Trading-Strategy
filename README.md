@@ -182,9 +182,9 @@ group_01_project
 
 We have four strategies implemented: Arbitage Strategy, Buy Last Sell First, Mean Reversion Strategy, and Swing Strategy.
 
-##### ArbStrategy
+##### Signal Trading Strategy
 
-- This is a trading strategy that traces two market ticks and condust statistical measurements on the past tick data to determine whether to buy or sell the next data of one of the tick symbol. 
+- This is a trading strategy that traces two market ticks, using one of the tick(here chosen 'SPY') as a signal tick, and conduct its trending analysis to determine buying or selling decisions of the other trading tick. 
 
 ##### BLSF Strategy
 
