@@ -165,9 +165,9 @@ void ArbStrategy::OnBar(const BarEventMsg& msg) {
 void ArbStrategy::AdjustPortfolio() {
     if (orders().num_working_orders() > 0)
         return;
-    // int shareX = numToTrade * instBars[instY].close() - 
+    // int shareX = numToTrade * instBars[instY].close() -
     // portfolio().position(instX);
-    // int shareY = numToTrade * ratio * instBars[instX].close() - 
+    // int shareY = numToTrade * ratio * instBars[instX].close() -
     // portfolio().position(instY);
 }
 
@@ -181,21 +181,22 @@ void ArbStrategy::SendOrder(const Instrument* instrument, int trade_size) {
         abs(trade_size),
         price,
         (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_IEX :
-        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? 
+        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ?
         MARKET_CENTER_ID_CBOE_OPTIONS :
         MARKET_CENTER_ID_CME_GLOBEX),
         (trade_size > 0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
 
-    std::cout << "SendSimpleOrder(): about to send new order for " << 
+    std::cout << "SendSimpleOrder(): about to send new order for " <<
     trade_size << " at $" << price << std::endl;
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
-        // std::cout << "SendOrder(): Sending new order successful!" << std::endl;
-    }
-    else {
-        // std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
+        // std::cout << "SendOrder(): Sending new order successful!" <<
+        // std::endl;
+    } else {
+        // std::cout << "SendOrder(): Error sending new order!!!" << tra <<
+        // std::endl;
     }
 }
 
