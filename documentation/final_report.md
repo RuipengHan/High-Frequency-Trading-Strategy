@@ -299,8 +299,9 @@ parser
 
 ##### Alpaca
 
-The Alpaca parser is implemented in python, with two utitlity endpoints consists of `get_trade` and `get_quote` functions.
-Alpaca parser is built with the help of sdk provided by alpaca [specification](https://pypi.org/project/alpaca-trade-api/) and [instruction](https://alpaca.markets/docs/market-data/) , and it requires dependency of `alpaca-trade-api` library; specifically, run command `python3.7 /home/vagrant/Desktop/alpaca_parser.py tick_name startdate_yyyymmdd enddate_yyyymmdd --mode=T --output='/home/vagrant/Desktop/strategy_studio/backtesting/text_tick_data'` would download `tick_name` trade data start form `startdate` to `enddate` by calling aplaca historical data api. Altenatively, running with `-mode=Q` would download accodingly `quote` data. More specific instructions can be found in `download_from_alpaca.sh` in parser folder. In our project, we are using `trade` data to built order book in strategy_studio, since alpaca quote data is initialized to be NBBO involved two trade_center, but strategy_studio only accept quote data from one trade_center.
+Alpaca parser is implemented in python, with two utitlity endpoints consists of `get_trade` and `get_quote`.
+Alpaca parser is built with the help of sdk provided by alpaca [specification](https://pypi.org/project/alpaca-trade-api/) and [instruction](https://alpaca.markets/docs/market-data/)
+In our project, we are using `trade` data to built order book in strategy_studio, since alpaca quote data is initialized to be NBBO involved two trade_center, but strategy_studio only accept quote data from one trade_center.
 
 ```bash
 parser
@@ -310,7 +311,10 @@ parser
 
 ###### Alpaca Usage
 
-- We have provided a simple bash file for automatic parsing. Simply change your personal IDs and the desired date in the `sh` file and simply run the following command
+- Alpaca data parser requires dependency of `alpaca-trade-api` library.
+
+- Specifically, we have provided a simple bash file for automatic parsing. Inside `bash file`, specify variable in `python3.7 /home/vagrant/Desktop/alpaca_parser.py [tick_name] [yyyymmdd] [yyyymmdd] --mode=[T] --output='/home/vagrant/Desktop/strategy_studio/backtesting/text_tick_data'` would download `tick_name` market data start form `startdate` to `enddate` by calling aplaca historical data api.
+- Altenatively, running with `-mode=Q` would download accodingly `quote` data. 
 
   ```bash
   ./download_from_alpaca.sh
