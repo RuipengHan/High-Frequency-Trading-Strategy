@@ -2,13 +2,11 @@
 
 **Group 1 IE 498 High Frequency Trading Final Report**
 
-Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
-
 **Useful links**
 
-- [Project repository]()
-- [Readme]()
-- [Final Report]()
+- [Project repository](https://gitlab.engr.illinois.edu/ie598_high_frequency_trading_spring_2022/ie498_hft_spring_2022_group_01/group_01_project/-/tree/main/)
+- [Readme](https://gitlab.engr.illinois.edu/ie598_high_frequency_trading_spring_2022/ie498_hft_spring_2022_group_01/group_01_project/-/blob/main/README.md)
+- [Final Report](https://gitlab.engr.illinois.edu/ie598_high_frequency_trading_spring_2022/ie498_hft_spring_2022_group_01/group_01_project/-/tree/main/documentation/final_report.md)
 
 [TOC]
 
@@ -21,12 +19,11 @@ Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
 **Ruipeng (Ray), Han**
 
 - Hello, I am a junior majoring in Math & Computer Science and Statistics at the University of Illinois at Urbana-Champaign. Though my study is wide and highly interdisciplinary, my primary career direction is still in the computer science industry. I will work for Foxconn USA this summer as a full-time software engineering intern, hoping to make connections with industry-leading engineers and learn to be a professional computer engineer. Besides the internship, I will also develop a web application project as my extracuriculum and strengthen my skills in frontend and backend programming. To sum off, I really enjoy programming in general (Python and C++), and machine learning and statistcial computing.
-
-​	   Feel free to reach me at ruipeng2@illinois or my linkedin profile: linkedin.com/in/ruipenghan
+- Feel free to reach me at ruipeng2@illinois or my linkedin profile: linkedin.com/in/ruipenghan
 
 **Tomoyoshi (Tommy), Kimura**
 
-- Tommy is a current sophomore majoring in Computer Science in the Grainger Engineering Department at the University of Illinois at Urbana-Champaign. Although Tommy entered UIUC in 2020 Fall, he plans to graduate May 2023 for his Bachelor’s or graduate May 2024 with both a Bachelor’s degree and a degree in Master of Computer Science. Tommy is passionate about the application of Computer Science in interdisciplinary areas, which is reflected by his internship at National Center for Supercomputing Application using Computer Vision techniques for crucial agricultural studies. Tommy enjoys learning, and he is interested in Software engineering, System engineering, High Frequency Trading, Machine Learning, Front End Development, and Human Computer Interaction. 
+- Tommy is a current sophomore majoring in Computer Science in the Grainger Engineering Department at the University of Illinois at Urbana-Champaign. Although Tommy entered UIUC in 2020 Fall, he plans to graduate May 2023 for his Bachelor’s or graduate May 2024 with both a Bachelor’s degree and a degree in Master of Computer Science. Tommy is passionate about the application of Computer Science in interdisciplinary areas, which is reflected by his internship at National Center for Supercomputing Application using Computer Vision techniques for crucial agricultural studies. Tommy enjoys learning, and he is interested in Software engineering, System engineering, High Frequency Trading, Machine Learning, Front End Development, and Human Computer Interaction.
 
 **Zihan, Zhou**
 
@@ -548,7 +545,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
 ## Conclusion / Reflections
 
-### **Yihong, Jian (Project Leader)**
+### Yihong, Jian (Project Leader)
 
 1. **What did you specifically do individually for this project?**
 2. **What did you learn as a result of doing your project?**
@@ -556,7 +553,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
 
-### **Ruipeng (Ray), Han**
+### Ruipeng (Ray), Han
 
 1. **What did you specifically do individually for this project?**
 
@@ -586,16 +583,36 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
 
-   1. Never be shy to ask the professor. Professor Lariviere replies very quickly 90% of the time so when you have questions just ask. Besides, professor is chill and often posting funny stuffs on Discord so don't be shy.
+   1. Never be shy to ask the professor. Professor Larivietre replies very quickly 90% of the time so when you have questions just ask. Besides, professor is chill and often posting funny stuffs on Discord so don't be shy.
    2. Don't leave todos util the last three weeks. I did this for this project and it was pretty frustrating, because it was hard to focus on preparing for final exams as well as doing the project. Plus, when I was pressured by the due date, all I want to prioirtize is on finishing the project with bare minimum, instead of improving it to its best, which obiviouly my loss because I did not get to learn deeper with my topic.
 
-### **Tomoyoshi (Tommy), Kimura**
+### Tomoyoshi (Tommy), Kimura
 
 1. **What did you specifically do individually for this project?**
+
+   >For this project, the major tasks I was responsible for were Analysis & Visualization, Strategies Implementation, Documentations, and video recordings. The entire project has been splitted into different phases, and during the first phase, each of us worked on different parts, and I mainly developed the analysis program for the strategies. I was able to design and implement various objects with Python to achieve the goal, along with learning and applying powerful packages like Plotly to create good visualizations for our strategy analysis. In the last phases, I have used this program to generate various meaningful graphs for my peer and for the documentation. 
+   >
+   >In the second phase, I took over the responsibility to dive into the Strategy Studio examples to understand the interface of the class Strategy, and was the first one to try out implementing an introductory strategy recommended by the Professor (Buy Last Sell First). During this process, I had the opportunities to help my team to understand how the Strategy class interface works, and give them some guidance in helping them to start off on their strategy. I was also able to test the parser we developed in the earlier phase and pointed out potential possibilities for improvements. Beside BLSF, I also tried writing a different strategy, the Swing Strategy. I found this strategy through internet and learned from videos to implement it in Strategy Studio. 
+   >
+   >For documentation, I also worked on organizing readme file and the Final report for this project, including outlining the project structures for my peers to fill in and polishing the files according to Professor’s rubric.  
+   >
+   >Lastly, I have recorded the Demo video for submission. 
+
 2. **What did you learn as a result of doing your project?**
+
+   > I have learned a lot as a result of doing this project. And one thing that I am most grateful about is learning the DevOps pipeline for a better project flow. I was able to learn a lot from my teammates regarding better Git control through a strict pipeline checking for every commit. I feel like I am more comfortable using Git for any project and believe that this has benefited me for the future. Beside the general DevOps, I have also learned and firmed what I have learned in the class: Market Trading. From developing my own Trading Strategies over financial market, I feel like I now have a solid understanding in the microstructure of the market, including the data feed like Trade and Best Bid and Offer. Writing my own strategies also taught me many tricks that this industry has for making profits. This project definitely prepares me well for this area in many ways, and also excites me for the course **Algorithmic Market Microstructure** next semester. I have also practiced my skills in Object Programming and Data Visualization  through this project, and these would definitely be beneficial to my future. 
+
 3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+
+   >One thing that I would have done differently is to make sure that I have done enough research and negotiate with team member enough to have a better understanding of the detail pipelines of the project. And I would definitely recommend conducting more tests for each sub-project. When I was generating graphs with my analysis program that I wrote in the earlier stages, I realized that I missed some small features and resulted in errors or generated some figures that were under the expectation. Because of this, I had to renegotiate with my team members and rewrite some parts of my program to fit into the automation pipeline as well as fixing the errors for generating the stategy figures. Other thing that I would have done differently is the work distribution during this semester. It was a bit rush near the end and things have only gotten busier with finals and other final projects. Therefore, distributing more heavy works to the first half of the semester would definately improve it. 
+
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+
+   > If I were to continue working on this project, I would continue working on writing better strategies and more meaningful visualizations. Although we have already implemented different strategies, there are definitely various cases that these strategies are prone to, and there are definitely different features we could implement to improve the performance of the strategy. The current strategy I have implemented takes bold moves and perform well with data that has oscillating behaviors. However, when the market data falls continuously, my strategy does not perform well and loses money, since our assumption is broken in this case. Due to the lack of time, I have yet been able to modify much to generate a satisfying output, but I would love to continue working on it for better performance. Beside this strategy, I feel like I could improve the analysis & visualization program further to reflect on possibilities for improvements of the strategies. The current program would only generate some statistical measurements and general PnL of the strategies with the tick data. However, if the program could show graphs that give feedbacks on how to improve the strategies, the process of writing better strategies will be more efficient and less time-consuming. 
+
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+
+   > The first advice I would give is to negotiate with the teammate well and develop a strong DevOps and project pipeline in the beginning of the semester long project. Having this strong pipeline allows a smoother workflow and improves the project efficiency in many ways. Generating these rules could assure the code quality as well as the project standard in many ways. My second advice would be make sure that the group has a very detailed and structured plan for their project. This would make sure that every team member can keep track of whether what they are doing fit into the project pipeline, and this would reduce lots of error and time-consuming debugging process near the end of the project. Lastly, I would recommend that never hesitate to ask questions to both your team members and the professor. Your peers could often give you new insights to the problems, and you could always learn something from them. Professor Lariviere is very informed in this industry, and he always reply fast and know answers to most of your questions. 
 
 ### Zihan, Zhou
 
