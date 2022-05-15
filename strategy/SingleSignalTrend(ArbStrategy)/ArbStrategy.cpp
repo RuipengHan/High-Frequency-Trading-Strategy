@@ -86,10 +86,11 @@ void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
                 min(signalLastPrice[1], signalLastPrice[2])) > upThreshold) {
                     std::cout << "enter_1" << endl;
                     currentState = 2;
-                } 
+                }
             }
             if (currentState == 3) {
-                if (downThreshold < msg.trade().price() - max(signalLastPrice[3],
+                if (downThreshold < msg.trade().price() -
+                max(signalLastPrice[3],
                 max(signalLastPrice[1], signalLastPrice[2]))) {
                     currentState = 4;
                 }
@@ -129,7 +130,7 @@ void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
 }
 
 
-void ArbStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {  
+void ArbStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {
 }
 
 void ArbStrategy::OnBar(const BarEventMsg& msg) {
@@ -164,8 +165,10 @@ void ArbStrategy::OnBar(const BarEventMsg& msg) {
 void ArbStrategy::AdjustPortfolio() {
     if (orders().num_working_orders() > 0)
         return;
-    // int shareX = numToTrade * instBars[instY].close() - portfolio().position(instX);
-    // int shareY = numToTrade * ratio * instBars[instX].close() - portfolio().position(instY);
+    // int shareX = numToTrade * instBars[instY].close() - 
+    // portfolio().position(instX);
+    // int shareY = numToTrade * ratio * instBars[instX].close() - 
+    // portfolio().position(instY);
 }
 
 void ArbStrategy::SendOrder(const Instrument* instrument, int trade_size) {
@@ -178,7 +181,8 @@ void ArbStrategy::SendOrder(const Instrument* instrument, int trade_size) {
         abs(trade_size),
         price,
         (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_IEX :
-        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS :
+        ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? 
+        MARKET_CENTER_ID_CBOE_OPTIONS :
         MARKET_CENTER_ID_CME_GLOBEX),
         (trade_size > 0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
