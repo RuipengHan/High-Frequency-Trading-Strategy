@@ -60,7 +60,6 @@ ArbStrategy::ArbStrategy(StrategyID strategyID,
     currentState(0),
     quantityHeld(0), lastExePrice(0),
     upThreshold(0.05), downThreshold(0.05) {
-
 }
 
 ArbStrategy::~ArbStrategy() {
@@ -83,7 +82,8 @@ void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
      if (msg.instrument().symbol() == "SPY") {
         if (instrucmentSignal != NULL) {
             if (currentState == 0) {
-                if (msg.trade().price() - min(signalLastPrice[3] , min(signalLastPrice[1], signalLastPrice[2])) > upThreshold) {
+                if (msg.trade().price() - min(signalLastPrice[3], 
+                min(signalLastPrice[1], signalLastPrice[2])) > upThreshold) {
                     std::cout<<"enter_1"<<endl;
                     currentState = 2;
                 }   
