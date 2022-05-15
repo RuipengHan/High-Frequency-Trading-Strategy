@@ -537,10 +537,35 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 ### **Ruipeng (Ray), Han**
 
 1. **What did you specifically do individually for this project?**
+
+   I have accomplished two main tasks for this project individually: the NASDAQ TotalView-ITCH 5.0 data parser and the Mean-Reversion Strategy. 
+
+   I implemented the NASDAQ parser in C. NASDAQ TotalView-ITCH 5.0 has many message types, for our project, which uses only traded tick data so far, I only implemented the program to parse trade message from Nasdaq. I followed the binary-to-text conversion rules spcified by the Nasdaq guides and parse the raw binary file to CSV and txt, which are ready to be passed into the Strategy Studio for backtesting. To make the parser user friendly, I also included a makefile to compile the program so the user will only need to run make and run the executable to use the parser.
+
+   The Mean-Reversion Strategy is one of the three main strategies (considering BLSF as a simple, intro strategy) we developed. I developed this strategy on my own based on some research found online. The strategy, like others, inherits the <code>Strategy</code> class and I used my own data structures to implement the core logic of mean-reversion.
+
+   Some relatively smaller individual tasks I did: Imported and used Professor's IEX downlaoder/parser and included directions on using the parser. Included Readme for instructions on using parsers.
+
 2. **What did you learn as a result of doing your project?**
+
+   From developing the Nasdaq parser, I learned how to write a parser for raw/binary data in general: basically reading and understadning what fields it means and which bit means what at what index. I also learned how to write the parsed results to a txt files. 
+
+   Developing the mean-reversion strategy tought me a lot, both technically and financially. First, I learned the basic fundamentals of mean-reversion strategy and its benefits and caveats in real-world applications.  There are many temrs and formulas I learned during researching the related topics on mean-reversions, such as the SMA (Simple-Moving Average), Raff regressions, RSI indicators, etc. Secondly, I learned how to use Strategy Studio to develop functioning (and profitable, at least on somedays) strategies. During the development process, I did tons of parameters tuning to fit my algorithm to different equities, so I have definitely grasped the practiced of tuning and testings. 
+
 3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+
+   First, I would definitely began the strategy development earlier. I did poorly on time distribution for this project, that I delayed till the last one week to develop the strategy. I found out that the strategy development is very fun and customizable based on my own ideas on trading, so more time doing this part will definitely result a better algorithm.
+
+   Another thing I would have done differently is to use working Nasdaq parsers from the Internet instead of developing it on my own, though I learned a lot during the way. I did not know we could use outside parsers for our project until after the midterm demo, so I guess next time I shouldn't wasting two weeks on parser if I can find one from others.
+
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+
+   I will continue working on the mean-reversion strategy, because the current one is still overly simplified compared to the actual mean-reversion strategy. I would like to know how my strategy perform on markets if I can get it to work the way it intends to do. As of right now, my way of finding the "mean" is by calculating the past 1000 trades on the equity, instead of 30-days or 90-days moving average which is standard in industry. Also, calculating 30-days and 90-days moving average is not possible because we don't have access to enough computing power and hard disks to store these data.
+
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+
+   1. Never be shy to ask the professor. Professor Lariviere replies very quickly 90% of the time so when you have questions just ask. Besides, professor is chill and often posting funny stuffs on Discord so don't be shy.
+   2. Don't leave todos util the last three weeks. I did this for this project and it was pretty frustrating, because it was hard to focus on preparing for final exams as well as doing the project. Plus, when I was pressured by the due date, all I want to prioirtize is on finishing the project with bare minimum, instead of improving it to its best, which obiviouly my loss because I did not get to learn deeper with my topic.
 
 ### **Tomoyoshi (Tommy), Kimura**
 
