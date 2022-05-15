@@ -565,15 +565,17 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
    I implemented the NASDAQ parser in C. NASDAQ TotalView-ITCH 5.0 has many message types, for our project, which uses only traded tick data so far, I only implemented the program to parse trade message from Nasdaq. I followed the binary-to-text conversion rules spcified by the Nasdaq guides and parse the raw binary file to CSV and txt, which are ready to be passed into the Strategy Studio for backtesting. To make the parser user friendly, I also included a makefile to compile the program so the user will only need to run make and run the executable to use the parser.
 
-   The Mean-Reversion Strategy is one of the three main strategies (considering BLSF as a simple, intro strategy) we developed. I developed this strategy on my own based on some research found online. The strategy, like others, inherits the <code>Strategy</code> class and I used my own data structures to implement the core logic of mean-reversion.
+   The Mean-Reversion Strategy is one of the three main strategies (considering BLSF as a simple, intro strategy) we developed. I developed this strategy on my own based on some research online. The strategy, like others, inherits the <code>Strategy</code> class and I used my own data structures to implement the core logic of mean-reversion. I have backtested the strategy many times and tuned its parameters aiming to improve its performance.
 
-   Some relatively smaller individual tasks I did: Imported and used Professor's IEX downlaoder/parser and included directions on using the parser. Included Readme for instructions on using parsers.
+   Some relatively smaller individual tasks I did: Imported and used Professor's IEX downlaoder/parser and included directions on using the parser. Included Readme and any documentations for instructions on using parsers and mean-reversion strategy.
 
 2. **What did you learn as a result of doing your project?**
 
    From developing the Nasdaq parser, I learned how to write a parser for raw/binary data in general: basically reading and understadning what fields it means and which bit means what at what index. I also learned how to write the parsed results to a txt files. 
 
-   Developing the mean-reversion strategy tought me a lot, both technically and financially. First, I learned the basic fundamentals of mean-reversion strategy and its benefits and caveats in real-world applications.  There are many temrs and formulas I learned during researching the related topics on mean-reversions, such as the SMA (Simple-Moving Average), Raff regressions, RSI indicators, etc. Secondly, I learned how to use Strategy Studio to develop functioning (and profitable, at least on somedays) strategies. During the development process, I did tons of parameters tuning to fit my algorithm to different equities, so I have definitely grasped the practiced of tuning and testings. 
+   Developing the mean-reversion strategy tought me a lot, both technically and financially. First, I learned the basic fundamentals of mean-reversion strategy and its benefits and caveats in real-world applications.  There are many temrs and formulas I learned during researching the related topics on mean-reversions, such as the SMA (Simple-Moving Average), Raff regressions, RSI indicators, etc. Secondly, I learned how to use Strategy Studio to develop functioning (and profitable, at least on somedays) strategies. During the development process, I did tons of parameters tuning to fit my algorithm to different equities, so I have definitely grasped the importance and practice of tuning and testings. 
+
+   Lastly, I have learned a lot using git and gitlab as a tool to better track and manage changes to code in our project. I learned many useful commands such as checking out remote branches, switching branches, merging, creating pull/merge requests, etc. These knwoledge is extremely useful becuase git is essential to programmers.
 
 3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
 
