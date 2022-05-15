@@ -82,11 +82,11 @@ void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
      if (msg.instrument().symbol() == "SPY") {
         if (instrucmentSignal != NULL) {
             if (currentState == 0) {
-                if (msg.trade().price() - min(signalLastPrice[3], 
+                if (msg.trade().price() - min(signalLastPrice[3],
                 min(signalLastPrice[1], signalLastPrice[2])) > upThreshold) {
-                    std::cout<<"enter_1"<<endl;
+                    std::cout << "enter_1" << endl;
                     currentState = 2;
-                }   
+                }  
             }
             if (currentState == 3) {
                 if (downThreshold < msg.trade().price() - max(signalLastPrice[3], max(signalLastPrice[1], signalLastPrice[2]))){
@@ -97,37 +97,37 @@ void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
        instrucmentSignal = &msg.instrument();
        signalLastPrice[1] = signalLastPrice[2];
        signalLastPrice[2] = signalLastPrice[3];
-       signalLastPrice[3] = msg.trade().price();      
+       signalLastPrice[3] = msg.trade().price();    
      }
       // stop-loss. controlled over 1%
-    if (msg.instrument().symbol()!="SPY") {
+    if (msg.instrument().symbol() != "SPY") {
         if (instrucmentSignal != NULL) {
             if (currentState == 3) {
                 if (msg.trade().price()/lastExePrice < 0.99 || msg.trade().price()/lastExePrice > 1.01) {
                    currentState = 4;
                 }
            }
-        }    
+        }
         instrucmentTrade = &msg.instrument();
     }
-    if (instrucmentTrade!=NULL) {
+    if (instrucmentTrade != NULL) {
       if (currentState == 2) {
         currentState = 1;
-        SendOrder(instrucmentTrade, msg.trade().size()); 
+        SendOrder(instrucmentTrade, msg.trade().size());
         currentState = 3;
         quantityHeld += abs(msg.trade().size());
     }
       if (currentState == 4) {
         currentState = 5;
-        SendOrder(instrucmentTrade, -1 * quantityHeld); 
+        SendOrder(instrucmentTrade, -1 * quantityHeld);
         currentState = 0;
         quantityHeld = 0;
-     }    
+     }  
     }
 }
 
 
-void ArbStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {    
+void ArbStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {   
 }
 
 void ArbStrategy::OnBar(const BarEventMsg& msg) {
@@ -167,15 +167,15 @@ void ArbStrategy::AdjustPortfolio() {
 }
 
 void ArbStrategy::SendOrder(const Instrument* instrument, int trade_size) {
-    m_aggressiveness = 0.02; //send order two pennies more aggressive than BBO
+    m_aggressiveness = 0.02;  // send order two pennies more aggressive than BBO
     double last_trade_price = instrument->last_trade().price();
     double price = trade_size > 0 ? last_trade_price + m_aggressiveness : last_trade_price - m_aggressiveness;
-    lastExePrice = price; //
+    lastExePrice = price;  //
     OrderParams params(*instrument,
         abs(trade_size),
         price,
         (instrument->type() == INSTRUMENT_TYPE_EQUITY) ? MARKET_CENTER_ID_IEX : ((instrument->type() == INSTRUMENT_TYPE_OPTION) ? MARKET_CENTER_ID_CBOE_OPTIONS : MARKET_CENTER_ID_CME_GLOBEX),
-        (trade_size>0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
+        (trade_size > 0) ? ORDER_SIDE_BUY : ORDER_SIDE_SELL,
         ORDER_TIF_DAY,
         ORDER_TYPE_LIMIT);
 
@@ -184,9 +184,8 @@ void ArbStrategy::SendOrder(const Instrument* instrument, int trade_size) {
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
         // std::cout << "SendOrder(): Sending new order successful!" << std::endl;
     }
-    else
-    {
-    	// std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
+    else {
+        // std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
     }
 }
 
