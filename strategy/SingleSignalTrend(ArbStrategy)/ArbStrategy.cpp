@@ -28,12 +28,12 @@
 #include <Utilities/Cast.h>
 #include <Utilities/utils.h>
 
-#include <algorithm> 
 #include <math.h>
 #include <iostream>
 #include <cassert>
 #include <utility>
 #include <string>
+#include <algorithm>
 using namespace RCM::StrategyStudio;
 using namespace RCM::StrategyStudio::MarketModels;
 using namespace RCM::StrategyStudio::Utilities;
