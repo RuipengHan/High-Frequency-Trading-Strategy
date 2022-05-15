@@ -101,16 +101,16 @@ class ArbStrategy : public Strategy {
     const MarketModels::Instrument* instrucmentTrade;
      double m_aggressiveness;
     double signalLastPrice[3];     // price container for signal ticker
-    double lastExePrice;   
+    double lastExePrice;
     // hyper params:
-    double upThreshold;         
-    double downThreshold;         
+    double upThreshold;        
+    double downThreshold;     
     // string signal:
     string signal;       // signal ticker: SPY
     string totrade;        // trade ticker: AAPL
     // StrategyState currentState
     double currentState;
-    double quantityHeld;   
+    double quantityHeld;
 };
 
 extern "C" {
