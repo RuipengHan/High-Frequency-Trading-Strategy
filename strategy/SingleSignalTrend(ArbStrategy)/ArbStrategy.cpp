@@ -28,6 +28,7 @@
 #include <Utilities/Cast.h>
 #include <Utilities/utils.h>
 
+#include <algorithm> 
 #include <math.h>
 #include <iostream>
 #include <cassert>
