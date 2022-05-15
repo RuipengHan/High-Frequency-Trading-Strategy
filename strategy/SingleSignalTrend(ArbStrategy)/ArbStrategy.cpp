@@ -3,7 +3,7 @@
  * @file ArbStratehy.cpp
  * @author Zihan ZHOU, Yihong Jian
  *       //
- *         Yihong has implemented On_bar fuction, but due to lack of quotes data with single data_center, 
+ *         Yihong has implemented On_bar fuction, but due to lack of quotes data with single      data_center, 
  *        ArbStrategy truns to focus onTrade function, Yihong truns to deveop work.
  *        Zihan implements current Arbstrategy and test accordingly functionality.
  * @brief This is a trading strategy that traces two market ticks, using one of the tick(here chosen 'SPY') as a signal tick, 
