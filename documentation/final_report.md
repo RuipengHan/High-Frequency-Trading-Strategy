@@ -323,9 +323,9 @@ Strategy Studio offers a great tool for data feed – text tick reader. This all
 
 1. **Trades**
 2. **Quotes (Best Bid Offer)**
-3. **Depth Update By Order (OrderBook data)**
-4. **Depth Update By Price (OrderBook data)**
-5. **Order Book Reset**
+3. Depth Update By Order (OrderBook data)
+4. Depth Update By Price (OrderBook data)
+5. Order Book Reset
 6. Imbalance
 
 For this project, we would mainly focus on two specfic events: **Trades** and **Quotes (BBO)**. 
