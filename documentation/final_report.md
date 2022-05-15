@@ -14,13 +14,15 @@ Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
 
 ## Team
 
-**Ruipeng (Ray), Han**
-
-- 
-
 **Yihong, Jian (Project Leader)**
 
 - 
+
+**Ruipeng (Ray), Han**
+
+- Hello, I am a junior majoring in Math & Computer Science and Statistics at the University of Illinois at Urbana-Champaign. Though my study is wide and highly interdisciplinary, my primary career direction is still in the computer science industry. I will work for Foxconn USA this summer as a full-time software engineering intern, hoping to make connections with industry-leading engineers and learn to be a professional computer engineer. Besides the internship, I will also develop a web application project as my extracuriculum and strengthen my skills in frontend and backend programming. To sum off, I really enjoy programming in general (Python and C++), and machine learning and statistcial computing.
+
+​	   Feel free to reach me at ruipeng2@illinois or my linkedin profile: linkedin.com/in/ruipenghan
 
 **Tomoyoshi (Tommy), Kimura**
 
@@ -36,7 +38,34 @@ Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
 
 ### Project Description
 
-Strategy Studio is a proprietary software from RCM used for trading strategy developement and testing. However, the software is hard to use due to numerous reasons. For instance, the software does not provide any built in data, so users have to collect and handle high frequency data on their own. Also, running the software would launch another terminal, making the already complicated C++ CLI development even harder. Therefore, our final project aims to streamline this process. For our final project, we developed a High Frequencey Trading strategy pipeline containing three major components: data, strategy, and analysis. For data, we implemented data aquisions and parsing script for SIP data from Alpaca, and data parsing script for NASDAQ ITCH. For strategy part, we implemented four distinct strategies using Strategy Studio(SS). For the analysis part, we implemented interpretation and visualization script for SS backtesting output. In addition, we also packaged vagrant boxes for automated backtesting and set up GitLab CI/CD for code quality assurance.
+This is a semester-long project for the course IE498 – High Frequency Trading”, instructed by Professor [David Lariviere](https://davidl.web.illinois.edu/).
+
+Our project aims to: 
+
+- Develop alogrithmic trading strategies using nano-second accurate data, and
+- Automate the process of downloading and parsing exchange source data, backtesting our algorithms on these data, and generating result figures and analysis.
+
+We further breakdown our project into three sections: data retrival and parsing, strategy development, and analysis.
+
+1. Data Retrival and Parsing:
+
+   The main market data sources for this project are Alpaca, NASDAQ, and IEX. We have developed parsing scripts for Alpaca and NASDAQ TotalView-ITCH 5.0
+
+2. Strategy Development:
+
+   We use Strategy Studio as the baseground to develop and backtest trading strategies. Strategy Studio is a proprietary software from RCM used for trading strategy developement and testing. Inside Strategy Studio, we create new trading strategies by implementing its interface (for example, inheirting the <code>Strategy </code> class). Then, we backtest our strategy in Strategy Studio using the data from the Data Retrival and Parsing section. The backtesting process will create three file (orders, fills, and profit-and-loss) which we can use to evaluate the strategy's performance.
+
+   We implemented four different trading strategies: Buy-Last-Sell-First (BLSF), Swing, Mean-Reversion, and Arbitrage strategy. Details on strategies are in the Strategy Implementation section below.
+
+3. Analysis:
+
+   For the analysis part, we implemented interpretation and visualization script for SS backtesting output. In addition, we also packaged vagrant boxes for automated backtesting and set up GitLab CI/CD for code quality assurance.
+
+4. Automation
+
+   To make the project coherent and user-friendly, we have automate the entire process of the three sections above.
+
+   !!!! MORE TO ADD HERE !!!!
 
 ### Technologies
 
@@ -47,7 +76,7 @@ Strategy Studio is a proprietary software from RCM used for trading strategy dev
   - We have also used C to write our Nasdaq data parser. 
 - Python 3.7.11
   - We used Python for several tasks dealing with data. We have implemented the Alpaca data parser with Python to download data from the Alpaca API and convert them into valid format for Strategy Studio Tick Readers. Alpaca API provides very useful Python package, and this is the primary reason we chose Python for this task.
-  - Our IEX data parser is also implemented in Python. 
+  - Our IEX and NASDAQ TotalView-ITCH 5.0 data parsers are also implemented in Python. 
   - Python is also the major language for result analysis and visualization. We chose Python because there is a very powerful Visualization for financial market data called Plotly. 
 - Bash
   - We write bash scripts for automation works.
@@ -59,13 +88,16 @@ Strategy Studio is a proprietary software from RCM used for trading strategy dev
 
 #### Pipeline Frameworks
 
-- Gitlab
+- Gitlab: We use Gitlab for version control and managing and tracking the changes to the project.
   - CI/CD
 - Azure Virtual Machine
+- Virtual Box: We use virtual box to run the virtual machine (CentOS 7) containing the Strategy Studio software using the image provided by Professor Lariviere. 
 
 #### Packages
 
 - Strategy Studios Includes
+
+  Strategy Studios contains libraries defined in its software for developing strategies. Please see the stratege studio specifications for detailed documentaions on libraries and interfaces.
 
 - Analysis packages
 
@@ -132,6 +164,20 @@ group_01_project
 ```
 
 
+
+## Instructions for Usage:
+
+We have automated every process for our project by scripting commands into a single bash file. To use our project, simply do: 
+
+```bash
+> git clone https://gitlab.engr.illinois.edu/ie598_high_frequency_trading_spring_2022/ie498_hft_spring_2022_group_01/group_01_project.git
+> cd group_01_project
+> ./go.sh
+```
+
+The <code>./go.sh</code> will: 1. Download and parse the source data from Alpaca 2. Run backtestings on these data using the strategies, and 3. Generate analysis through visualizations.
+
+Below are detailed instructions for using specific component (like parsers) of our project:
 
 ### DevOps
 
@@ -281,7 +327,7 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ------
 
-### Strategy Implementation
+### Strategy Implementation and Results
 
 #### Arb Strategy
 
@@ -480,7 +526,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
 ## Conclusion / Reflections
 
-### **Ruipeng (Ray), Han**
+### **Yihong, Jian (Project Leader)**
 
 1. **What did you specifically do individually for this project?**
 2. **What did you learn as a result of doing your project?**
@@ -488,7 +534,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
 
-### **Yihong, Jian (Project Leader)**
+### **Ruipeng (Ray), Han**
 
 1. **What did you specifically do individually for this project?**
 2. **What did you learn as a result of doing your project?**
