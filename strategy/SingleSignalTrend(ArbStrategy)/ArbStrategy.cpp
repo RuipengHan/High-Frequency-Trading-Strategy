@@ -3,7 +3,7 @@
  * @file ArbStratehy.cpp
  * @author Zihan ZHOU, Yihong Jian
  *       //
- *         Yihong has implemented On_bar fuction, but due to lack of quotes data with single      data_center, 
+ *         Yihong has implemented On_bar fuction, but due to lack of quotes data with single data_center, 
  *        ArbStrategy truns to focus onTrade function, Yihong truns to deveop work.
  *        Zihan implements current Arbstrategy and test accordingly functionality.
  * @brief This is a trading strategy that traces two market ticks, using one of the tick(here chosen 'SPY') as a signal tick, 
@@ -26,7 +26,7 @@
 #include <Utilities/Cast.h>
 #include <Utilities/utils.h>
 #include "ArbStrategy.h"
-#include <math.h>
+#include "math.h"
 #include <iostream>
 #include <cassert>
 
@@ -40,7 +40,7 @@ ArbStrategy::ArbStrategy(StrategyID strategyID,
                     const std::string& strategyName,
                     const std::string& groupName):
     Strategy(strategyID, strategyName, groupName),
-    //onbar
+    // onbar
     instX(nullptr),
     instY(nullptr),
     instBars(),
@@ -48,16 +48,16 @@ ArbStrategy::ArbStrategy(StrategyID strategyID,
     tradeUnit(1),
     ratio(2.0),
     numToTrade(0),
-    //ontrade
+    // ontrade
     instrucmentSignal(NULL),
     instrucmentTrade(NULL),
     signal("SPY"),    // signal is SPY
     totrade("AAPL"),  // to trade is AAPL
-    signalLastPrice {0, 0,0},
-    currentState(0),
+    signalLastPrice{0, 0, 0}, 
+    currentState(0), 
     quantityHeld(0), lastExePrice(0),
-    upThreshold(0.05), downThreshold(0.05)  // parameter to tune 
-     {
+    upThreshold(0.05), downThreshold(0.05){
+
 }
 
 ArbStrategy::~ArbStrategy() {
@@ -68,23 +68,23 @@ void ArbStrategy::DefineStrategyParams() {
 
 void ArbStrategy::RegisterForStrategyEvents(
     StrategyEventRegister* eventRegister, DateType currDate) {
-   for (SymbolSetConstIter it = symbols_begin(); it != symbols_end(); ++it) {
+    for (SymbolSetConstIter it = symbols_begin(); it != symbols_end(); ++it) {
         eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 1);
     }
 }
 
 void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
-    std::cout << "OnTrade(): (" << msg.adapter_time() << "): " << msg.instrument().symbol() << ": " << msg.trade().size() << " @ $" << msg.trade().price() << std::endl;
-     if(msg.instrument().symbol()=="SPY") {
-        if (instrucmentSignal!=NULL){
-            if(currentState==0){
-                if(msg.trade().price() - min(signalLastPrice[3] ,min(signalLastPrice[1], signalLastPrice[2])) > upThreshold){
+     std::cout<<"OnTrade(): ("<<msg.adapter_time() <<"): "<<msg.instrument().symbol()<<": "<<msg.trade().size()<<" @ $"<< msg.trade().price()<<endl;
+     if (msg.instrument().symbol() == "SPY") {
+        if (instrucmentSignal != NULL) {
+            if (currentState == 0) {
+                if (msg.trade().price() - min(signalLastPrice[3] , min(signalLastPrice[1], signalLastPrice[2])) > upThreshold) {
                     std::cout<<"enter_1"<<endl;
                     currentState = 2;
                 }   
             }
-            if (currentState ==3){
-                if(downThreshold < msg.trade().price() - max(signalLastPrice[3], max(signalLastPrice[1], signalLastPrice[2]))){
+            if (currentState == 3) {
+                if (downThreshold < msg.trade().price() - max(signalLastPrice[3], max(signalLastPrice[1], signalLastPrice[2]))){
                     currentState = 4;
                 }
             }
@@ -93,26 +93,26 @@ void ArbStrategy::OnTrade(const TradeDataEventMsg& msg) {
        signalLastPrice[1] = signalLastPrice[2];
        signalLastPrice[2] = signalLastPrice[3];
        signalLastPrice[3] = msg.trade().price();      
-     } 
-      //stop-loss. controlled over 1% 
-   if (msg.instrument().symbol()!="SPY"){
-        if(instrucmentSignal!=NULL){
-            if(currentState == 3){
-                if(msg.trade().price()/lastExePrice < 0.99 || msg.trade().price()/lastExePrice > 1.01){
+     }
+      // stop-loss. controlled over 1%
+    if (msg.instrument().symbol()!="SPY") {
+        if (instrucmentSignal != NULL) {
+            if (currentState == 3) {
+                if (msg.trade().price()/lastExePrice < 0.99 || msg.trade().price()/lastExePrice > 1.01) {
                    currentState = 4;
                 }
            }
         }    
         instrucmentTrade = &msg.instrument();
     }
-    if(instrucmentTrade!=NULL) {
-      if(currentState == 2){
+    if (instrucmentTrade!=NULL) {
+      if (currentState == 2) {
         currentState = 1;
         SendOrder(instrucmentTrade, msg.trade().size()); 
         currentState = 3;
         quantityHeld += abs(msg.trade().size());
     }
-      if(currentState == 4){
+      if (currentState == 4) {
         currentState = 5;
         SendOrder(instrucmentTrade, -1 * quantityHeld); 
         currentState = 0;
@@ -165,7 +165,7 @@ void ArbStrategy::SendOrder(const Instrument* instrument, int trade_size) {
     m_aggressiveness = 0.02; //send order two pennies more aggressive than BBO
     double last_trade_price = instrument->last_trade().price();
     double price = trade_size > 0 ? last_trade_price + m_aggressiveness : last_trade_price - m_aggressiveness;
-    lastExePrice  = price; //
+    lastExePrice = price; //
     OrderParams params(*instrument,
         abs(trade_size),
         price,
@@ -177,11 +177,11 @@ void ArbStrategy::SendOrder(const Instrument* instrument, int trade_size) {
     std::cout << "SendSimpleOrder(): about to send new order for " << trade_size << " at $" << price << std::endl;
     TradeActionResult tra = trade_actions()->SendNewOrder(params);
     if (tra == TRADE_ACTION_RESULT_SUCCESSFUL) {
-        std::cout << "SendOrder(): Sending new order successful!" << std::endl;
+        // std::cout << "SendOrder(): Sending new order successful!" << std::endl;
     }
     else
     {
-    	std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
+    	// std::cout << "SendOrder(): Error sending new order!!!" << tra << std::endl;
     }
 }
 
