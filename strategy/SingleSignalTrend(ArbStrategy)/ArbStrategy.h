@@ -103,8 +103,8 @@ class ArbStrategy : public Strategy {
     double signalLastPrice[3];     // price container for signal ticker
     double lastExePrice;
     // hyper params:
-    double upThreshold;        
-    double downThreshold;     
+    double upThreshold;       
+    double downThreshold;
     // string signal:
     string signal;       // signal ticker: SPY
     string totrade;        // trade ticker: AAPL
