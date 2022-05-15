@@ -16,7 +16,7 @@ Authors: Tommy Kimura, Yihong Jian, Ruipeng Han, Zihan Zhou
 
 **Yihong, Jian (Project Leader)**
 
-- 
+- Yihong is a junior majoring in Computer Science at the University of Illinois at Urbana-Champaign. He will be graduating in Fall 2022 and interning at Meta Platform in summer 2022. He likes coding in C and C++ and has multiple project experiences such as implementing memory allocators, HTTP server/clients, and STL data structures. He is also experienced with machine learning, and developed vast parrallelization ML pipelines using Azure durint his research experience at National Center for Supercomputing Applications.
 
 **Ruipeng (Ray), Han**
 
@@ -65,21 +65,27 @@ We further break down our project into four sections: data retrival and parsing,
 
    To make the project coherent and user-friendly, we have automate the entire process of the three sections above.
 
-   !!!! MORE TO ADD HERE !!!!
+   Since the project contains multiple components and the pipeline is lenghty, we developed an automated script that will set up a virtual machine, download data, run backtesting, and generate visualization output.
 
 ### Technologies
 
 #### Programming Languages
-
+- Bash
+  - A scripting language that allow users to chain series of commands and feed into computer
+  - We write bash scripts for automation works.
 - C/C++
   - Strategy Studio provides the interface entirely in C++ and allow us to implement various strategies in C++. 
-  - We have also used C to write our Nasdaq data parser. 
+  - We have also used C to write our Nasdaq data parser.
 - Python 3.7.11
   - We used Python for several tasks dealing with data. We have implemented the Alpaca data parser with Python to download data from the Alpaca API and convert them into valid format for Strategy Studio Tick Readers. Alpaca API provides very useful Python package, and this is the primary reason we chose Python for this task.
   - Our IEX and NASDAQ TotalView-ITCH 5.0 data parsers are also implemented in Python. 
   - Python is also the major language for result analysis and visualization. We chose Python because there is a very powerful Visualization for financial market data called Plotly. 
-- Bash
-  - We write bash scripts for automation works.
+- Strategy Studio
+  - A proprietary software donated by RCM that is used for HFT strategy development. We used the framework to develop and test our strategies.
+- Vagrant/Virtualbox
+  - Virtualbox is a software that is used to create virtual machines
+  - Vagrant can use virtualbox to launch standardrized VMs to keep consistency in each run of our project.
+  - We used vagrant and virtualbox to set up the environment that runs our project.
 
 #### Softwares
 
@@ -167,11 +173,23 @@ group_01_project
 
 ## Instructions for Usage:
 
-We have automated every process for our project by scripting commands into a single bash file. To use our project, simply do: 
-
+To run our compiled demo, follow these steps:
+1. Download and install virtual box and vagrant
+2. Clone our repo:
 ```bash
 > git clone https://gitlab.engr.illinois.edu/ie598_high_frequency_trading_spring_2022/ie498_hft_spring_2022_group_01/group_01_project.git
 > cd group_01_project
+```
+3. Create a folder called dependencies. You should add three files to it: 1. our vagrant box; 2. your StrategyStudio license; 3. Your strategy studio cmd options.
+```bash
+├── dependencies 
+	├── IE498hftGroup1VM.box
+	├── lincense.txt
+	└── cmd_config.txt
+```
+4. obtain API key and secret from alpaca and update ```parser/download_from_alpaca.sh```
+5. Hit it
+```bash
 > ./go.sh
 ```
 
