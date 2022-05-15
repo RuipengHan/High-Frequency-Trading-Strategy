@@ -45,7 +45,7 @@ Our project aims to:
 - Develop alogrithmic trading strategies using nano-second accurate data, and
 - Automate the process of downloading and parsing exchange source data, backtesting our algorithms on these data, and generating result figures and analysis.
 
-We further breakdown our project into three sections: data retrival and parsing, strategy development, and analysis.
+We further break down our project into four sections: data retrival and parsing, strategy development, analysis, and automation.
 
 1. Data Retrival and Parsing:
 
