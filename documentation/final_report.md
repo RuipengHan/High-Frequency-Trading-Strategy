@@ -310,12 +310,15 @@ parser
 
 - Alpaca data parser requires dependency of `alpaca-trade-api` library.
 
-- Specifically, we have provided a simple bash file for automatic parsing. Inside `bash file`, specify variable in `python3.7 /home/vagrant/Desktop/alpaca_parser.py [tick_name] [yyyymmdd] [yyyymmdd] --mode=[T] --output='/home/vagrant/Desktop/strategy_studio/backtesting/text_tick_data'` would download `tick_name` market data start form `startdate` to `enddate` by calling aplaca historical data api.
-- Altenatively, running with `-mode=Q` would download accodingly `quote` data. 
+- Specifically, we have provided a simple bash file for automatic parsing. Inside `bash file`. After specifing variable in `python3.7 /home/vagrant/Desktop/alpaca_parser.py [tick_name] [yyyymmdd] [yyyymmdd] --mode=[T] --output='/home/vagrant/Desktop/strategy_studio/backtesting/text_tick_data'` it would download `tick_name` market data start form `startdate` to `enddate` by calling aplaca historical data api.
 
   ```bash
   ./download_from_alpaca.sh
   ```
+  
+- Altenatively, running with `-mode=Q` would download accodingly `quote` data. 
+
+
 
 #### Strategy Studio Data Feeds
 
