@@ -32,17 +32,41 @@ Please create a issue for additional softwares so that we can put it in vagrant 
 
 ### Usage:
 
-1. Install Vagrant and virtualbox.
-2. Download box using this [link](https://uofi.box.com/s/wlyq6b23k41dbw1bz7sfff631osp1049) that requires login from your university account.
-3. Set directory of box file to environment variable ```SS_BOX```, for example:
-    ```   bash
-    export SS_BOX="/home/user/IE498hftGroup1.box
-4. Set directory of strategy studio ```SS_LICENSE```, for example:
-    ```   bash
-    export SS_LICENSE="/home/user/license.txt
-5. ``` bash
-   vagrant up
-6. Then use ```vagrant ssh``` to connect to VM
+1. Download and install **Virtual Box** and **Vagrant**. 
+
+2. Git clone
+
+    ```git
+    git clone https://gitlab.engr.illinois.edu/ie598_high_frequency_trading_spring_2022/ie498_hft_spring_2022_group_01/group_01_project.git
+    cd group_01_project
+    ```
+
+3. Create a folder called dependencies with three files
+
+    1. Our [vagrant box](https://uofi.box.com/s/wlyq6b23k41dbw1bz7sfff631osp1049)
+    2. Your Strategy Studio license
+    3. Strategy Studio command options.
+
+    ```bash
+    ├── dependencies 
+    	├── IE498hftGroup1VM.box
+    	├── lincense.txt
+    	└── cmd_config.txt
+    ```
+
+4. Obtain Alpaca API ***key*** and ***secret*** from Alpaca and update ```parser/download_from_alpaca.sh```
+
+5. Execute the bash file 
+
+    ```bash
+    ./go.sh
+    ```
+
+    This will
+
+    1. Download and parse the source data from Alpaca 
+    2. Run backtestings on these data using the strategies
+    3. Generate analysis through visualizations
 
 ## Project structure
 
