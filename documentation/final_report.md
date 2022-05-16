@@ -77,12 +77,7 @@ We further break down our project into four sections: data retrival and parsing,
   - We used Python for several tasks dealing with data. We have implemented the Alpaca data parser with Python to download data from the Alpaca API and convert them into valid format for Strategy Studio Tick Readers. Alpaca API provides very useful Python package, and this is the primary reason we chose Python for this task.
   - Our IEX and NASDAQ TotalView-ITCH 5.0 data parsers are also implemented in Python. 
   - Python is also the major language for result analysis and visualization. We chose Python because there is a very powerful Visualization for financial market data called Plotly. 
-- Strategy Studio
-  - A proprietary software donated by RCM that is used for HFT strategy development. We used the framework to develop and test our strategies.
-- Vagrant/Virtualbox
-  - Virtualbox is a software that is used to create virtual machines
-  - Vagrant can use virtualbox to launch standardrized VMs to keep consistency in each run of our project.
-  - We used vagrant and virtualbox to set up the environment that runs our project.
+
 
 #### Softwares
 
@@ -92,9 +87,14 @@ We further break down our project into four sections: data retrival and parsing,
 #### Pipeline Frameworks
 
 - Gitlab: We use Gitlab for version control and managing and tracking the changes to the project.
-  - CI/CD
+  - CI/CD: GitLab provides a package called GitLab runner that will trigger whenever we make changes to code repository
 - Azure Virtual Machine
-- Virtual Box: We use virtual box to run the virtual machine (CentOS 7) containing the Strategy Studio software using the image provided by Professor Lariviere. 
+  - We used an Azure VM to host the gitlab runner
+- Virtual Box/Vagrant
+  - Virtualbox is a software that is used to create virtual machines
+  - Vagrant can use virtualbox to launch standardrized VMs to keep consistency in each run of our project.
+  - We used vagrant and virtualbox to set up the environment that runs our project.
+  - Our vagrant box contained Software Studio and necessary enviroment. It derived from Prof's Fin566 box.
 
 #### Packages
 
@@ -552,7 +552,17 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 ### Yihong, Jian (Project Leader)
 
 1. **What did you specifically do individually for this project?**
+  
+    - I implemented our DevOps pipeline from scratch: organize project file structures, set up Azure VM, connect VM to GitLab using GitLab runner, write CI/CD jobs that checks for code sanity. 
+    - I wrote vagrant files and bash script that will automatically launch our project components
+    - I re-wrote the trade part of our Alpaca parser
+    - I upgraded the Makefile of our strategies to include more error checks
+    - I started our ArbStartegy
+    - I performed code reviews
+
 2. **What did you learn as a result of doing your project?**
+
+    - I learned how a high frequency trading strategy development process is like in this project. Specifically, I had a deeper understanding on how collecting accurate and detailed trading data feed would affect 
 3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
