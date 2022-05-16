@@ -11,7 +11,5 @@ meeting_log/*pdf
 */__pycache__
 # cpp build
 parser/nasdaq_parser/nasdaq_parser
-# SS backtesting dependency files
+# vagrant automation dependencies
 /dependencies
-# nasdaq data binary
-*NASDAQ_ITCH50
