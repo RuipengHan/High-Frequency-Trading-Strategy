@@ -1,0 +1,1 @@
+This is a trading strategy that traces two market ticks, using one of the tick(here chosen 'SPY') as a signal tick, and conduct its trending analysis to determine buying or selling decisions of the other trading tick.
