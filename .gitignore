@@ -13,3 +13,4 @@ meeting_log/*pdf
 parser/nasdaq_parser/nasdaq_parser
 # vagrant automation dependencies
 /dependencies
+.DS_Store
