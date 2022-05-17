@@ -631,8 +631,27 @@ Finally, I collaborated on the documentation and PowerPoint writing.
    Finally, I learned some scripting skills related to automatuion and vm setting, which I think I have rarely covered in other projects.
     
 3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+
+   First of all, I think I would have started strategy construction earlier, at the end, our team's time was taken up by various final exams. And the strategy construction itself, which ended up being compressed in time, was a very interesting process and could be used for various ideas.
+
+   Secondly, I will strengthen the communication with the team members, especially in the construction of some pipelines. At the end, the trading strategy I have implemented requires two market tick inputs at once, which the back testing visualization does not take into account. I think adequate communication would have avoided this problem.
+
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+
+   Firstly, I would spend more time on the single signal trading strategy and try out different EFT signals to predict their impact on the stock price of big tech companies. Also, I will optimize the determinants of trending. In the current strategy, what we do is to determine the trend by comparing the extreme value of every three past trades with the current trade price, and this can be optimized with some mathematical calculations, and I can find a better way to determine trending.
+
+   Secondly, during my research on Alpaca, I realised that it can be used not only for backtesting, but also for real time data streaming, so if I have more time, I would like to use websockets to get real time market data, which will also be used for strategic efficiency test. 
+
+   
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+
+   The first advice I would give is that it is beneficial to set up a devop side available to team members as early as possible and to optimise the automation process as much as possible, this will optimise the efficiency of the collaboration afterwards as different members will be interacting with the project in different environments.
+
+   The second recommendation I would like to make is that team members should exchange sufficient information based on applied knowledge in a field, i.e. everyone should share relevant information frequently and proactively, which will greatly improve the efficiency of the collaboration. More importantly, this will improve the team members' understanding of the project and identify possible errors earlier.
+
+   The third piece of advice I would like to give is to ask a lot of questions; Professor Lariviere is usually very prompt in answering students' questions. If the whole team is spending too much time at one stage, it is important to find effective supervision. Also, if you are working independently on a particular part of the development, it is important to ask your teammates more questions, as you will all benefit from the process.
+
+   The fourth suggestion I would like to make is that it is important to have a detailed and adjustable division of labour and that each team member should report on their part and progress within a time frame. This will facilitate the coordination of the project, and ensure that everyone gets the relevant help. Finally, start each phase of the project early in advance.
 
 ### Tomoyoshi (Tommy), Kimura
 
