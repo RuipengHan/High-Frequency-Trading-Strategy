@@ -297,7 +297,9 @@ parser
 ##### Alpaca
 
 Alpaca market data API provides historical data from all US exchanges which account for 100% market volume. 
+
 Alpaca parser is implemented in python, with two utitlity endpoints consists of `get_trade` and `get_quote`.
+
 Alpaca parser is built with the help of sdk provided by alpaca [specification](https://pypi.org/project/alpaca-trade-api/) and [instruction](https://alpaca.markets/docs/market-data/)
 In our project, we are using `trade` data to built order book in strategy_studio, since alpaca quote data is initialized to be NBBO which involved two trade centers, but strategy_studio only accept quote data from one trade center.
 
