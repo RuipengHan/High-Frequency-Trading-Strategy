@@ -611,6 +611,22 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
    1. Never be shy to ask the professor. Professor Larivietre replies very quickly 90% of the time so when you have questions just ask. Besides, professor is chill and often posting funny stuffs on Discord so don't be shy.
    2. Don't leave todos util the last three weeks. I did this for this project and it was pretty frustrating, because it was hard to focus on preparing for final exams as well as doing the project. Plus, when I was pressured by the due date, all I want to prioirtize is on finishing the project with bare minimum, instead of improving it to its best, which obiviouly my loss because I did not get to learn deeper with my topic.
 
+### Zihan, Zhou
+
+1. **What did you specifically do individually for this project?**
+
+  In this project, I did two main things.
+   Firstly, I was responsible for the alpaca parser. I researched the api for the alpaca market data and built a working first version of the parser. After Jian wrote the different forms of the get_trade section, I finished writing the corresponding get_quote section. I also looked at the data input formats that could be used in the strategy and finalised the parser. I also tested several use cases of the Alpaca trading api output and found that the NBBO data output from the Alpaca quote api could not be used in a strategy studio that accepted BBO quote data, which affected the way we ended up building the strategy.
+
+   Secondly, I completed a single signal trading strategy based on research and understanding and achieved profitability at multiple times of the day. During this phase, I independently explored the various trading interfaces and classes in Strategy Studio and identified the equations required to trade the strategy. I spent a lot of time testing and debugging as I completed the strategies, and in the process deepened my understanding of the logic of how Strategy Studio works. I refined the trading logic and the stop-loss method to improve the pnl.
+
+Finally, I collaborated on the documentation and PowerPoint writing.
+
+2. **What did you learn as a result of doing your project?**
+3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+
 ### Tomoyoshi (Tommy), Kimura
 
 1. **What did you specifically do individually for this project?**
@@ -639,13 +655,6 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
    The first advice I would give is to negotiate with the teammate well and develop a strong DevOps and project pipeline in the beginning of the semester long project. Having this strong pipeline allows a smoother workflow and improves the project efficiency in many ways. Generating these rules could assure the code quality as well as the project standard in many ways. My second advice would be make sure that the group has a very detailed and structured plan for their project. This would make sure that every team member can keep track of whether what they are doing fit into the project pipeline, and this would reduce lots of error and time-consuming debugging process near the end of the project. Lastly, I would recommend that never hesitate to ask questions to both your team members and the professor. Your peers could often give you new insights to the problems, and you could always learn something from them. Professor Lariviere is very informed in this industry, and he always reply fast and know answers to most of your questions. 
 
-### Zihan, Zhou
-
-1. **What did you specifically do individually for this project?**
-2. **What did you learn as a result of doing your project?**
-3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
-4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
-5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
 
 ## Reference
 
