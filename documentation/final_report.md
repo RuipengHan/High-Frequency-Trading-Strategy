@@ -354,12 +354,6 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 
 ### Strategy Implementation and Results
 
-#### Arb Strategy
-
-##### Description
-
-##### Results
-
 #### Buy Last Sell First Strategy
 
 ##### Description
@@ -444,6 +438,29 @@ For this project, we would mainly focus on two specfic events: **Trades** and **
 - We could see from both AAPL and SPY that the mean reversion takes great advantage of the price difference between the on-going price and the mean. The two-day return rate is about 90% for SPY and 50% for apple. Though the result is rewarding at the end, the pnl is highly volatile: notice that both SPY and AAPL's pnl crashed below 2 million USD. This volatility partly attributes to the constant trade actions performed by the algorithm. The mean-reversions will trigger a trade once it detects a deviation of price from its historical mean: buy if lower than mean and sell if higher than mean, all based on the assumption/theory that **asset price volatility and historical returns eventually will revert to the long-run mean or average level of the entire dataset.**  However, true stock market does not always follow that rule. Once the overall trend suddenly goes down, then the algoirthm will buy; if the equity never returns to its previous "avg" price, then the buy action can potentially lose sigificantly. This explains why the pnl fluctates greatly.
 
 - In addition, our mean-reversion only calcuates the mean of previous 1000 traded prices, not the mean of the long-term traded price usaully ranged a couple months or even years. If we have access to more computing power, we can signficantly improve the algorithm by finding the long-term mean price.
+
+#### Signal Trending Strategy
+
+##### Description
+
+- This strategy is a derivative of the Momentum strategy. However, unlike a normal momentum strategy, this strategy will read data from two market ticks at once, using one tick as a signal tick and the other as a trade tick.
+Given that an ETF represents the value of a set of underlying assets, movements in the eft will represent, to varying degrees, movements in the value of the assets. The S&P 500 (SPY), as an EFT, is one of the most liquid and most quoted market indices. So we will use the S&P 500(SPY) as the signal tick. Also, as the number of large market capitalisation has a greater impact on the index value, I will choose the market data of some of the higher market capitalisation companies as the trade tick, such as Apple (AAPL). 
+
+- The strategy will read the trade data of two makerticks together in increasing time order (down to the nano-second) and determine the trend of the signal tick over a certain period of time to decide whether to buy, sell or hold the trade tick in the period immediately afterwards. In order to avoid reading the next period of data before the end of a SELL OR BUY trade, the strategy is written using a "state" variable to indicate six different trade states: start, after sent order, buying, holding, selling, and after selling.
+
+- The strategy is written using the onTrade api and sendorder api from the strategy studio. The logic for the strategy to determine trending is also written into the onTrade function. If the current signal tick (SPY) trade value is greater than the last past 3 trade values by upthreshhold, an uptrend is considered to exist and a buy action is taken on the trade tick (AAPL). If the current signal tick(SPY) is trading at a value less than the last past 3 trade value by downthreshold, it is considered to be in a downtrend and a sell action is taken on the trade tick(AAPL). The final strategy also implements a stop-loss method to avoid excessive losses, the effect of this optimisation strategy is described in the analysis part.
+
+##### Visual Results
+
+###### Real Time Analysis
+
+###### Profit and Loss with respect to the market data
+
+###### Measurement Table
+
+##### Analysis
+
+
 
 #### Swing Strategy
 
@@ -618,11 +635,11 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 1. **What did you specifically do individually for this project?**
 
    In this project, I did two main things.
-   Firstly, I was responsible for the alpaca parser. I researched the api for the alpaca market data and built a working first version of the parser. After Jian wrote the different forms of the get_trade section, I finished writing the corresponding get_quote section. I also looked at the data input formats that could be used in the strategy and finalised the parser. I also tested several use cases of the Alpaca trading api output and found that the NBBO data output from the Alpaca quote api could not be used in a strategy studio that accepted BBO quote data, which affected the way we ended up building the strategy.
+   Firstly, I was responsible for the alpaca parser，and also provide my understanding and advice for writing other parsers. I researched the api for the alpaca market data and built a working first version of the parser. After Jian wrote the different forms of the get_trade section, I finished writing the corresponding get_quote section. I also looked at the data input formats that could be used in the strategy and finalised the parser. I also tested several use cases of the Alpaca trading api output and found that the NBBO data output from the Alpaca quote api could not be used in a strategy studio that accepted BBO quote data, which affected the way we ended up building the strategy. 
 
    Secondly, I completed a single signal trading strategy based on research and understanding and achieved profitability at multiple times of the day. During this phase, I independently explored the various trading interfaces and classes in Strategy Studio and identified the equations required to trade the strategy. I spent a lot of time testing and debugging as I completed the strategies, and in the process deepened my understanding of the logic of how Strategy Studio works. I refined the trading logic and the stop-loss method to improve the pnl.
 
-Finally, I collaborated on the documentation and PowerPoint writing.
+   Finally, I collaborated on the documentation and PowerPoint writing.
 
 2. **What did you learn as a result of doing your project?**
 
