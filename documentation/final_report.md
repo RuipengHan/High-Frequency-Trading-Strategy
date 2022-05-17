@@ -562,10 +562,19 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
 2. **What did you learn as a result of doing your project?**
 
-    - I learned how a high frequency trading strategy development process is like in this project. Specifically, I had a deeper understanding on how collecting accurate and detailed trading data feed would affect 
+    - I learned how a high frequency trading strategy development process is like in this project. Specifically, I had a deeper understanding on how collecting accurate and detailed trading data feed would affect the results and performance of algorithmic trading. I also understood how are orders triggered and executed in the high frequency trading algorithms.
+    - Another aspect I learned is the difficulties of keeping consistant development environment. Even if the vagrant VM is distributed, there could be issues in line endings -- CRLF vs LF that would completely ruin the pipeline
+    - The third aspect that I learned is the difficulty of reaching concensus among peers. Even though we all had basic understanding of the project, it took us time to know what exactly others are doing and others are struggling on.
+
 3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
+    - I would set up a stricter and more detailed timeline for each member and entire group. In that way, we could have a better time management and progress update instead of piling everything to the end.
+    - Another thing I would do is chasing Prof David for the rubric before final week.
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
+    - We would continue to polish our data parsing scripts. We were able to use trade data from all sources successfully. However, we could not get SIP quote data working in Strategy Studio. We could continue the project to resolve this issue.
+    - Another aspect that we could improve is standardrized testing. We were hoping to launch Vagrant from our CI/CD runner and profile strategy performance in every update. However, we weren't able to set up this pipeline since it requires nested virtualization or out-of-update packages.
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
+    - Don't think that there are 1 more week to accomplish milestone, you could encounter more issues than you thought
+    - Don't be over ambitious. Some trivial tasks might take much longer due to communication/niche errors that are hard to debug.
 
 ### Ruipeng (Ray), Han
 
