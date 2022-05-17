@@ -27,7 +27,7 @@
 
 **Zihan, Zhou**
 
-- 
+- Zihan is a current junior double majoring in Mathematics and Statistics and minoring in Computer Science. She is expected to graduate 2023 May. Zihan is passionate about the application of math and computer science in interdisciplinary domains and proficient in C++, python and R. She has been involved with IGL club working on Turan problem in graph theory. She has also developed interest and demonstrated skills in software development, big data managment and deep learning through multiple learning and project experience. Feel free to reach her at zihanz12@illinois.edu.
 
 
 
@@ -454,13 +454,19 @@ Given that an ETF represents the value of a set of underlying assets, movements 
 
 ###### Real Time Analysis
 
-###### Profit and Loss with respect to the market data
+-SPY | AAPL
+ <img src="./figs/signal_time.jpg"/>
 
 ###### Measurement Table
 
+-SPY | AAPL
+ <img src="./figs/signal_measurement.png"/>
+
 ##### Analysis
 
+We have analysed the market data for April 5, 2022 and selected SPY as the signal tick and AAPL as the trade tick. The volatility of the pnl shows that the two market ticks are less correlated and less volatile at the beginning of the trade, with a stable loss of around $3,500. As the trading time was extended, the pnl became more volatile, but the pnl showed a profitable value. In general, the trading strategy made many trades, but did not result in large losses, which suggests that the trend of the spy is to some extent reflective of the trade tick buying and selling strategy. However, it is important to realise that in the real market, the trend of the spy is influenced by many other factors and cannot be used to fully reflect the trend of one of the stocks, as it takes into account the market capitalisation of many companies. At the same time, SPY is more often used for the designation of long term strategies and if we were able to run more days of market data, we would be able to see more correlations and more efficient trading.
 
+At the same time, we implemented stop-loss logic to prevent large losses, and in terms of the final pnl, this trick helped us to reduce our one-day retrun from -130,00 to -2,000.
 
 #### Swing Strategy
 
@@ -637,7 +643,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
    In this project, I did two main things.
    Firstly, I was responsible for the alpaca parser，and also provide my understanding and advice for writing other parsers. I researched the api for the alpaca market data and built a working first version of the parser. After Jian wrote the different forms of the get_trade section, I finished writing the corresponding get_quote section. I also looked at the data input formats that could be used in the strategy and finalised the parser. I also tested several use cases of the Alpaca trading api output and found that the NBBO data output from the Alpaca quote api could not be used in a strategy studio that accepted BBO quote data, which affected the way we ended up building the strategy. 
 
-   Secondly, I completed a single signal trading strategy based on research and understanding and achieved profitability at multiple times of the day. During this phase, I independently explored the various trading interfaces and classes in Strategy Studio and identified the equations required to trade the strategy. I spent a lot of time testing and debugging as I completed the strategies, and in the process deepened my understanding of the logic of how Strategy Studio works. I refined the trading logic and the stop-loss method to improve the pnl.
+   Secondly, I completed a single signal trending strategy based on research and understanding and achieved profitability at multiple times of the day. During this phase, I independently explored the various trading interfaces and classes in Strategy Studio and identified the equations required to trade the strategy. I spent a lot of time testing and debugging as I completed the strategies, and in the process deepened my understanding of the logic of how Strategy Studio works. I refined the trading logic and the stop-loss method to improve the pnl.
 
    Finally, I collaborated on the documentation and PowerPoint writing.
 
@@ -657,7 +663,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
 
-   Firstly, I would spend more time on the single signal trading strategy and try out different EFT signals to predict their impact on the stock price of big tech companies. Also, I will optimize the determinants of trending. In the current strategy, what we do is to determine the trend by comparing the extreme value of every three past trades with the current trade price, and this can be optimized with some mathematical calculations, and I can find a better way to determine trending.
+   Firstly, I would spend more time on the single signal trending strategy and try out different EFT signals to predict their impact on the stock price of big tech companies. Also, I will optimize the determinants of trending. In the current strategy, what we do is to determine the trend by comparing the extreme value of every three past trades with the current trade price, and this can be optimized with some mathematical calculations, and I can find a better way to determine trending.
 
    Secondly, during my research on Alpaca, I realised that it can be used not only for backtesting, but also for real time data streaming, so if I have more time, I would like to use websockets to get real time market data, which will also be used for strategic efficiency test. 
 
