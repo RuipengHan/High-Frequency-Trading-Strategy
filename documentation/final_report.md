@@ -615,7 +615,7 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 
 1. **What did you specifically do individually for this project?**
 
-  In this project, I did two main things.
+   In this project, I did two main things.
    Firstly, I was responsible for the alpaca parser. I researched the api for the alpaca market data and built a working first version of the parser. After Jian wrote the different forms of the get_trade section, I finished writing the corresponding get_quote section. I also looked at the data input formats that could be used in the strategy and finalised the parser. I also tested several use cases of the Alpaca trading api output and found that the NBBO data output from the Alpaca quote api could not be used in a strategy studio that accepted BBO quote data, which affected the way we ended up building the strategy.
 
    Secondly, I completed a single signal trading strategy based on research and understanding and achieved profitability at multiple times of the day. During this phase, I independently explored the various trading interfaces and classes in Strategy Studio and identified the equations required to trade the strategy. I spent a lot of time testing and debugging as I completed the strategies, and in the process deepened my understanding of the logic of how Strategy Studio works. I refined the trading logic and the stop-loss method to improve the pnl.
@@ -623,6 +623,13 @@ There are mainly two classes: `StrategyAnalysis` and `CompareStrategy` . We also
 Finally, I collaborated on the documentation and PowerPoint writing.
 
 2. **What did you learn as a result of doing your project?**
+
+   I learnt two main things in the process of writing the parser. The first point is to focus on error handling during the writing of the parser, because we have to take into account the situation where the user is unfamiliar with the interface and mess up, and a good error handling can improve the user's efficiency and provide them with the results they want in a faster way. Secondly, as fetching data is relatively time consuming, the coder writing the parser should include some edge cases in advance, for example, there is no market data on Saturdays and Sundays, which should not affect the user's ability to specify a start date and an end date for fetching data; and the time difference between the exchange and UTC should be taken into account.
+
+   In the process of writing a trading strategy, I learnt about the building a trading strategy and the associated test and debug techniques. Firstly, I realised that understanding the interface and class of the trading software (Strategy Studio) is the most crucial step, which solves some basic problems such as what equations to call or what type of variables to set. At the same time, I learned how to improve the pnl, such as parameter tuning and stop-loss, and was able to effectively debug programs in conjunction with order/fill output. 
+
+   Finally, I learned some scripting skills related to automatuion and vm setting, which I think I have rarely covered in other projects.
+    
 3. **If you had a time machine and could go back to the beginning, what would you have done differently?**
 4. **If you were to continue working on this project, what would you continue to do to improve it, how, and why?**
 5. **What advice do you offer to future students taking this course and working on their semester long project. Providing detailed thoughtful advice to future students will be weighed heavily in evaluating your responses.**
