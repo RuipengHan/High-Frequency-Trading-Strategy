@@ -109,43 +109,6 @@ void BLSFStrategy::OnTrade(const TradeDataEventMsg& msg) {
 
 void BLSFStrategy::OnBar(const BarEventMsg& msg) {
     return;
-    if (msg.bar().close() < 0.01) {
-        return;
-    }
-    date msg_date = msg.bar_time().date();
-    if (currentState == SELL && msg_date != currentDate) {
-        tm date_tm = to_tm(msg.bar_time());
-        if (currentState == BUY && date_tm.tm_hour < 13) {
-            return;
-        }
-        if (date_tm.tm_hour == 13 && date_tm.tm_min < 30) {
-            return;
-        }
-        currentDate = msg_date;
-        std::cout << "Sending BAR order: ("
-                    << msg.bar_time()
-                    << "): "
-                    << msg.instrument().symbol()
-                    << std::endl;
-        this->SendQuoteOrder(&msg.instrument(), -1);
-        currentState = BUY;
-    } else {
-        if (currentDate == date(0)) {
-            currentDate = msg_date;
-        }
-        tm date_tm = to_tm(msg.bar_time());
-        if (currentState == BUY &&
-            date_tm.tm_hour == 19 &&
-            date_tm.tm_min >= 58) {
-            std::cout << "Sending BAR order: ("
-                        << msg.bar_time()
-                        << "): "
-                        << msg.instrument().symbol()
-                        << std::endl;
-            this->SendQuoteOrder(&msg.instrument(), 1);
-            currentState = SELL;
-        }
-    }
 }
 
 void BLSFStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {

@@ -158,28 +158,6 @@ void MeanReversionStrategy::OnTrade(const TradeDataEventMsg& msg) {
 
 void MeanReversionStrategy::OnBar(const BarEventMsg& msg) {
     return;
-    // std::cout << "INTO ON BAR() \n";
-    if (m_debug_on) {
-        ostringstream str;
-        str << "FINDME" << msg.instrument().symbol() << ": " << msg.bar();
-        logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-        // std::cout << str.str().c_str() << std::endl;
-    }
-
-    if (msg.bar().close() < .01) return;
-    MomentumMapIterator iter = m_momentum_map.find(&msg.instrument());
-    if (iter != m_momentum_map.end()) {
-        m_momentum = &iter->second;
-    } else {
-        m_momentum = &m_momentum_map.insert(make_pair(&msg.instrument(),
-        Momentum(m_short_window_size, m_long_window_size))).first->second;
-    }
-
-    DesiredPositionSide side = m_momentum->Update(msg.bar().close());
-
-    if (m_momentum->FullyInitialized()) {
-        AdjustPortfolio(&msg.instrument(), m_position_size * side);
-    }
 }
 
 void MeanReversionStrategy::OnOrderUpdate(const OrderUpdateEventMsg& msg) {
